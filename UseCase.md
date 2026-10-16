@@ -57,7 +57,7 @@ Ces frictions couvrent presque tous les types de détour de la vision : **blocag
 
 Quand un message arrive dans Crisp et que l'agent commence à chercher, une seule notification peut proposer plusieurs aides à la fois :
 
-1. **Le bon lien :** la page qui fait avancer (le chemin exact dans HubSpot, la page d'aide interne).
+1. **Le chemin rapide :** un bouton [Y aller] qui ouvre directement l'écran où agir (le contrat dans HubSpot, le canal Slack), au lieu de chercher (voir [notification.md](notification.md), 3.2).
 2. **Le bon interlocuteur :** si une personne doit intervenir, le canal Slack à utiliser et son modèle de message, déjà rédigé.
 3. **La bonne méthode pour retrouver le client :** par exemple « cherche par domaine ou par téléphone ».
 
