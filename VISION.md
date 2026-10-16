@@ -55,7 +55,7 @@ Une friction, c'est un détour : un moment où la personne doit sortir du chemin
 | Type de détour | Ce que Screenpipe voit |
 | --- | --- |
 | Blocage | un message d'erreur, un formulaire refusé, un accès refusé, un champ obligatoire obscur |
-| Demande d'aide | une question sur un outil ou un process (Slack, Teams, Discord, mail), un appel improvisé, un ticket au support interne |
+| Demande d'aide | une question sur un outil ou un process (Slack, mail), un appel improvisé, un ticket au support interne |
 | Recherche | le wiki, l'intranet, Notion ou Google ouverts au sujet de l'outil en cours ; la même page relue plusieurs fois |
 | Tâtonnement | des allers-retours entre les mêmes écrans, un envoi retenté, une tâche abandonnée puis recommencée |
 | Ressaisie | la même donnée visible dans deux applis, recopiée à la main |
@@ -111,7 +111,7 @@ Ces points restent volontairement ouverts ; à trancher avant samedi, pour que l
 
 **La vie privée**
 
-- [ ] Que contient exactement la signature qui quitte la machine : des catégories seulement, un texte d'erreur normalisé, un vecteur de similarité (qui peut laisser deviner le contenu) ?
+- [ ] Que contient exactement la signature qui quitte la machine : des catégories seulement, un texte d'erreur normalisé, un vecteur de similarité (qui peut laisser deviner le contenu) ? Décidé : la transcription audio peut rester en local (elle aide la détection), mais aucun texte issu de l'audio ne doit entrer dans une signature.
 - [ ] Qui voit la carte : toute l'équipe (transparence) ou seulement le responsable du process ?
 - [ ] Combien de temps garde-t-on les signatures ?
 - [ ] La liste exacte des exclusions par défaut, et comment chacun met en pause ou se retire.
@@ -124,6 +124,17 @@ Ces points restent volontairement ouverts ; à trancher avant samedi, pour que l
 - [ ] Faut-il éviter de notifier celui qui a la solution à chaque fois (fatigue) : solutions pré-partagées, plafond par jour ?
 - [ ] Le moment de l'aide : dès le blocage, ou seulement quand la personne commence à chercher de l'aide (recherche, message) ?
 - [ ] Le nom du projet.
+
+**Les données d'un tiers (le client)**
+
+- [ ] Le client dont le nom et la commande apparaissent à l'écran (Crisp, HubSpot) n'a rien consenti : comment les exclure de la signature, et du texte lu par le modèle d'IA, au-delà des exclusions d'applis ? (le filtre `filter_pii` de `/search` existe, à tester)
+- [ ] Capture-t-on les messages d'un chat client en direct (Crisp) ? Si oui, avec quelle information du client, et sinon, comment détecter la friction sans lire ces messages ?
+- [ ] La règle maison partagée (par exemple un seuil de remboursement) est-elle validée par le responsable du process avant d'être proposée à d'autres, pour ne pas propager une erreur ?
+
+**La mesure de la donnée**
+
+- [ ] Quels outils lisent bien à l'écran (texte natif ou OCR) ? À mesurer pour Slack, HubSpot, Crisp, Notion et Shopify, avec un marqueur de test et le délai de capture.
+- [ ] L'audio : il peut rester transcrit en local pour aider la détection, mais on tranche ce qu'on garde, combien de temps, et ce qui est affiché (voir la question sur la signature).
 
 ## Architecture : tout dans Screenpipe
 
@@ -152,7 +163,7 @@ Aucun fork et aucune nouvelle app : on ne passe que par l'API de Screenpipe et p
 
 La vidéo est notre livrable n°1 : environ 25 équipes et une présélection avant la finale. La démo en direct, elle, sert pour la finale de dimanche.
 
-**Le déroulé (environ 2 minutes, à ajuster vendredi selon le format annoncé) :**
+**Le déroulé (environ 2 minutes, pour une finale de 3 minutes de démo + 2 minutes de questions : la minute de marge sert aux imprévus et à une phrase sur l'IA native de la plateforme) :**
 
 | Temps | Contenu |
 | --- | --- |
@@ -166,7 +177,8 @@ La vidéo est notre livrable n°1 : environ 25 équipes et une présélection av
 **Les données :**
 
 - **Nos vraies frictions pendant les 48 h**, avec l'accord de chacun : l'installation de Screenpipe, les permissions Windows et Mac, Bun, Docker, la soumission Kaggle. Authentique et varié.
-- **Un scénario métier**, par exemple un Odoo volontairement mal configuré (champs obligatoires obscurs, droits manquants), pour le moment en direct avec le juré.
+- **Un scénario métier** sur de vraies interfaces, avec des règles maison arbitraires (que l'IA native de la plateforme ne peut pas connaître). Les outils retenus : **HubSpot** (CRM), **Slack** (demande d'aide interne) et **Crisp** (chat avec le client). Notion et Shopify viendront ensuite si on a le temps. C'est le moment en direct avec le juré. Face à l'IA native qui répond par un article d'aide générique, notre notification apporte la règle exacte de l'équipe (voir la piste ci-dessous).
+- **Piste de scénario : « un client demande un remboursement ».** Un client écrit dans Crisp pour un remboursement. L'agent du support (un nouveau) ouvre sa fiche dans HubSpot, ne trouve pas la règle qui s'applique, relit la même page, puis demande de l'aide dans Slack. La notification Screenpipe arrive : « ce cas de remboursement a déjà été réglé dans l'équipe », avec la règle maison (par exemple : au-delà d'un montant, un tag de validation, une étape de plus). Celui qui avait la solution a choisi de la partager ; personne ne sait qui a demandé. Les détours repérés sont une recherche (HubSpot), une demande d'aide (Slack) et un blocage (la règle introuvable). Le remboursement lui-même se fera dans Shopify, plus tard. Les données du client (nom, commande) apparaissent à l'écran : elles ne doivent jamais entrer dans la signature (voir *Questions ouvertes*).
 - **Une population synthétique pour la carte d'équipe**, au format exact de Screenpipe : les organisateurs l'autorisent, et on le dit.
 
 **La soumission** (via Kaggle ; format et date limite annoncés vendredi) : le projet, la vidéo, le dépôt et les supports. Le dépôt contient un mode avec les données synthétiques, pour qu'une personne extérieure puisse le faire tourner. Y indiquer aussi ce qui marche et ce qui échoue, et la contribution de chacun.
@@ -188,9 +200,9 @@ Coder avant vendredi est autorisé : les tests d'aujourd'hui décident de ce qui
 - [ ] Test 2, sur le Windows et sur un Mac : un épisode complet (erreur, recherche, message d'aide, résolution). Vérifier que `/search` retrouve les 4 éléments, et en combien de secondes
 - [ ] Test 3 : un appel avec l'audio coupé. Screenpipe détecte-t-il la réunion ?
 - [ ] Test 4 : une notification de test avec deux boutons, sur chaque machine
-- [ ] Test 5 : Slack ou Discord, VS Code et un navigateur, sur chaque système. Noter ce qui vient de l'accessibilité et ce qui passe par l'OCR
+- [ ] Test 5 : Slack, HubSpot et Crisp, un navigateur (Chrome, Firefox) et, si on a le temps, Notion et Shopify, sur chaque système. Noter ce qui vient de l'accessibilité et ce qui passe par l'OCR. Discord est écarté du périmètre de démo : rarement utilisé en entreprise, sans administration ni audit
 - [ ] Test 6 : `GET /live-views/schema`, pour voir quels blocs la carte peut utiliser
-- [ ] Lancer Odoo en Docker, volontairement mal configuré
+- [ ] Créer un compte HubSpot gratuit, un espace Slack gratuit et un compte Crisp, et y configurer 2 ou 3 règles maison qui font échouer une action (puis, plus tard, Notion et une boutique Shopify de développement)
 - [ ] Créer nos comptes Kaggle
 
 Notification de test (sous Windows, taper `curl.exe` et échapper les guillemets du JSON) :
@@ -219,7 +231,7 @@ curl -X POST http://127.0.0.1:11435/notify -H "Content-Type: application/json" -
 | --- | --- |
 | Détection | l'API Screenpipe, les signaux, la qualification par l'IA, l'éval |
 | Assistance et vie privée | le serveur partagé, les signatures, le consentement, les notifications |
-| Carte et démo | la Live View, le wiki et la demande de correction, le scénario Odoo, la vidéo et le pitch |
+| Carte et démo | la Live View, le wiki et la demande de correction, le scénario métier (HubSpot, Slack, Crisp), la vidéo et le pitch |
 
 ## Le hackathon et le jury
 
@@ -232,7 +244,17 @@ D'après le récap du kickoff :
 - **Les pistes** (découvrir, apprendre à un agent, rendre utile aux autres) sont des guides, pas des exigences.
 - **Coder avant vendredi est autorisé**, et les données synthétiques aussi, si elles ressemblent aux données de workflow Screenpipe. Des idées proches entre équipes ne posent pas de problème : l'exécution et la viabilité comptent.
 - **La soumission** passe par Kaggle (projet, vidéo, dépôt, supports). Environ 25 équipes, puis une présélection avant la finale de dimanche.
-- **Les critères de notation, le format, les dates limites et le détail des prix** sont annoncés vendredi à l'ouverture.
+- **Le format :** 3 minutes de démo en finale, puis 2 minutes de questions ; la soumission Kaggle se fait en 2 minutes.
+- **Les critères de notation :**
+
+| Critère | Poids | Ce que ça veut dire pour nous |
+| --- | --- | --- |
+| Intégration Screenpipe | 30 % | « Tout dans Screenpipe, sans fork » est un argument de note : montrer au moins trois de leurs surfaces (notification, Live View, pipe ou Teams) |
+| Innovation | 30 % | la mémoire collective des frictions, la vie privée intégrée, le contraste avec l'IA native de la plateforme |
+| Fonctionnalité (marche-t-il en direct ?) | 20 % | un seul parcours de bout en bout, minimal et répété ; le reste sur données préparées, annoncées comme telles |
+| Présentation et pitch | 20 % | le récit en 3 minutes |
+
+- **La date limite et le détail des prix** sont annoncés vendredi à l'ouverture.
 - **Le travail à distance est autorisé**, mais les finalistes pitchent sur place dimanche.
 - **Louis et Ezra répondent sur Discord**, en général jusqu'à 17 h–19 h.
 - **L'accès :** 30 jours de Screenpipe Business sur la page du hackathon.
