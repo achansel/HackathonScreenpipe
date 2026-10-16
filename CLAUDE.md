@@ -7,6 +7,10 @@ Contexte produit, architecture et règles de vie privée : voir [VISION.md](VISI
 - TypeScript sous **Bun**, aucun code natif, aucun fork de Screenpipe : on n'utilise que son API locale.
 - L'équipe est répartie : un Windows (avec WSL pour coder), les autres sur **Mac**. Tout le code doit marcher sur les deux.
 
+## Démo : clients fictifs Crisp
+
+Pour créer ou générer le lien d'un client fictif (chat Crisp), suivre [docs/crisp.md](docs/crisp.md) : même Website ID, e-mails en `@example.com`, `locale=fr`, valeurs encodées.
+
 ## Environnement Screenpipe
 
 Screenpipe tourne toujours **sur l'OS hôte**, jamais dans WSL. Le code parle à `127.0.0.1` :
