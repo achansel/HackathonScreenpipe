@@ -46,6 +46,7 @@ export const RELAY = { connection: "n8n", instance: INSTANCE ? `friction-assist-
 export const POLL_MS = 1000; // boucle de lecture
 export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → épisode prêt
 export const LOOKBACK_MS = 3 * 60_000; // l'IA ne lit que les 3 dernières minutes
+export const BASELINE_MS = 30 * 60_000; // référence d'une fenêtre (empreintes de mots, pas de texte) gardée 30 min après sa dernière frame
 export const SOLUTION_COOLDOWN_MS = 10 * 60_000; // pas deux fois la même aide en 10 min
 export const MIN_CONFIDENCE = 0.6;
 // Filtre en direct : un épisode est écarté sans appel au modèle si le détecteur approuvé dit
@@ -55,7 +56,9 @@ export const MIN_FRICTIONS_KEPT = 0.9; // porte de validation : ≥ 90 % des fri
 
 // Fenêtres jamais lues, en plus des exclusions configurées dans Screenpipe :
 // aperçus alt-tab (titres d'autres fenêtres) et l'interface de Screenpipe elle-même.
-export const IGNORE = new RegExp(process.env.FRICTION_IGNORE ?? "task switching|screenpipe", "i");
+// go.crisp.chat : le chat côté CLIENT de Crisp (en démo, le client fictif est sur le même écran) ;
+// l'outil de l'agent est app.crisp.chat. Testé sur l'appli, le titre et le domaine de l'URL.
+export const IGNORE = new RegExp(process.env.FRICTION_IGNORE ?? "task switching|screenpipe|go\\.crisp\\.chat", "i");
 
 // Périmètre : seules les fenêtres des outils de travail de l'équipe sont lues (appli, titre ou URL).
 // Réglage de vie privée, pas de classement : à aligner sur l'outillage réel de l'équipe.

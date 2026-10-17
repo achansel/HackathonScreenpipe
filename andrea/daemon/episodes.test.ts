@@ -49,6 +49,28 @@ test("historique affiché à l'ouverture d'une fenêtre : pas un épisode", () =
   expect(b.ready(T0 + 5000)).toHaveLength(0);
 });
 
+test("Crisp côté client (go.crisp.chat) ignoré ; retour sur l'onglet agent après 5 min : le nouveau message est vu", () => {
+  const b = new EpisodeBuilder();
+  const agent = { browser_url: "https://app.crisp.chat/website/abc/inbox/session_1/" };
+  b.addFrame({ ...frame("chrome.exe", "Jean Dupont | Crisp - Google Chrome", "Jean Dupont Bonjour, ma page de réservation est en panne", 0), ...agent });
+  b.addFrame({ ...frame("chrome.exe", "Chat - Google Chrome", "J'ai perdu des réservations, je veux un dédommagement", 60_000),
+    browser_url: "https://go.crisp.chat/chat/embed/?website_id=abc" });
+  expect(b.ready(T0 + 70_000)).toHaveLength(0);
+  b.addFrame({ ...frame("chrome.exe", "Jean Dupont | Crisp - Google Chrome", "Jean Dupont Bonjour, ma page de réservation est en panne J'ai perdu des réservations, je veux un dédommagement", 300_000), ...agent });
+  const eps = b.ready(T0 + 303_000);
+  expect(eps).toHaveLength(1);
+  expect(eps[0].text).toContain("dédommagement");
+  expect(eps[0].text).not.toContain("panne");
+});
+
+test("badge de non-lus dans le titre : même fenêtre", () => {
+  const b = new EpisodeBuilder();
+  const agent = { browser_url: "https://app.crisp.chat/website/abc/inbox/session_1/" };
+  b.addFrame({ ...frame("chrome.exe", "Jean Dupont | Crisp - Google Chrome", "Jean Dupont Bonjour, ma page de réservation est en panne", 0), ...agent });
+  b.addFrame({ ...frame("chrome.exe", "💬1 - Jean Dupont | Crisp - Google Chrome", "Jean Dupont Bonjour, ma page de réservation est en panne Julien J'ai perdu des réservations", 5000), ...agent });
+  expect(b.ready(T0 + 8000)).toHaveLength(1);
+});
+
 test("aperçus alt-tab ignorés", () => {
   const b = new EpisodeBuilder();
   b.addFrame(frame("chrome.exe", "Task Switching", "Crisp HubSpot Slack WhatsApp Gmail", 0));

@@ -1,7 +1,7 @@
 // Transforme le flux de frames et d'événements d'entrée en épisodes :
 // une fenêtre dont le texte a changé (après sa première frame) puis est resté stable DEBOUNCE_MS.
 // Rien n'est conservé au-delà de LOOKBACK_MS.
-import { BROWSERS, DEBOUNCE_MS, IGNORE, LOOKBACK_MS, SCOPE } from "./config";
+import { BASELINE_MS, BROWSERS, DEBOUNCE_MS, IGNORE, LOOKBACK_MS, SCOPE } from "./config";
 import type { Item } from "./screenpipe";
 
 export type Episode = {
@@ -13,7 +13,9 @@ export type Episode = {
   at: number;
 };
 
-type WindowState = { app: string; window: string; lastWords: Set<string>; delta: string[]; changedAt: number };
+// lastWords : empreintes des mots de la dernière frame (pas le texte), pour reconnaître ce qui est nouveau
+// quand on revient sur une fenêtre ; seenAt : dernière frame vue.
+type WindowState = { app: string; window: string; lastWords: Set<string>; delta: string[]; changedAt: number; seenAt: number };
 
 const t = (c: Item) => new Date(c.timestamp).getTime();
 // Domaine seulement : l'URL entière peut citer l'outil sans en être (mesuré : connexion Google
@@ -23,6 +25,10 @@ const inScope = (app: string, window: string, url = "") => (BROWSERS.test(app) ?
 // Identifiant déterministe (fenêtre + instant du changement) : le rejeu hors ligne ne double pas un épisode.
 const hash = (s: string) => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return (h >>> 0).toString(36); };
 const words = (s: string) => s.split(/\s+/).filter(Boolean);
+// Même fenêtre malgré les compteurs de non-lus du titre (mesuré : « 💬1 - Jean Dupont | Crisp »,
+// « bugs (Channel) - Piping Company - 4 new items - Slack ») : sinon un message reçu ferait une
+// « nouvelle » fenêtre, prise comme référence, et le message serait raté.
+const windowKey = (w: string) => w.replace(/^(\(\d+\)|\S*\d+\S*\s+-)\s+/, "").replace(/\s-\s\d+ new items?/g, "").replace(/\d+/g, "#");
 
 // Texte d'interface répété (barres d'outils, menus) : 5-grammes présents dans ≥ 40 % des
 // dernières frames d'une appli. Chiffres normalisés pour ignorer les compteurs qui bougent.
@@ -58,29 +64,30 @@ export class EpisodeBuilder {
   addInput(ev: Item) {
     if (!["app_switch", "window_focus"].includes(ev.event_type)) return;
     const title = `${ev.app_name ?? ""} | ${ev.window_title ?? ""}`;
-    if (IGNORE.test(title) || !inScope(ev.app_name ?? "", ev.window_title ?? "", ev.browser_url)) return;
+    if (IGNORE.test(`${title} ${host(ev.browser_url ?? "")}`) || !inScope(ev.app_name ?? "", ev.window_title ?? "", ev.browser_url)) return;
     if (this.titles.at(-1)?.title !== title) this.titles.push({ at: t(ev), title });
   }
 
   addFrame(f: Item) {
     const app = f.app_name ?? "";
     const window = f.window_name ?? "";
-    if (!f.text || IGNORE.test(`${app} ${window}`) || !inScope(app, window, f.browser_url)) return;
+    if (!f.text || IGNORE.test(`${app} ${window} ${host(f.browser_url ?? "")}`) || !inScope(app, window, f.browser_url)) return;
     // Firefox : le texte d'accessibilité peut venir d'un autre onglet (mesuré) → OCR seulement.
     if (/firefox/i.test(app) && f.text_source === "accessibility") return;
-    const key = `${app}|${window}`;
+    const key = `${app}|${windowKey(window)}`;
     const w = clean(app, f.text);
     // Première frame d'une fenêtre = référence, pas un épisode : ce qui est déjà affiché à
     // l'ouverture est de l'historique (mesuré : canal Slack ouvert → question d'un collègue de la
     // veille qualifiée en friction). Changer de canal ou de page change le titre, donc la fenêtre.
     // Les résultats d'une recherche HubSpot s'affichent dans la même page (mesuré) : détectés.
     if (!this.windows.has(key)) {
-      this.windows.set(key, { app, window, lastWords: new Set(w), delta: [], changedAt: t(f) });
+      this.windows.set(key, { app, window, lastWords: new Set(w.map(hash)), delta: [], changedAt: t(f), seenAt: t(f) });
       return;
     }
     const st = this.windows.get(key)!;
-    const fresh = w.filter((x) => !st.lastWords.has(x));
-    st.lastWords = new Set(w);
+    const fresh = w.filter((x) => !st.lastWords.has(hash(x)));
+    st.lastWords = new Set(w.map(hash));
+    st.seenAt = t(f);
     if (fresh.length >= 3) {
       st.delta.push(fresh.join(" "));
       st.changedAt = t(f);
@@ -93,7 +100,8 @@ export class EpisodeBuilder {
     const out: Episode[] = [];
     this.titles = this.titles.filter((x) => now - x.at < LOOKBACK_MS);
     for (const [key, st] of this.windows) {
-      if (now - st.changedAt > LOOKBACK_MS) { this.windows.delete(key); continue; }
+      if (now - st.seenAt > BASELINE_MS) { this.windows.delete(key); continue; }
+      if (now - st.changedAt > LOOKBACK_MS) st.delta = []; // le texte, lui, n'est pas gardé au-delà de 3 min
       if (!st.delta.length || now - st.changedAt < DEBOUNCE_MS) continue;
       out.push({
         id: `ep${st.changedAt.toString(36)}${hash(key)}`,
