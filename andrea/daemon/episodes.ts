@@ -13,9 +13,12 @@ export type Episode = {
   at: number;
 };
 
-// lastWords : empreintes des mots de la dernière frame (pas le texte), pour reconnaître ce qui est nouveau
-// quand on revient sur une fenêtre ; seenAt : dernière frame vue.
-type WindowState = { app: string; window: string; lastWords: Set<string>; delta: string[]; changedAt: number; seenAt: number };
+// seen : empreintes des mots déjà vus dans la fenêtre (pas le texte), toutes frames confondues : Slack
+// alterne OCR (~240 mots) et accessibilité (220 puis 750 mots, historique chargé) [mesuré], comparer à la
+// seule frame précédente ferait passer l'historique pour nouveau. seenAt : dernière frame vue.
+type WindowState = { app: string; window: string; seen: Set<string>; delta: string[]; changedAt: number; seenAt: number };
+const SEEN_MAX = 20_000;
+const CONTEXT = 4; // mots gardés de part et d'autre d'un mot nouveau
 
 const t = (c: Item) => new Date(c.timestamp).getTime();
 // Domaine seulement : l'URL entière peut citer l'outil sans en être (mesuré : connexion Google
@@ -81,15 +84,19 @@ export class EpisodeBuilder {
     // veille qualifiée en friction). Changer de canal ou de page change le titre, donc la fenêtre.
     // Les résultats d'une recherche HubSpot s'affichent dans la même page (mesuré) : détectés.
     if (!this.windows.has(key)) {
-      this.windows.set(key, { app, window, lastWords: new Set(w.map(hash)), delta: [], changedAt: t(f), seenAt: t(f) });
+      this.windows.set(key, { app, window, seen: new Set(w.map(hash)), delta: [], changedAt: t(f), seenAt: t(f) });
       return;
     }
     const st = this.windows.get(key)!;
-    const fresh = w.filter((x) => !st.lastWords.has(hash(x)));
-    st.lastWords = new Set(w.map(hash));
+    const isFresh = w.map((x) => !st.seen.has(hash(x)));
+    for (const x of w) { st.seen.delete(hash(x)); st.seen.add(hash(x)); } // ordre = récence, pour l'éviction
+    for (const h of st.seen) { if (st.seen.size <= SEEN_MAX) break; st.seen.delete(h); }
     st.seenAt = t(f);
-    if (fresh.length >= 3) {
-      st.delta.push(fresh.join(" "));
+    if (isFresh.filter(Boolean).length >= 3) {
+      // Chaque mot nouveau garde ses voisins : « On peut offrir qqchose a un client premium ou quoi »
+      // ne doit pas perdre « un client premium », déjà vu dans l'historique du canal (mesuré).
+      const keep = w.map((_, i) => isFresh.slice(Math.max(0, i - CONTEXT), i + CONTEXT + 1).some(Boolean));
+      st.delta.push(w.filter((_, i) => keep[i]).join(" "));
       st.changedAt = t(f);
     }
     this.windows.set(key, st);

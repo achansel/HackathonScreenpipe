@@ -60,7 +60,23 @@ test("Crisp côté client (go.crisp.chat) ignoré ; retour sur l'onglet agent ap
   const eps = b.ready(T0 + 303_000);
   expect(eps).toHaveLength(1);
   expect(eps[0].text).toContain("dédommagement");
-  expect(eps[0].text).not.toContain("panne");
+  expect(eps[0].text).not.toContain("Bonjour"); // l'ancien message n'est pas repris, seulement 4 mots de contexte
+});
+
+test("Slack alterne OCR et accessibilité : l'historique déjà vu n'est pas nouveau, la question garde son contexte", () => {
+  const b = new EpisodeBuilder();
+  const w = "support (Channel) - Piping Company - Slack";
+  const hist = "Yasmine Roche 3:26 PM Un client premium demande un dédommagement après la panne de mardi";
+  b.addFrame(frame("Slack.exe", w, `Huddle DMs ${hist}`, 0, "ocr"));
+  b.addFrame(frame("Slack.exe", w, `Minimize Maximize Close Back in history ${hist}`, 2000, "accessibility"));
+  b.addFrame(frame("Slack.exe", w, `Huddle DMs ${hist}`, 4000, "ocr"));
+  expect(b.ready(T0 + 9000)).toHaveLength(1); // le passage à l'accessibilité apporte « Minimize Maximize… »
+  b.addFrame(frame("Slack.exe", w, `Minimize Maximize Close Back in history ${hist}`, 10_000, "accessibility"));
+  expect(b.ready(T0 + 15_000)).toHaveLength(0); // déjà vu : rien de neuf
+  b.addFrame(frame("Slack.exe", w, `Huddle DMs ${hist} Andrea 3:38 PM On peut offrir qqchose a un client premium ou quoi ?`, 16_000, "ocr"));
+  const eps = b.ready(T0 + 21_000);
+  expect(eps).toHaveLength(1);
+  expect(eps[0].text).toContain("offrir qqchose a un client premium ou quoi");
 });
 
 test("badge de non-lus dans le titre : même fenêtre", () => {

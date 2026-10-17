@@ -39,11 +39,11 @@ Hackathon Screenpipe (42 Paris, 16–18/10, finale dimanche : 3 min de démo + 2
 
 ## Où on en est
 
-Étapes 1 (aide en direct), 2 (partage d'équipe, simulé à deux daemons), 3 (apprentissage de nuit), 4 (carte Live View, regroupement des étapes) **codées, testées par morceaux, poussées** ; 20 tests (`bun test andrea/`). Scénario réel joué le 17/10 après-midi : 4 séries de correctifs (`a19d354`, `1ad9cbc`, `fbdab0e`, `1cad240`), recherche HubSpot détectée, clics reçus. Jamais lancé sur une vraie journée.
+Étapes 1 (aide en direct), 2 (partage d'équipe, simulé à deux daemons), 3 (apprentissage de nuit), 4 (carte Live View, regroupement des étapes) **codées, testées par morceaux, poussées** ; 20 tests (`bun test andrea/`). Scénario réel joué le 17/10 après-midi (puis 10 scénarios étiquetés à la main) : 5 séries de correctifs, clics reçus ; détail et chiffres dans ETAT.md « Limites connues ». **La recherche HubSpot à 0 résultat n'a jamais été jouée en direct.** Jamais lancé sur une vraie journée.
 
 ## Prochaines étapes
 
-1. **Scénario réel** sur l'écran d'Andrea : `bun andrea/daemon/main.ts activer` (par Andrea), puis `bun andrea/daemon/main.ts --debug` ; jouer Jean Dupont (Crisp, Chrome) → recherche HubSpot → question Slack ; lire les journaux, corriger. **Reste l'étape c** (dédommagement Julien Moreau → « Geste commercial ») : ouvrir la conversation dans l'onglet admin **avant** que le message arrive (règle de référence, voir ETAT.md).
+1. **Scénario réel** sur l'écran d'Andrea : `bun andrea/daemon/main.ts activer` (par Andrea), puis `bun andrea/daemon/main.ts --debug` ; jouer Jean Dupont (Crisp, Chrome) → recherche HubSpot → question Slack ; lire les journaux, corriger. Étape c validée (« Geste commercial » sur la question Slack, 15:38). **À jouer : la recherche HubSpot à 0 résultat** (`jean.d@example.com`).
 2. Étiquetage humain : `bun andrea/offline/main.ts etiqueter` (~40 épisodes), puis `apprendre` / `rapport` / `approuver`.
 3. Poster `docs/discord.md` ; compiler le correctif Mac et faire `docs/test-mac.md` ; tester à deux vraies machines.
 4. Voir la carte à l'écran (`screenpipe://live-view/friction-map`).

@@ -42,8 +42,11 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 ## Limites connues
 
 **Détection**
-- Lancée en direct sur un seul scénario (17/10 après-midi, écran d'Andrea), jamais sur une vraie journée. Recherche HubSpot détectée (`client-introuvable`, 0,95) ; clics [Ça m'a aidé] [Pas ça] reçus.
-- Première frame d'une fenêtre = référence : un message **déjà affiché** à l'ouverture d'une fenêtre (canal, conversation, page) ne déclenche rien ; seul ce qui change ensuite compte. Choix assumé (sinon l'historique d'un canal Slack devient « ta » friction). Référence gardée 30 min (empreintes des mots, pas de texte) ; badges de non-lus ignorés dans l'identité de la fenêtre.
+- Lancée en direct le 17/10 après-midi (écran d'Andrea) : scénario Jean/Julien puis 10 scénarios étiquetés à la main, jamais sur une vraie journée. Bien détectés : question Slack « on peut offrir… premium ? » (`geste-commercial`), prospect belge (`prospect-chat`), remise 20 % (`remise-15`), adresse de facturation (aucune solution → demande anonyme) ; clics reçus. **Jamais joué : une recherche HubSpot à 0 résultat** (le cas d'ouverture de la démo) — les « client introuvable » vus étaient des recherches **réussies** (« jean », « luc ») lues comme des échecs.
+- Rejeu 15:10–16:06 avec 5 tirages par épisode clé (ancienne → nouvelle consigne) : vrais positifs 16/20 → 18/20, faux positifs 25/45 → 15/45. Le modèle varie d'un tirage à l'autre (même épisode : 1/5 puis 5/5 juste).
+- Reste : l'historique Slack chargé d'un coup dans l'arbre d'accessibilité (220 → 750 mots) est du texte vraiment nouveau ; s'il contient une question (de l'utilisateur ou d'un collègue), le modèle peut la qualifier. Donner le nom de l'utilisateur au modèle a été essayé : il perd alors les messages consécutifs sans nom (remise 5/5 → 0/5), écarté.
+- L'OCR attribue parfois à une fenêtre du texte d'une autre (mesuré : texte de la fenêtre Claude dans une fenêtre Crisp ou Slack).
+- Première frame d'une fenêtre = référence : un message **déjà affiché** à l'ouverture d'une fenêtre (canal, conversation, page) ne déclenche rien ; seul ce qui change ensuite compte. Choix assumé (sinon l'historique d'un canal Slack devient « ta » friction). Référence = tous les mots déjà vus dans la fenêtre depuis 30 min (empreintes, pas de texte), car Slack alterne OCR et accessibilité ; chaque mot nouveau garde 4 voisins pour que la question reste lisible. Badges de non-lus ignorés dans l'identité de la fenêtre.
 - Précision mesurée sur des cas synthétiques et sur les étiquettes **du modèle** : aucune étiquette humaine.
 - Le détecteur appris filtre peu (15 % du travail normal écarté) : presque tout part au modèle (1–3 s, quota).
 - Budget total ≈ 4–5 s de la frappe à la notification.
