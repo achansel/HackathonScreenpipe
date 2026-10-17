@@ -29,6 +29,7 @@ import { type CustomerCard, HubSpotLookup } from "../../minguk/src/assist/hubspo
 import { CallEpisodes } from "../../minguk/src/detect/call-episodes";
 import { listenToMeeting } from "../../minguk/src/detect/call-listener";
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
+import { pollProposals } from "./certify";
 import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { groundedRequest, qualify } from "./qualify";
@@ -384,6 +385,8 @@ async function run() {
       tick++;
       if (team && tick % Math.round(TEAM_POLL_MS / POLL_MS) === 0) await team.poll();
       if (tick % 10 === 0) await pollFeedback();
+      // Responsable d'équipe : règles de la nuit à certifier, étapes à documenter (notifications).
+      if (teamStore instanceof RpcTeamStore && tick % 15 === 0) await pollProposals(teamStore, { register, record, log }).catch((e) => debug && log("propositions :", (e as Error).message));
       if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
       if (tick % 60 === 0) await nightlyFallback();
       // Vue d'équipe republiée toutes les 30 s : en démo, elle bouge pendant qu'on parle. Une erreur ne bloque pas la boucle.
