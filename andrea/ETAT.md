@@ -17,7 +17,7 @@ Un daemon local par poste repère une friction de process, apporte la solution q
 | 4. Carte d'équipe | `daemon/map.ts`, `daemon/steps.ts` | **[mesuré]** Live View « Carte des frictions » (5 blocs) remplie par l'API sans pipe ; libellés d'étape regroupés par le modèle (3 libellés « pipeline » → 1 étape). **Pas encore vue à l'écran** |
 | Préparation démo | `daemon/solutions.seed.json`, `docs/demo.md` | 8 solutions tirées de la journée de Léa ; clients Crisp Jean Dupont et Lucas Peeters ; `FRICTION_SEED_IDS` pour choisir les solutions de départ d'un poste ; déroulé de 3 min avec replis |
 | Retours et étiquettes | `daemon/main.ts`, `offline/learn.ts`, `offline/main.ts` | boutons **[Ça m'a aidé] [Pas ça]** visibles d'emblée **[mesuré]** ; clics et demandes résolues deviennent des étiquettes pour l'apprentissage (« Pas ça » ignoré : ambigu) ; `etiqueter` pour la référence humaine ; dès 20 étiquettes humaines, le détecteur est jugé sur elles |
-| Anonymat et fatigue | `daemon/team.ts` | délai aléatoire 30 s – 3 min avant de publier une demande (0 en simulation / démo) ; 5 sollicitations « Partager ? » max par jour et par personne |
+| Anonymat et fatigue | `daemon/team.ts` | délai aléatoire 10 à 60 s avant de publier une demande (0 en simulation / démo) ; 5 sollicitations « Partager ? » max par jour et par personne |
 | Robustesse | `daemon/screenpipe.ts` | Screenpipe fermé ou injoignable → veille, nouvel essai toutes les 30 s |
 | Tests | `daemon/*.test.ts`, `offline/*.test.ts` | `bun test andrea/` : **15 tests** (chiffrement, découpage, périmètre, Firefox, masquage, bac à sable, étiquettes d'usage) |
 | Correctif Mac | `screenpipe-patch/` | **[non testé]** boutons `api` traités en Rust ; sur Mac non patché, le clic n'arrive pas **[mesuré]** |

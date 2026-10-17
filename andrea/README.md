@@ -4,6 +4,7 @@ Rien ici ne remplace les documents de l'équipe à la racine : ce sont des propo
 
 | Fichier | Contenu |
 | --- | --- |
+| [CONTEXTE.md](CONTEXTE.md) | **reprise de session** : décisions, environnement, faits Screenpipe vérifiés, prochaines étapes |
 | [ETAT.md](ETAT.md) | **état complet** : ce qui tourne, comment lancer, limites, ce qu'il reste à faire à la main |
 | [PROPOSITION.md](PROPOSITION.md) | architecture technique proposée (daemon, IA via Screenpipe, stockage d'équipe temporaire, vocabulaire des frictions, mesures) |
 | [VISION.md](VISION.md) | VISION.md de l'équipe + définition de la friction, type « parcours », traitement hors ligne verrouillé (à fusionner après validation) |

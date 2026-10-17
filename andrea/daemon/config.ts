@@ -26,7 +26,7 @@ export const TEAM_POLL_MS = 5000;
 export const REQUEST_COOLDOWN_MS = 30 * 60_000; // une même étape ne redemande pas d'aide avant 30 min
 // Anonymat : délai aléatoire avant de publier une demande, pour que l'heure ne désigne pas qui bloque
 // (petite équipe). En secondes, « min-max » ; 0 en simulation pour garder la démo rapide.
-const [jMin, jMax] = (process.env.FRICTION_REQUEST_JITTER ?? (process.env.FRICTION_SIM === "1" ? "0-0" : "30-180")).split("-").map(Number);
+const [jMin, jMax] = (process.env.FRICTION_REQUEST_JITTER ?? (process.env.FRICTION_SIM === "1" ? "0-0" : "10-60")).split("-").map(Number);
 export const REQUEST_JITTER_MS = { min: (jMin || 0) * 1000, max: (jMax || jMin || 0) * 1000 };
 export const MAX_SHARE_PROMPTS_PER_DAY = Number(process.env.FRICTION_MAX_SHARE_PROMPTS ?? 5); // contre la fatigue de celui qui sait
 export const MODEL = process.env.FRICTION_MODEL ?? "claude-haiku-4-5";

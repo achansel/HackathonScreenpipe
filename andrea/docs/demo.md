@@ -13,7 +13,7 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env
 - [ ] **Relancer Screenpipe** (app entière), puis envoyer une notification de test et la **voir à l'œil** (le panneau Windows peut rester vide alors que l'API répond « sent »).
 - [ ] Léa : **une seule** solution connue (« client introuvable », partagée la veille) pour montrer l'aide immédiate, puis le partage sur le reste → `FRICTION_SEED_IDS=client-introuvable`, et `rm andrea/daemon/.state/solutions.json` si un cache existe.
 - [ ] Karim : solutions de démo (graine par défaut).
-- [ ] **Délai d'anonymat à 0 pour la démo** : `FRICTION_REQUEST_JITTER=0` (sinon la demande part 30 s à 3 min plus tard). Le dire au jury : en vrai, il y a un délai aléatoire.
+- [ ] **Délai d'anonymat à 0 pour la démo** : `FRICTION_REQUEST_JITTER=0` (sinon la demande part 10 à 60 s plus tard). Le dire au jury : en vrai, il y a un délai aléatoire.
 - [ ] Lancer le daemon : `bun andrea/daemon/main.ts` (Léa : `FRICTION_SEED_IDS=client-introuvable FRICTION_REQUEST_JITTER=0 bun andrea/daemon/main.ts`).
 - [ ] Carte : `bun andrea/daemon/main.ts carte` (données de démo déjà en base, **annoncées comme telles**).
 - [ ] Chrome (pas Firefox) pour Crisp et HubSpot. Ouvrir le lien Crisp de **Jean Dupont** ([crisp.md](crisp.md)) dans une fenêtre.
