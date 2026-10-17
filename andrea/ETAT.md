@@ -42,7 +42,8 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 ## Limites connues
 
 **Détection**
-- Jamais lancée en continu sur une vraie journée : uniquement rejeu de l'historique et épisodes injectés.
+- Lancée en direct sur un seul scénario (17/10 après-midi, écran d'Andrea), jamais sur une vraie journée. Recherche HubSpot détectée (`client-introuvable`, 0,95) ; clics [Ça m'a aidé] [Pas ça] reçus.
+- Première frame d'une fenêtre = référence : un message **déjà affiché** à l'ouverture d'une fenêtre (canal, conversation, page) ne déclenche rien ; seul ce qui change ensuite compte. Choix assumé (sinon l'historique d'un canal Slack devient « ta » friction). Référence gardée 30 min (empreintes des mots, pas de texte) ; badges de non-lus ignorés dans l'identité de la fenêtre.
 - Précision mesurée sur des cas synthétiques et sur les étiquettes **du modèle** : aucune étiquette humaine.
 - Le détecteur appris filtre peu (15 % du travail normal écarté) : presque tout part au modèle (1–3 s, quota).
 - Budget total ≈ 4–5 s de la frappe à la notification.
