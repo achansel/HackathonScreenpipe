@@ -17,6 +17,9 @@ export type Solution = {
   uses: number;
   score?: number; // 👍 - 👎 reçus localement
   shared?: boolean; // reçue de l'équipe
+  team?: string; // nom de l'équipe d'où elle vient (stockage RPC)
+  certified?: boolean; // signée par le responsable de l'équipe (vérifiée à la réception)
+  cert?: string;
 };
 
 const FILE = `${STATE_DIR}solutions.json`;

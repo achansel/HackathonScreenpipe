@@ -106,7 +106,10 @@ export class TeamSync {
       if (!sol?.id || (sol as any).synthetic) continue; // données de démo : pour la carte seulement, jamais proposées comme aide
       const { requestId, sharedAt, ...solution } = sol;
       const existing = this.solutions.find((x) => x.id === solution.id);
-      if (existing) existing.uses = Math.max(existing.uses, solution.uses);
+      if (existing) {
+        existing.uses = Math.max(existing.uses, solution.uses);
+        if (solution.certified) Object.assign(existing, { certified: true, cert: solution.cert, team: solution.team });
+      }
       else this.solutions.push({ ...solution, shared: true });
       saveSolutions(this.solutions);
       if (requestId && this.st.mine[requestId]) {

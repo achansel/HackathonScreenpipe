@@ -4,7 +4,11 @@
 // et `source ~/.config/friction-assist/team.env`) :
 //   bun andrea/daemon/main.ts activer        consentement explicite, à faire une fois
 //   bun andrea/daemon/main.ts relais         instance de relais (clics des boutons → ce daemon)
-//   bun andrea/daemon/main.ts equipe-init    base d'équipe + clé d'équipe (--cle <base64> pour rejoindre)
+//   bun andrea/daemon/main.ts equipe-creer Support --perimetre "crisp|rembourse"   (recommandé : stockage RPC, teamstore/)
+//   bun andrea/daemon/main.ts equipe-rejoindre "<lien>" [--perimetre …] | equipe-liste | equipe-quitter <nom>
+//   bun andrea/daemon/main.ts equipe-rotation <nom>       départ d'un membre : nouvelle clé, nouveau lien
+//   bun andrea/daemon/main.ts equipe-certifier <nom> <solution-id>   responsable : signe une solution
+//   bun andrea/daemon/main.ts equipe-init    (ancien) base Postgres directe + clé unique (--cle <base64> pour rejoindre)
 //   bun andrea/daemon/main.ts                lance le daemon (refuse sans consentement)
 //   bun andrea/daemon/main.ts simuler        plusieurs daemons (Léa, Karim…) sur cette machine, sans lire l'écran
 //   bun andrea/daemon/main.ts injecter lea "texte de l'épisode"
@@ -27,7 +31,8 @@ import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search,
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
 import { publishMap, MAP_DEEPLINK } from "./map";
 import { TeamSync } from "./team";
-import { PostgresTeamStore, teamKey } from "./teamstore";
+import { loadMemberships, openTeamStore, PostgresTeamStore, RpcTeamStore, saveMemberships, supabase, teamKey, teamstoreConfigured, type TeamStore } from "./teamstore";
+import { membershipFromInvite, Team } from "../../teamstore/client";
 import { collect } from "../offline/collect";
 import { approvedDetector } from "../offline/detector";
 import { learn } from "../offline/learn";
@@ -85,7 +90,7 @@ function helpNotification(episode: string, s: Solution) {
   return {
     id: `fa-${episode}`,
     title: `${LABEL}${s.title}`,
-    body: `${s.body}\nRéglé ${s.uses} fois dans l'équipe.`,
+    body: `${s.body}\nRéglé ${s.uses} fois dans l'équipe.${s.certified ? ` Certifiée par le responsable${s.team ? ` (${s.team})` : ""}.` : ""}`,
     pipe_name: PIPE_NAME,
     priority: "normal",
     timeout: 60_000,
@@ -98,7 +103,7 @@ const solutions = loadSolutions();
 const lastShown = new Map<string, number>();
 const stats = { skipped: 0, qualified: 0 };
 let team: TeamSync | null = null;
-let teamStore: PostgresTeamStore | null = null;
+let teamStore: TeamStore | null = null;
 
 async function handleEpisode(ep: Episode) {
   // Filtre appris hors ligne : écarte le travail normal sans appel au modèle.
@@ -196,7 +201,15 @@ async function nightlyFallback() {
   if (r.better) await notify({ id: `fa-learn-${Date.now()}`, title: "Nouveau détecteur prêt", body: "Il a passé la porte de validation. Relire `rapport`, puis `approuver`.", pipe_name: PIPE_NAME, timeout: 0 });
 }
 
-function startTeam() {
+async function startTeam() {
+  if (teamstoreConfigured() && loadMemberships().length) {
+    const store = new RpcTeamStore(log);
+    await store.init();
+    teamStore = store;
+    team = new TeamSync(store, solutions, { register, helpNotification, record, log });
+    log("équipe connectée par RPC (blocs chiffrés par équipe, sans identité)");
+    return;
+  }
   if (!DATABASE_URL || !existsSync(TEAM_KEY_FILE)) {
     log("pas de base d'équipe (equipe-init) : aide locale seulement");
     return;
@@ -214,7 +227,7 @@ async function run() {
     process.exit(1);
   }
   startServer();
-  startTeam();
+  await startTeam();
   const builder = new EpisodeBuilder();
   let cursor = Date.now() - 5000;
   let tick = 0;
@@ -283,7 +296,7 @@ switch (cmd) {
     console.log("Repris.");
     break;
   case "statut":
-    console.log({ instance: INSTANCE || "poste", consentement: existsSync(CONSENT), pause: existsSync(PAUSED), port: PORT, solutions: solutions.length, equipe: Boolean(DATABASE_URL && existsSync(TEAM_KEY_FILE)) });
+    console.log({ instance: INSTANCE || "poste", consentement: existsSync(CONSENT), pause: existsSync(PAUSED), port: PORT, solutions: solutions.length, equipe: teamstoreConfigured() ? loadMemberships().map((m) => `${m.name} (époque ${m.epoch}${m.admin ? ", responsable" : ""})`) : Boolean(DATABASE_URL && existsSync(TEAM_KEY_FILE)) });
     break;
   case "relais":
     await setupRelay(PORT);
@@ -321,7 +334,7 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     break;
   }
   case "carte": {
-    const store = new PostgresTeamStore(teamKey());
+    const store = await openTeamStore(log);
     const blocks = await publishMap(store);
     await store.close();
     console.log(`Carte publiée (${blocks.join(", ")}). Ouvrir : ${MAP_DEEPLINK}`);
@@ -332,7 +345,7 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
   case "peupler-demo": {
     // Population synthétique pour la démo (autorisé par les organisateurs), marquée synthetic:true
     // et signalée sur la carte. Étapes tirées de UseCase.md.
-    const store = new PostgresTeamStore(teamKey());
+    const store = await openTeamStore(log);
     const demo: [string, string, string, string, number, boolean][] = [
       ["Crisp : un client demande un dédommagement", "unclear", "required", "demande_aide", 14, true],
       ["HubSpot : client introuvable depuis un chat Crisp", "unclear", "direct", "recherche", 11, true],
@@ -353,7 +366,7 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
   }
   case "nettoyer-demo": {
     // Retire les données de démonstration (synthetic:true) : à faire avant tout usage réel.
-    const store = new PostgresTeamStore(teamKey());
+    const store = await openTeamStore(log);
     const ids: number[] = [];
     for (const kind of ["signature", "solution"] as const)
       for (let after = 0; ; ) {
@@ -364,6 +377,60 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
       }
     console.log(`Données de démonstration retirées : ${await store.remove(ids)} lignes.`);
     await store.close();
+    break;
+  }
+  // ---- équipes par RPC (teamstore/) : clés par équipe dans ~/.config/friction-assist/teams.json (600)
+  case "equipe-creer":
+  case "equipe-rejoindre":
+  case "equipe-liste":
+  case "equipe-quitter":
+  case "equipe-rotation":
+  case "equipe-certifier": {
+    if (!teamstoreConfigured()) {
+      console.error("FRICTION_TEAMSTORE_URL absent (et FRICTION_TEAMSTORE_ANON_KEY) : voir teamstore/FICHE.md, puis source ~/.config/friction-assist/team.env");
+      process.exit(1);
+    }
+    const opt = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
+    const list = loadMemberships();
+    const find = (name?: string) => list.find((m) => m.name.toLowerCase() === (name ?? "").toLowerCase()) ?? (console.error(`équipe inconnue : ${name} (equipe-liste)`), process.exit(1));
+    if (cmd === "equipe-creer") {
+      if (!args[1]) { console.error('usage : equipe-creer <nom> [--perimetre "crisp|rembourse"]'); process.exit(1); }
+      const t = await Team.create(supabase(), args[1], opt("--perimetre"));
+      saveMemberships([...list, t.m]);
+      console.log(`Équipe « ${t.name} » créée (tu en es le responsable : rotation, certification).
+Lien d'invitation, à transmettre EN PRIVÉ à chaque membre (il contient la clé de l'équipe) :
+${t.invite()}
+Chez le membre : bun andrea/daemon/main.ts equipe-rejoindre "<lien>" [--perimetre …]`);
+    } else if (cmd === "equipe-rejoindre") {
+      const m = membershipFromInvite(args[1] ?? "", opt("--perimetre"));
+      const t = await Team.open(supabase(), m);
+      await t.pull(Number.MAX_SAFE_INTEGER); // vérifie le jeton sans rien télécharger
+      saveMemberships([...list.filter((x) => x.teamId !== m.teamId), m]);
+      console.log(`Équipe « ${m.name} » rejointe (époque ${m.epoch}${m.ownerPub ? ", solutions certifiées vérifiables" : ""}).`);
+    } else if (cmd === "equipe-liste") {
+      for (const m of list) console.log(`- ${m.name} : époque ${m.epoch}${m.scope ? `, périmètre /${m.scope}/` : ", sans périmètre"}${m.admin ? ", responsable" : ""}`);
+      if (!list.length) console.log("aucune équipe (equipe-creer ou equipe-rejoindre)");
+    } else if (cmd === "equipe-quitter") {
+      const m = find(args[1]);
+      saveMemberships(list.filter((x) => x !== m));
+      console.log(`Clés de « ${m.name} » effacées de cette machine.`);
+    } else if (cmd === "equipe-rotation") {
+      const m = find(args[1]);
+      const t = await Team.open(supabase(), m);
+      const r = await t.rotate();
+      saveMemberships(list.map((x) => (x === m ? t.m : x)));
+      console.log(`Clé de « ${m.name} » changée (époque ${t.epoch}) : ${r.republished} solution(s) republiée(s), l'ancien lien ne donne plus accès à rien.
+Nouveau lien, à renvoyer EN PRIVÉ aux membres restants seulement :
+${r.invite}`);
+    } else {
+      const m = find(args[1]);
+      const s = solutions.find((x) => x.id === args[2]);
+      if (!s) { console.error(`solution inconnue : ${args[2]}`); process.exit(1); }
+      const t = await Team.open(supabase(), m);
+      const { score, shared, ...publishable } = s;
+      await t.publish("solution", await t.certify(publishable));
+      console.log(`Solution « ${s.title} » certifiée et publiée dans « ${m.name} ».`);
+    }
     break;
   }
   case "simuler":

@@ -22,6 +22,12 @@ export const LABEL = INSTANCE ? `[${INSTANCE}] ` : ""; // préfixe des notificat
 export const DATABASE_URL = process.env.FRICTION_DATABASE_URL ?? "";
 export const TEAM_DIR = `${homedir()}/.config/friction-assist/`;
 export const TEAM_KEY_FILE = `${TEAM_DIR}team.key`;
+// Stockage d'équipe par RPC (recommandé, teamstore/) : URL du projet Supabase et sa clé publique
+// (« anon », conçue pour être dans les clients), et les équipes de CETTE machine (clés, en 600).
+export const TEAMSTORE_URL = process.env.FRICTION_TEAMSTORE_URL ?? "";
+export const TEAMSTORE_ANON_KEY = process.env.FRICTION_TEAMSTORE_ANON_KEY ?? "";
+export const TEAMSTORE_REST_PATH = process.env.FRICTION_TEAMSTORE_REST_PATH ?? "/rest/v1"; // "" pour la base locale de test
+export const TEAMS_FILE = `${TEAM_DIR}teams${INSTANCE ? `-${INSTANCE}` : ""}.json`;
 export const TEAM_POLL_MS = 5000;
 export const REQUEST_COOLDOWN_MS = 30 * 60_000; // une même étape ne redemande pas d'aide avant 30 min
 export const REQUEST_TTL_MS = 30 * 60_000; // une demande plus ancienne est ignorée (premier démarrage d'un poste, daemon arrêté)

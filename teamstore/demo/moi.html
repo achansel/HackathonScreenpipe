@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>friction-assist — mon poste</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body data-mode="moi">
+<header class="top">
+  <div>
+    <h1>Mon poste <span class="muted">— friction-assist, équipes chiffrées</span></h1>
+    <p class="muted">Avec tes vrais collègues, chacun sur sa machine (<a href="/">démo à 4 postes</a>). Chacun garde ses clés ; ils ne se parlent que par des blobs chiffrés dans le stockage. Stockage : <b id="store"></b></p>
+  </div>
+  <div class="controls">
+    <label><input type="checkbox" id="notify" checked> Notifications Screenpipe réelles</label>
+    <button id="reset" class="danger">Oublier mes clés</button>
+  </div>
+</header>
+
+<main class="machines solo">
+  <article class="machine" id="moi"></article>
+  <aside class="help">
+    <h2>Comment ça marche</h2>
+    <ol>
+      <li><b>Une personne crée l'équipe</b> (« Créer une équipe ») et envoie le lien à chacun <b>en message privé</b>. Le lien contient la clé : ne jamais le poster dans un canal public.</li>
+      <li><b>Chacun colle le lien</b> dans « Rejoindre une équipe » et choisit le périmètre (Support / Ventes / Tout).</li>
+      <li><b>Quelqu'un bloque</b> (« Je bloque sur… ») : une demande <b>anonyme</b> part à l'équipe concernée. Ceux qui savent reçoivent une notification Screenpipe et répondent.</li>
+      <li>La réponse revient à celui qui bloquait, et reste disponible pour toute l'équipe : <b>la friction ne se paie qu'une fois</b>.</li>
+      <li><b>Quelqu'un quitte l'équipe</b> : le responsable clique « changer la clé » et renvoie le nouveau lien aux autres. L'ancien lien ne marche plus.</li>
+    </ol>
+    <p class="muted">Tes clés restent dans ce navigateur. Le stockage ne voit que des blocs chiffrés : ni texte, ni nom, ni auteur.</p>
+  </aside>
+</main>
+
+<section class="operator">
+  <div class="op-head">
+    <h2>Ce que voit l'opérateur du stockage (Supabase, ou quiconque vole la base)</h2>
+    <div id="attacks" class="attacks">
+      <button data-x="read">Attaque 1 : lire les tables avec la clé publique</button>
+      <button data-x="write">Attaque 2 : écrire dans une équipe avec un jeton inventé</button>
+      <button data-x="decrypt">Attaque 3 : déchiffrer un blob avec la clé d'une autre de mes équipes</button>
+    </div>
+  </div>
+  <div id="attack-out"></div>
+  <div id="operator-tables"></div>
+</section>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
