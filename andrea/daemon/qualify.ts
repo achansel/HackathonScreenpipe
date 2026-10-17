@@ -30,6 +30,19 @@ export function redact(s: string): string {
     .replace(/\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{4}){3,7}\b/g, "[IBAN]");
 }
 
+/** Côté collègue : laquelle de MES solutions répond à cette étape (décrite sans contexte) ? */
+export async function matchStep(step: string, solutions: Solution[]): Promise<string | null> {
+  if (!solutions.length) return null;
+  const catalogue = solutions.map((s) => `- ${s.id} : ${s.step}`).join("\n");
+  const out = await chat(
+    "Un collègue bloque sur une étape de process. Réponds uniquement par l'id de la solution qui y répond vraiment, ou par null.",
+    `Étape : ${step}\n\nSolutions :\n${catalogue}`,
+    200,
+  );
+  const id = (out.match(/[a-z0-9-]+/gi) ?? []).find((w) => solutions.some((s) => s.id === w));
+  return id ?? null;
+}
+
 export async function qualify(ep: Episode, solutions: Solution[]): Promise<Verdict | null> {
   const catalogue = solutions.map((s) => `- ${s.id} : ${s.step}`).join("\n");
   const user = `Solutions d'équipe :\n${catalogue}\n\nAppli : ${ep.app}\nFenêtres récentes : ${ep.titles.map(redact).join(" → ")}\nTexte nouveau : ${redact(ep.text)}`;

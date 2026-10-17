@@ -97,6 +97,8 @@ interface TeamStore {
 
 - **Chiffrement client** AES-256-GCM, clé d'équipe dans le lien d'invitation, nonce 12 octets : copie du modèle Teams (`docs/mintlify/.../teams.mdx`, `lib/team-crypto.ts`). Le stockage ne voit que des blobs.
 - **Rapprochement côté client**, après déchiffrement (volumes faibles).
+- **Implémenté et mesuré le 17/10** (`daemon/teamstore.ts`, `daemon/team.ts`) sur Supabase (pooler IPv4 `aws-0-eu-west-1` : l'hôte direct est IPv6 seul, injoignable depuis WSL/Windows). Simulation à deux daemons (Léa sans solution, Karim avec) : demande anonyme de Léa → « Un collègue bloque » chez Karim **7 s** après → clic Partager → aide chez Léa **4 s** après → la solution reste dans le cache de Léa (2ᵉ blocage : aide locale, sans redemander). En base : 5 colonnes (`id, kind, at, nonce, ciphertext`), aucune identité, RLS active.
+- Piège démo : Screenpipe supprime une notification identique dans les 90 s (« duplicate notification suppressed »).
 - **Aucune identité dans les lignes** : une même clé de projet pour tous. Pas de Slack comme bus (la connexion poste « en tant que la personne » → Léa identifiée).
 - **Format d'une solution = `team-memory`** (`crates/screenpipe-team-memory`) :
 

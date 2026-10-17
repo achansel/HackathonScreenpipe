@@ -1,17 +1,32 @@
 // Configuration du daemon friction-assist, lue dans l'environnement
 // (source ~/.config/screenpipe/env). Le jeton n'est jamais journalisé.
 import { mkdirSync } from "node:fs";
+import { homedir } from "node:os";
 
 export const API = process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
 export const NOTIFY = process.env.SCREENPIPE_NOTIFY_URL ?? "http://127.0.0.1:11435";
 export const KEY = process.env.SCREENPIPE_API_KEY ?? "";
 export const PORT = Number(process.env.FRICTION_PORT ?? 8787);
+
+// Plusieurs daemons sur une machine (simulation d'une équipe) : chacun son état, son port, son relais.
+// "" = le daemon du poste. Mode simulation : aucun écran lu, épisodes injectés via /sim/episode.
+export const INSTANCE = process.env.FRICTION_INSTANCE ?? "";
+export const SIM = process.env.FRICTION_SIM === "1";
+export const SEED = process.env.FRICTION_SEED === "1" || !INSTANCE; // solutions de démo au démarrage
+export const LABEL = INSTANCE ? `[${INSTANCE}] ` : ""; // préfixe des notifications en simulation
+
+// Stockage d'équipe (temporaire) : URL de la base et clé d'équipe, hors du dépôt.
+export const DATABASE_URL = process.env.FRICTION_DATABASE_URL ?? "";
+export const TEAM_DIR = `${homedir()}/.config/friction-assist/`;
+export const TEAM_KEY_FILE = `${TEAM_DIR}team.key`;
+export const TEAM_POLL_MS = 5000;
+export const REQUEST_COOLDOWN_MS = 30 * 60_000; // une même étape ne redemande pas d'aide avant 30 min
 export const MODEL = process.env.FRICTION_MODEL ?? "claude-haiku-4-5";
 
 export const PIPE_NAME = "friction-assist"; // donne les 👍/👎 natifs de Screenpipe
 // Instance dédiée de la connexion n8n : relaie les clics des boutons `api` vers ce daemon
 // sans toucher à une connexion n8n que l'utilisateur aurait déjà.
-export const RELAY = { connection: "n8n", instance: "friction-assist" };
+export const RELAY = { connection: "n8n", instance: INSTANCE ? `friction-assist-${INSTANCE}` : "friction-assist" };
 
 export const POLL_MS = 1000; // boucle de lecture
 export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → épisode prêt
@@ -38,5 +53,5 @@ export const MAX_LABELS_PER_RUN = 150;
 // Repli du traitement de nuit si les pipes Screenpipe n'ont pas tourné (agent Pi en panne, mesuré) : à cette heure locale.
 export const NIGHTLY_HOUR = 3; // étiquetage hors ligne borné (quota du modèle)
 
-export const STATE_DIR = new URL("./.state/", import.meta.url).pathname;
+export const STATE_DIR = new URL(`./.state/${INSTANCE ? `${INSTANCE}/` : ""}`, import.meta.url).pathname;
 mkdirSync(STATE_DIR, { recursive: true });
