@@ -19,6 +19,7 @@
 
 | Module | Chemin | Rôle | Statut pour la fusion |
 | --- | --- | --- | --- |
+| Détours HubSpot | `src/detect/hubspot-detours.ts`, `bun run watch:hubspot` | recherche sans résultat, recherches successives, allers-retours → épisodes au format du démon | **prêt, à brancher** (section 3.B) |
 | Lecture de Crisp | `src/detect/crisp-inbox.ts`, `crisp-watcher.ts` | nouveau message client (nom, texte complet), non-lus, conversation ouverte | **à brancher** : alimente le contexte du dossier |
 | Écoute d'un appel | `src/detect/call-listener.ts` | transcription en direct d'une réunion Screenpipe (`/ws/meeting-overlay`), 3–5 s | **en attente** de la décision d'équipe sur la voix du client |
 | Fiche client | `src/assist/hubspot-lookup.ts` | nom → contact, entreprise, offre, vente, URL des fiches | **à brancher** : solution « dynamique » de `client-introuvable` |
@@ -60,18 +61,37 @@ Points d'attention :
 - `crisp.tick()` fait **deux recherches à la suite** : en parallèle, Screenpipe répond 503 « search is busy » (mesuré). Ne pas l'appeler en même temps que les recherches du démon ;
 - un dossier vieux de plus de ~10 min ne compte plus.
 
-### B. Les détours HubSpot (à construire par Minguk)
+### B. Les détours HubSpot : prêt (17/10, 18:45)
 
-Ton point faible mesuré : la recherche HubSpot à 0 résultat n'a jamais été capturée. Je construis un capteur qui lit les captures HubSpot (même méthode que Crisp : mots OCR et leur position) et produit **des épisodes au format du démon** :
+Ton point faible mesuré : la recherche HubSpot à 0 résultat n'a jamais été capturée. Le capteur est fait : `minguk/src/detect/hubspot-detours.ts`, sur le modèle de `CrispWatcher` (un `tick()`, deux recherches Screenpipe l'une après l'autre, captures OCR de `chrome.exe` rattachées par le titre de la fenêtre sous Windows, comme ton correctif de la lecture de Crisp). Il produit **des épisodes au format de ton démon** :
+
+| Détour de Léa | Texte de l'épisode |
+| --- | --- |
+| recherche sans résultat | « Recherche HubSpot dans les contacts : « jean.d@example.com » (aucun résultat). La recherche ne trouve rien. » |
+| recherches successives après un échec | « Recherches HubSpot successives dans les contacts : « jean.d@example.com » (aucun résultat), puis « jean » (10 résultats). Aucune ne désigne un seul résultat. » |
+| allers-retours entre fiches | « Allers-retours dans HubSpot en 20 s : contact → entreprise → transaction → contact. La même fiche est ouverte plusieurs fois. » |
+
+**Mesuré** : rejeu de ma recherche réelle de 18:36 (`bun run watch:hubspot --rejouer 30`) → les deux premiers épisodes ; puis **ta `qualify()` telle quelle** sur ces épisodes, avec et sans dossier Crisp :
+
+| Épisode | Verdict de ton démon |
+| --- | --- |
+| recherche sans résultat | friction · recherche · `client-introuvable` · 0,98 |
+| recherches successives | friction · recherche · `client-introuvable` · 0,97–0,98 |
+| allers-retours | friction · parcours / tâtonnement · `client-introuvable` · 0,86–0,97 (j'aurais attendu `offre-du-client` : à surveiller) |
+
+Branchement dans `run()`, comme pour Crisp (proposition) :
 
 ```ts
-// format attendu par handleEpisode (andrea/daemon/episodes.ts)
-{ id, app: "Google Chrome", window: "Contacts | HubSpot", titles: [...], text: "Recherche « jd.resto75@resa-paris.test » : 0 résultat. Puis « Jean » : 10 résultats.", at }
+import { HubSpotDetours } from "../../minguk/src/detect/hubspot-detours";
+const hubspot = new HubSpotDetours({ screenpipeUrl: API, apiKey: KEY, onEpisode: (ep) => { handleEpisode(ep); } });
+// dans la boucle, après crisp.tick() :
+if (hubspot) await hubspot.tick().catch((e) => debug && log("HubSpot :", (e as Error).message));
 ```
 
-Point d'entrée à choisir pendant la session :
-1. **dans le même processus** (préféré) : le démon importe le capteur et appelle `handleEpisode(ep)` ;
-2. ou une route locale **`POST /episode`** protégée comme `/offline/*` (jeton), sur le modèle de `/sim/episode` qui n'existe qu'en simulation.
+- `handleEpisode(ep)` prend l'épisode tel quel ; ton filtre appris et `qualify()` décident.
+- Le texte contient la recherche tapée (ici une adresse e-mail) : ton `redact` la masque avant le modèle.
+- Mesure faite avec l'ancienne adresse Crisp de Jean (`jean.d@example.com`), qui donnait « No Contacts match » dans la liste des contacts. Tu l'as remplacée par `jd.resto75@resa-paris.test` (la recherche globale de HubSpot renvoie tous les contacts sur `@example.com`) : le capteur ne dépend pas de l'adresse, à rejouer avec la nouvelle.
+- Vérifié sur Mac seulement ; sous Windows, à regarder pendant la session (`bun run watch:hubspot` sur ton poste, une recherche à 0 résultat).
 
 ### C. La fiche client comme solution « dynamique » de `client-introuvable`
 
@@ -157,7 +177,8 @@ bun test andrea/             # les tiens
 3. Vérifier la lecture de Crisp **sur ton Windows** (section 7).
 4. Branchement C : la fiche client pour `client-introuvable`.
 5. Répétition du cas d'ouverture : Jean écrit (simulateur `--sans-aide`) → Léa cherche dans HubSpot → aide.
-6. Pendant ce temps, Minguk construit le capteur HubSpot (branchement B) et compile ton correctif Mac.
+6. Branchement B (capteur HubSpot, prêt) : quelques lignes dans `run()`, puis le cas d'ouverture complet : Jean écrit → Léa cherche → fiche de Jean.
+7. Pendant ce temps, Minguk compile ton correctif Mac.
 
 ## 10. Questions ouvertes
 
