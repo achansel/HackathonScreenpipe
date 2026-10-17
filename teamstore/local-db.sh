@@ -17,6 +17,9 @@ create role authenticated nologin;
 create role authenticator login password 'authpass' noinherit;
 grant anon to authenticator;
 grant usage on schema public to anon;
+-- comme Supabase : droits par défaut accordés directement à anon/authenticated
+alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant execute on functions to anon, authenticated;
 SQL
     docker exec -i fa-pg psql -q -U postgres -v ON_ERROR_STOP=1 < schema.sql
     docker run -d --rm --name fa-rest --network $NET -p 127.0.0.1:3001:3000 \

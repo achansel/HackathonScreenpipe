@@ -146,9 +146,16 @@ begin
   return found;
 end $$;
 
--- Seules ces fonctions sont appelables avec la clé publique (anon).
+-- Seules ces fonctions sont appelables avec la clé publique (anon). Supabase accorde par défaut
+-- l'exécution DIRECTEMENT à anon et authenticated (pas seulement à public) : on la leur retire aussi.
 revoke execute on all functions in schema public from public;
 do $$ begin
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    execute 'revoke execute on all functions in schema public from anon';
+  end if;
+  if exists (select 1 from pg_roles where rolname = 'authenticated') then
+    execute 'revoke execute on all functions in schema public from authenticated';
+  end if;
   if exists (select 1 from pg_roles where rolname = 'anon') then
     execute 'grant execute on function public.create_team(text, text), public.put_blob(uuid, text, text, int, text),
              public.list_blobs(uuid, text, bigint, int, text), public.rotate_team(uuid, text, text),

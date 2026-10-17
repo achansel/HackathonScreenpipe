@@ -3,7 +3,7 @@
 > **Statut :** implémenté, testé, démontrable. Branche locale `feat/teamstore-rpc`, **pas poussée**.
 > **Date :** 17 octobre 2026. Base : la proposition d'Andrea (`andrea/PROPOSITION.md` §5), son commit `444607e` (étape 2 : stockage d'équipe et boucle demande/partage), **mis à jour sur `82b017c`** (carte d'équipe, délai aléatoire, `nettoyer-demo`).
 > **Pour l'équipe (mode d'emploi) :** [README.md](README.md). Une commande : `./teamstore/start.sh` (Mac/Linux/WSL) ou `teamstore\start.cmd` (Windows).
-> **Tests :** 38/38 (stockage), à l'identique sur **Postgres 16 + PostgREST** (la pile de Supabase) et sur le **stockage local SQLite** ; 7/7 (circuit du démon d'Andrea) ; 15/15 (tests d'Andrea, inchangés) ; scénario PipingTable en 10 étapes dans Chrome ; **deux postes séparés** reliés par le réseau (invitation, demande, partage, réponse, rotation) ; notification Screenpipe réelle affichée. Pas encore sur un vrai projet Supabase (10 minutes, voir README §3).
+> **Tests :** 38/38 (stockage), à l'identique sur **Postgres 16 + PostgREST** (la pile de Supabase) et sur le **stockage local SQLite** ; 7/7 (circuit du démon d'Andrea) ; 15/15 (tests d'Andrea, inchangés) ; scénario PipingTable en 10 étapes dans Chrome ; **deux postes séparés** reliés par le réseau (invitation, demande, partage, réponse, rotation) ; notification Screenpipe réelle affichée. **Testé sur le vrai projet Supabase de l'équipe (région UE) : 38/38, démon 7/7, `verifier` 5/5.**
 > **Conception détaillée (avant implémentation) :** [CONCEPTION.md](CONCEPTION.md).
 
 ## En une minute
@@ -302,7 +302,7 @@ Ce qu'on garde d'Andrea : l'interface, AES-256-GCM, le modèle « la clé ne qui
 
 - **Windows non testé sur une vraie machine** (pas de Windows sous la main). Le code n'utilise que des chemins portables (`import.meta.dir`, `path.join`), `bun:sqlite` et les API de Bun ; à faire valider par le coéquipier sous Windows : `teamstore\start.cmd`.
 - **Clés Supabase :** l'ancienne clé `anon` (JWT) est envoyée dans `apikey` et `Authorization` ; la nouvelle clé `sb_publishable_…`, qui n'est pas un JWT, seulement dans `apikey`.
-- **Pas encore testé sur un vrai Supabase** (étapes ci-dessus). Point à vérifier : sur Supabase, un refus renvoie peut-être 401 ou 403 selon le rôle. Le client détecte les refus par leur message (« accès refusé »), donc les deux cas marchent.
+- **Testé sur Supabase (17/10)** : le premier passage a trouvé un écart que la base locale ne voyait pas. Supabase accorde par défaut l'exécution des fonctions **directement** à `anon` et `authenticated`, si bien que `_hash` restait appelable (sans fuite : elle ne lit rien). `schema.sql` retire désormais ce droit aux trois rôles, et `local-db.sh` reproduit les droits par défaut de Supabase. Résultat après correctif : 38/38. Point à vérifier : sur Supabase, un refus renvoie peut-être 401 ou 403 selon le rôle. Le client détecte les refus par leur message (« accès refusé »), donc les deux cas marchent.
 - **Boutons `api` sur Mac** : le bouton « Partager » du démon passe par le relais n8n, qui ne marche pas sur Mac (`andrea/docs/test-mac.md`). La démo utilise des boutons `link`, qui marchent partout.
 - **Ordre des `seq`** : deux écritures simultanées peuvent valider dans le désordre ; un lecteur rapide peut alors manquer la plus petite. Rare à l'échelle d'une équipe. Correctif possible : relire les 30 dernières secondes.
 - Une rotation republie **toutes** les solutions lisibles, y compris une éventuelle solution fausse d'un membre parti. Le responsable peut la purger ensuite.

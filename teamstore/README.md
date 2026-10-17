@@ -101,7 +101,9 @@ Chaque collègue la lance **sur sa propre machine**. Si le système demande d'au
 
 ### 3. Avec mes collègues, partout : Supabase
 
-Une seule personne prépare le projet, une fois (environ 10 minutes) :
+> **Le projet de l'équipe existe déjà** : Haytham envoie l'URL et la clé anon en message privé. Il suffit de créer `team.env` (ci-dessous). Ne jamais les mettre dans le dépôt.
+
+Pour recréer un projet (une seule personne, environ 10 minutes) :
 
 1. Créer un projet gratuit sur [supabase.com](https://supabase.com), **région Europe**.
 2. Ouvrir **SQL Editor**, coller tout le contenu de [`schema.sql`](schema.sql), puis cliquer **Run**.
