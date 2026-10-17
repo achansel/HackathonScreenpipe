@@ -8,10 +8,13 @@ export type Item = Record<string, any>;
 export class ScreenpipeClosed extends Error {}
 
 /** fetch qui transforme « connexion refusée » en ScreenpipeClosed : le daemon se met en veille. */
-async function sp(url: string, init?: RequestInit): Promise<Response> {
+// Toujours un délai maximal : un appel sans réponse figeait toute la boucle du démon (mesuré le 17/10 à 23:11 :
+// le serveur de notifications de Screenpipe ne répondait plus, plus rien n'était lu ni publié).
+async function sp(url: string, init?: RequestInit, timeoutMs = 45_000): Promise<Response> {
   try {
-    return await fetch(url, init);
-  } catch {
+    return await fetch(url, { ...init, signal: init?.signal ?? AbortSignal.timeout(timeoutMs) });
+  } catch (e) {
+    if ((e as Error).name === "TimeoutError") throw new Error(`Screenpipe sans réponse en ${timeoutMs / 1000} s (${new URL(url).pathname})`);
     throw new ScreenpipeClosed("Screenpipe injoignable : est-il lancé ?");
   }
 }
@@ -57,11 +60,13 @@ export function withoutOwnNotifications(text: string, now = Date.now()): { text:
 export async function notify(payload: Item): Promise<string> {
   const visible = [payload.title, payload.body, ...((payload.actions ?? []) as Item[]).map((a) => a.label)].join(" ");
   shown.push({ at: Date.now(), words: new Set(visible.split(/\s+/).map(norm).filter((w) => w.length >= 3)) });
+  // 8 s au plus : une notification qui ne part pas ne doit pas bloquer la lecture de l'écran.
   const r = await sp(`${NOTIFY}/notify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-  });
+  }, 8_000).catch((e: Error) => e);
+  if (r instanceof Error) return `NON AFFICHÉE : ${r.message} (relancer l'app Screenpipe)`;
   const j = await r.json().catch(() => ({}));
   return String(j.message ?? `HTTP ${r.status}`);
 }
