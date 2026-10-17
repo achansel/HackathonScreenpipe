@@ -1,0 +1,18 @@
+{
+  "schema": "live-view-template.v1",
+  "id": "friction-live",
+  "title": "Frictions en direct",
+  "revision": 1,
+  "timeRange": "today",
+  "periodPolicy": { "type": "fixed.v1", "value": "today" },
+  "blocks": [
+    { "id": "en-attente", "title": "En attente", "kind": "metric.v1", "width": 3, "order": 0, "intent": "Demandes anonymes auxquelles personne n'a encore répondu.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "aujourdhui", "title": "Frictions aujourd'hui", "kind": "metric.v1", "width": 3, "order": 1, "intent": "Détours sur des étapes de process aujourd'hui, toute l'équipe. Jamais par personne.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "resolues", "title": "Résolues par un collègue", "kind": "metric.v1", "width": 3, "order": 2, "intent": "Demandes auxquelles un collègue a répondu, et le délai médian.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "regles", "title": "Règles certifiées", "kind": "metric.v1", "width": 3, "order": 3, "intent": "Solutions validées et signées par une responsable.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "attente", "title": "Demandes en attente", "kind": "list.v1", "width": 6, "order": 4, "intent": "Étapes sur lesquelles quelqu'un bloque en ce moment, sans réponse de l'équipe.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "fil", "title": "Fil en direct", "kind": "timeline.v1", "width": 6, "order": 5, "intent": "Demandes, réponses, certifications et changements de clé, au fil de l'eau.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "etapes", "title": "Étapes du jour", "kind": "table.v1", "width": 12, "order": 6, "intent": "Étapes qui coûtent des détours aujourd'hui, et leur état : en attente, à documenter, solution partagée, règle certifiée.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } },
+    { "id": "regles-lecture", "title": "Ce que mesure ce tableau", "kind": "markdown.v1", "width": 12, "order": 7, "intent": "Règles de confidentialité.", "source": { "type": "pipe.v1", "pipeName": "friction-live" } }
+  ]
+}

@@ -63,7 +63,7 @@ Ensuite :
 | 1:05 | Karim | notification **« Un collègue bloque… »**, il clique **Partager** (c'est un lien, il marche sur Mac) | « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | Quelques secondes plus tard, la solution arrive dans Screenpipe. Léa répond à Jean. |
 | 1:30 | Claire | « Certifier » sur la règle du geste commercial | « La page Notion de PipingTable dit "2 mois offerts" : elle est périmée. La vraie règle était enfouie dans un fil Slack. Maintenant elle est **certifiée par la responsable**, et personne d'autre ne peut fabriquer ce badge. » |
-| 1:50 | Léa | `screenpipe://live-view/friction-map` | La **carte des frictions** dans Screenpipe : des détours par étape, jamais par personne. |
+| 1:50 | Claire | `screenpipe://live-view/friction-live` (bouton « Voir le tableau » de l'alerte) | **Frictions en direct** dans Screenpipe : ce qui est en attente maintenant, résolu, certifié. La **carte** d'Andrea (`friction-map`) donne la semaine. Des étapes, jamais des personnes. |
 | 2:10 | page « Mon poste » | vue opérateur, puis les 3 attaques | « Voilà tout ce que voit Supabase : des blocs illisibles, de la même taille, sans nom ni heure. La clé publique n'ouvre rien. » |
 | 2:30 | — | — | Vie privée, « tout ce que l'utilisateur voit vit dans Screenpipe », les 3 évolutions proposées (voir le déroulé d'Andrea). |
 

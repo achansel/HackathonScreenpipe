@@ -77,6 +77,7 @@ await karimS.publish("solution", otherOwner);
 check("une signature d'un autre responsable ne vaut rien ici", (await lea.pull(0, "solution")).at(-1)!.data.certified === false);
 
 // 9. Départ de Karim du Support : rotation, solutions republiées, ancien lien inutile.
+await lea.publish("request", { requestId: "r-attente", step: "Crisp : client qui attend", type: "waiting" });
 const before = (await support.pull(0, "solution")).length;
 const r = await support.rotate();
 check("rotation : nouvelle époque", support.epoch === 2);
@@ -88,7 +89,8 @@ const lea2 = await join(r.invite, support.m.scope);
 const after = await lea2.pull(0, "solution");
 check("rotation : Léa réinvitée retrouve les solutions", after.length === before);
 check("rotation : la certification survit à la rotation", after.some((b) => b.data.certified));
-check("rotation : la demande du jour n'est pas republiée", (await lea2.pull(0, "request")).length === 0);
+check("rotation : une demande encore en attente est republiée", (await lea2.pull(0, "request")).some((b) => b.data.requestId === "r-attente"));
+check("rotation : une demande déjà résolue n'est pas republiée", !(await lea2.pull(0, "request")).some((b) => b.data.requestId === "r1"));
 const oldBlob = await seal(supportKeys, { teamId: support.id, kind: "solution", epoch: 1 }, { x: 1 });
 check("une écriture avec l'ancienne époque est refusée", await rejects(store.put(support.id, (await deriveTeamKeys(parseInvite(r.invite).master)).accessToken, "solution", 1, oldBlob)));
 check("seul le responsable fait tourner la clé", await rejects(lea2.rotate()) && await rejects(store.rotate(support.id, "pas-admin", "0".repeat(64)), AccessDenied));

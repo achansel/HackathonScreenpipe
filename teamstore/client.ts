@@ -123,8 +123,11 @@ export class Team {
    *  époque. Renvoie le nouveau lien, à transmettre en privé aux membres restants seulement. */
   async rotate(): Promise<{ invite: string; republished: number }> {
     if (!this.m.admin) throw new Error("seul le responsable de l'équipe fait tourner la clé");
-    // Solutions ET signatures (la carte d'équipe en dépend) : relues avant, republiées après. Les demandes du jour non.
-    const keep = (await this.pull(0)).filter((r) => r.kind === "solution" || r.kind === "signature");
+    // Relu avant, republié après : solutions, signatures (la carte en dépend) et demandes ENCORE EN ATTENTE
+    // (quelqu'un bloque toujours). Une demande déjà résolue n'est pas republiée.
+    const all = await this.pull(0);
+    const answered = new Set(all.filter((r) => r.kind === "solution" && r.data?.requestId).map((r) => r.data.requestId));
+    const keep = all.filter((r) => r.kind === "solution" || r.kind === "signature" || (r.kind === "request" && !answered.has(r.data?.requestId)));
     const master = randomKey();
     const keys = await deriveTeamKeys(master);
     const epoch = await this.store.rotate(this.id, await deriveAdminToken(b64u.dec(this.m.admin.key)), await sha256hex(keys.accessToken));

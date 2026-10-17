@@ -6,6 +6,7 @@
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team, type Membership, type Received } from "../client";
 import { b64u, deriveTeamKeys, open, randomId } from "../crypto";
 import { escalationPayload } from "./escalade";
+import { Board } from "./board";
 // Détection Crisp de Minguk : les messages des clients de la démo et la lecture du besoin (importés tels quels).
 import { classify, type Need } from "../../minguk/src/assist/crisp-assist.ts";
 import { CRISP_CUSTOMERS } from "../../minguk/src/seed/crisp-story.ts";
@@ -71,6 +72,10 @@ const today = () => new Date().toISOString().slice(0, 10);
 // Sans réponse après ce délai, une demande devient l'aide « Slack + message » de Minguk (?escalade=30 pour la démo).
 const ESCALATE_MS = Number(new URLSearchParams(location.search).get("escalade") ?? cfg.escaladeSeconds ?? 120) * 1000;
 const PAGE = SOLO ? "/moi" : "/equipe";
+// Tableau « Frictions en direct » (page + Live View Screenpipe) et alerte à la responsable d'une demande en attente.
+const board = new Board();
+const ALERT_MS = Number(new URLSearchParams(location.search).get("alerte") ?? cfg.alerteSeconds ?? 120) * 1000;
+const LIVE_LINK = "screenpipe://live-view/friction-live";
 // Besoin lu par Minguk dans le message Crisp → étape de process (solutions.seed.json d'Andrea).
 const NEED_FRICTION: Record<Need, string> = { bug: "bug", geste: "geste", promesse: "promesse", prospect: "prospect" };
 const notifyOn = () => (document.getElementById("notify") as HTMLInputElement).checked;
@@ -240,6 +245,7 @@ class Machine {
         continue;
       }
       this.st.status[t.id] = "ok";
+      board.add(t.id, t.name, t.epoch, rows);
       for (const r of rows) {
         this.st.cursors[t.id] = Math.max(this.st.cursors[t.id] ?? 0, r.seq);
         if (r.kind === "request") await this.onRequest(t, r);
@@ -493,11 +499,41 @@ async function shareFirst(id: string, team: string) {
 
 // ---- boucle
 let busy = false;
+let lastLive = { sig: "", at: 0 };
+const alerted = new Set<string>();
+async function renderBoard() {
+  const el = document.getElementById("board");
+  if (!el) return;
+  const st = board.state();
+  el.innerHTML = Board.html(st);
+  // Alerte : la responsable de l'équipe est prévenue d'une demande restée sans réponse.
+  for (const p of st.pending) {
+    if (Date.now() - p.since < ALERT_MS) continue;
+    for (const m of machines) {
+      if (!m.teams.some((t) => t.isAdmin && t.name === p.team) || alerted.has(`${m.id}:${p.requestId}`)) continue;
+      alerted.add(`${m.id}:${p.requestId}`);
+      m.log(`demande en attente depuis plus de ${Math.round(ALERT_MS / 1000)} s : alerte de responsable`);
+      await m.notify(`Demande en attente : ${p.step}`, `Personne n'a répondu depuis ${Math.round((Date.now() - p.since) / 1000)} s. Si la règle existe, partage-la ou certifie-la ; sinon, c'est une étape à documenter.`,
+        [{ id: "board", label: "Voir le tableau", type: "deeplink", url: LIVE_LINK, primary: true }]);
+    }
+  }
+  // Live View Screenpipe : à chaque changement, et toutes les 5 s pour les durées d'attente.
+  const live = document.getElementById("live") as HTMLInputElement | null;
+  const status = document.getElementById("live-status");
+  if (!live?.checked || !cfg.liveView) { if (status) status.textContent = cfg.liveView ? "" : "(jeton Screenpipe absent : tableau dans la page seulement)"; return; }
+  const sig = JSON.stringify([st.pending.map((p) => p.requestId), st.today, st.resolved.length, st.certified, st.timeline.length, st.steps]);
+  if (sig === lastLive.sig && Date.now() - lastLive.at < 5000) return;
+  lastLive = { sig, at: Date.now() };
+  const r = await fetch("/api/live", { method: "POST", headers: H, body: JSON.stringify({ blocks: Board.liveView(st) }) }).then((x) => x.json()).catch((e) => ({ ok: false, error: String(e) }));
+  if (status) status.textContent = r.ok ? `publié dans Screenpipe à ${new Date().toLocaleTimeString("fr-FR")}` : `Live View : ${r.error}`;
+}
+
 async function tick() {
   if (busy) return;
   busy = true;
   try { for (const m of machines) await m.poll(); } catch (e) { console.error(e); }
   machines.forEach((m) => m.render());
+  try { await renderBoard(); } catch (e) { console.error(e); }
   await renderOperator();
   busy = false;
 }

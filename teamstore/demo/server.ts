@@ -7,10 +7,11 @@ import { join } from "node:path";
 
 export interface PageOptions {
   port: number;
-  store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number; crisp?: boolean };
+  store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number; crisp?: boolean; liveView?: boolean; alerteSeconds?: number };
   operator?: () => unknown;       // vue opérateur (base locale de cette machine)
   reset?: () => void;             // remise à zéro (base locale non partagée seulement)
   notifyUrl?: string;
+  live?: (blocks: Record<string, unknown>) => Promise<{ ok: boolean; blocks?: string[]; error?: string }>; // Live View Screenpipe
   match?: (step: string, catalogue: { id: string; step: string }[]) => Promise<string | null>; // quelle solution répond à cette étape
 }
 
@@ -68,6 +69,10 @@ export async function startPage(o: PageOptions) {
           const r = await fetch(`${notifyUrl}/notify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: await req.text(), signal: AbortSignal.timeout(5000) });
           const j = (await r.json().catch(() => ({}))) as { message?: string };
           return Response.json({ message: j.message ?? `HTTP ${r.status}` });
+        }
+        if (path === "/api/live" && req.method === "POST" && sameOrigin(req)) {
+          if (!o.live) return Response.json({ ok: false, error: "jeton Screenpipe absent" });
+          return Response.json(await o.live(((await req.json()) as { blocks: Record<string, unknown> }).blocks));
         }
         if (path === "/api/match" && req.method === "POST" && sameOrigin(req)) {
           const { step, catalogue } = (await req.json()) as { step: string; catalogue: { id: string; step: string }[] };

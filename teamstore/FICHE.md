@@ -86,6 +86,8 @@ Tout reste cliquable à la main : « Je bloque sur… », « Inviter », « Reti
 - **Détection Crisp de Minguk** (`start.sh moi --crisp`) : son `CrispWatcher` (importé) lit les messages clients via Screenpipe, son `classify` lit le besoin, et la page en fait une friction. Repli : un message simulé depuis la page (même format). Mesuré : message de Jean (dédommagement) → besoin « geste » → demande anonyme publiée.
 - **Parcours guidé** (`/parcours`) : 7 chapitres (aide immédiate, demande anonyme, certification avec falsification, escalade, mémoire d'équipe le lendemain, départ, carte), sur de vraies équipes chiffrées. Accueil (`/`) avec 3 entrées.
 - **Correctif trouvé grâce au parcours** : la rotation de clé effaçait aussi les **signatures**, donc la carte repartait de zéro après un départ. Elles sont maintenant republiées avec les solutions.
+- **Tableau « Frictions en direct »** (`demo/board.ts`) : en attente, frictions du jour, résolues (délai médian), règles certifiées, étapes et leur état, fil en direct. Il est calculé sur le poste et publié dans une **Live View Screenpipe** `friction-live` (8 blocs : metric, list, timeline, table, markdown ; formats lus dans `/outputs/targets`). **Alerte à la responsable** (notification Screenpipe avec un bouton `deeplink` vers la Live View) au-delà de `--alerte` secondes. Mesuré : demande en attente affichée en direct, alerte à Claire envoyée, Live View installée et ses 8 blocs acceptés (HTTP 200). Le rendu dans l'app reste à vérifier à l'œil : l'API ne permet pas de relire le contenu.
+- **Rotation** : les demandes **encore en attente** sont aussi republiées (39/39) ; le tableau garde leur heure de départ.
 - Déroulé : [DEMO.md](DEMO.md).
 
 ## Les options tranchées, et pourquoi

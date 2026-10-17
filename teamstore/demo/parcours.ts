@@ -6,6 +6,7 @@ import { AccessDenied, membershipFromInvite, SupabaseStore, Team } from "../clie
 import { classify } from "../../minguk/src/assist/crisp-assist.ts";
 import { CRISP_CUSTOMERS } from "../../minguk/src/seed/crisp-story.ts";
 import { escalationPayload } from "./escalade";
+import { Board } from "./board";
 
 type Sol = { id: string; step: string; title: string; body: string; copy?: string; certified?: boolean; cert?: string; requestId?: string; uses?: number; [k: string]: unknown };
 type Stage = { icon: string; label: string; detail: string; state: "idle" | "active" | "done" | "miss" };
@@ -371,9 +372,32 @@ async function renderServer() {
     <p class="muted">Pas de nom d'équipe, pas d'auteur, pas d'heure, et tous les blocs ont la même taille.</p>`;
 }
 
+// ---------- tableau « Frictions en direct » : la vue de la responsable, mise à jour en continu ----------
+const board = new Board();
+let boardCursor = 0, boardEpoch = 0, lastLive = { sig: "", at: 0 };
+async function feedBoard() {
+  const claire = actors.find((a) => a.id === "claire");
+  if (!claire) return;
+  if (claire.team.epoch !== boardEpoch) { boardEpoch = claire.team.epoch; }
+  const rows = await claire.team.pull(boardCursor).catch(() => []);
+  for (const r of rows) boardCursor = Math.max(boardCursor, r.seq);
+  board.add(claire.team.id, claire.team.name, claire.team.epoch, rows);
+  const st = board.state();
+  $("board").innerHTML = Board.html(st);
+  const live = $("live") as HTMLInputElement;
+  if (!live.checked || !cfg.liveView) { $("live-status").textContent = cfg.liveView ? "" : "(jeton Screenpipe absent : tableau dans la page seulement)"; return; }
+  const sig = JSON.stringify([st.pending.map((p) => p.requestId), st.today, st.resolved.length, st.certified, st.timeline.length, st.steps]);
+  if (sig === lastLive.sig && Date.now() - lastLive.at < 5000) return;
+  lastLive = { sig, at: Date.now() };
+  const r = await fetch("/api/live", { method: "POST", headers: H, body: JSON.stringify({ blocks: Board.liveView(st) }) }).then((x) => x.json()).catch((e) => ({ ok: false, error: String(e) }));
+  $("live-status").textContent = r.ok ? `publié dans Screenpipe à ${new Date().toLocaleTimeString("fr-FR")}` : `Live View : ${r.error}`;
+}
+
 // ---------- lancement ----------
 $("story").innerHTML = `<h2>Préparation de l'équipe…</h2>`;
 await setup();
 setInterval(renderServer, 1500);
+let feeding = false;
+setInterval(async () => { if (feeding) return; feeding = true; try { await feedBoard(); } finally { feeding = false; } }, 1500);
 render();
 for (const ch of [chapter1, chapter2, chapter3, chapter4, chapter5, chapter6, chapter7]) await ch();

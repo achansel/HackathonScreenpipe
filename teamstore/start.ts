@@ -7,6 +7,7 @@
 //   bun teamstore/start.ts verifier           vérifie le stockage configuré (Supabase ou autre)
 //   bun teamstore/start.ts carte [--lien "<lien>"]   carte d'équipe d'Andrea dans Screenpipe (Live View)
 //   bun teamstore/start.ts equipe-demo        prépare les postes simulés du démon d'Andrea (Léa, Karim) sur ce stockage
+//   options : --alerte 60 (secondes avant d'alerter la responsable d'une demande en attente ; 120 par défaut)
 //   options : --crisp (« moi » : la détection Crisp de Minguk déclenche les frictions)
 //   options : --supabase (démo sur le Supabase configuré), --local, --port 4323, --sans-navigateur
 //
@@ -29,7 +30,7 @@ const PAGE_PORT = Number(opt("--port") ?? Bun.env.DEMO_PORT ?? 4322);
 const LOCAL_PORT = Number(Bun.env.TEAMSTORE_LOCAL_PORT ?? 3001);
 
 if (!["demo", "moi", "verifier", "carte", "equipe-demo", "aide"].includes(mode) || flag("--help") || flag("-h") || mode === "aide") {
-  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 14).map((l) => l.slice(3)).join("\n"));
+  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 15).map((l) => l.slice(3)).join("\n"));
   process.exit(mode === "aide" || flag("--help") || flag("-h") ? 0 : 1);
 }
 
@@ -209,7 +210,36 @@ Object.assign(store, {
   },
   escaladeSeconds: Number(opt("--escalade") ?? 120),
   crisp: flag("--crisp"),
+  liveView: Boolean(process.env.SCREENPIPE_API_KEY),
+  alerteSeconds: Number(opt("--alerte") ?? 120),
 });
+
+// ---- Live View « Frictions en direct » dans Screenpipe : modèle installé une fois, blocs remplis par la page
+// (les chiffres sont calculés dans le navigateur, à partir des blocs déchiffrés ; ce serveur ne voit pas de clé).
+let liveInstalled = false;
+async function publishLive(blocks: Record<string, unknown>) {
+  const api = process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
+  const auth = { Authorization: `Bearer ${process.env.SCREENPIPE_API_KEY}`, "Content-Type": "application/json" };
+  try {
+    if (!liveInstalled) {
+      const now = new Date().toISOString();
+      const tpl = { ...JSON.parse(readFileSync(join(import.meta.dir, "demo", "friction-live.liveview.json"), "utf8")), createdAt: now, updatedAt: now };
+      const r = await fetch(`${api}/live-views/${tpl.id}`, { method: "PUT", headers: auth, body: JSON.stringify(tpl) });
+      if (!r.ok) return { ok: false, error: `installation de la Live View : HTTP ${r.status}` };
+      liveInstalled = true;
+    }
+    const r = await fetch(`${api}/outputs/targets?pipe=friction-live`, { headers: auth });
+    const targets = ((await r.json()).data ?? []) as { id: string; revision: number }[];
+    const done: string[] = [];
+    for (const t of targets) {
+      const block = t.id.split(":").at(-1)!;
+      if (!(block in blocks)) continue;
+      const s = await fetch(`${api}/outputs/targets/${encodeURIComponent(t.id)}/submit`, { method: "POST", headers: auth, body: JSON.stringify({ target_revision: t.revision, source_pipe: "friction-live", payload: blocks[block] }) });
+      if (s.ok) done.push(block); else return { ok: false, error: `${block} : HTTP ${s.status} ${(await s.text()).slice(0, 160)}` };
+    }
+    return { ok: true, blocks: done };
+  } catch (e) { return { ok: false, error: (e as Error).message }; }
+}
 const shared = Boolean(remote) || flag("--heberger");
 let page: Awaited<ReturnType<typeof startPage>>;
 try {
@@ -219,6 +249,7 @@ try {
     operator: local ? () => local!.operatorView() : undefined,
     reset: local && !shared ? () => local!.reset() : undefined,
     match: matchSolution,
+    live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined,
   });
 } catch {
   console.error(`Le port ${PAGE_PORT} est déjà pris : friction-assist est sans doute déjà lancé. Ouvrir http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"} ou fermer l'autre fenêtre.`);

@@ -156,6 +156,28 @@ C'est la page qu'on utilise pour de vrai, une par personne (`start.sh moi`).
 
 Les clés restent **dans le navigateur** de chacun. « Oublier mes clés » les efface de ce navigateur.
 
+## Le tableau « Frictions en direct » (page + Screenpipe)
+
+Sous les postes (équipe simulée, mon poste, parcours guidé), un tableau se met à jour toutes les 2 secondes, à partir de ce que l'équipe partage :
+
+| Zone | Ce qu'on y voit |
+| --- | --- |
+| **4 compteurs** | demandes **sans réponse** (et depuis combien de temps pour la plus ancienne), frictions du jour, demandes résolues par un collègue (délai médian), règles certifiées |
+| **En attente** | chaque demande anonyme sans réponse : l'étape, l'équipe, le temps d'attente qui défile |
+| **Étapes** | chaque étape du jour et son état : *en attente de réponse*, *à documenter*, *solution partagée*, *règle certifiée* |
+| **Fil en direct** | demandes, réponses (avec leur délai), certifications, changements de clé |
+
+**Dans Screenpipe :** le même tableau est publié dans une **Live View « Frictions en direct »** (case cochée par défaut, il faut le jeton Screenpipe). Pour l'ouvrir : le lien « Ouvrir dans Screenpipe », ou `screenpipe://live-view/friction-live`. Elle est distincte de la carte d'Andrea (`friction-map`, 7 jours).
+
+**Alerte à la responsable :** quand une demande reste sans réponse plus de 2 minutes (`--alerte 60` pour changer), la responsable de l'équipe reçoit une notification Screenpipe : « Demande en attente : … », avec un bouton **Voir le tableau** qui ouvre la Live View. Celui qui bloque reçoit, lui, l'escalade Slack de Minguk (`--escalade`).
+
+Tout est calculé **sur le poste**, à partir des blocs déchiffrés : ni noms, ni auteurs, seulement des étapes, des compteurs et des délais.
+
+Pour voir les cas « en attente » en direct :
+- **Parcours guidé** : chapitre 4, le prospect belge reste sans réponse ;
+- **Équipe simulée** : étape 3, puis attendre avant l'étape 4. Avec `/equipe?alerte=10`, Claire est alertée au bout de 10 s ;
+- **Mon poste** : « Je bloque sur… », ou un message Crisp que personne ne sait traiter.
+
 ## Avec le travail d'Andrea et de Minguk (sans modifier leur code)
 
 | Commande / fonction | Ce que ça fait | Réutilise |
