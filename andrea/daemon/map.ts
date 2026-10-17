@@ -1,10 +1,12 @@
-// Carte d'équipe (étape 4) : agrège les signatures chiffrées de l'équipe sur 7 jours et remplit
-// la Live View « Carte des frictions » (live-view:friction-map:*), dans l'app Screenpipe.
-// On compte des DÉTOURS par étape, jamais des personnes : les signatures n'ont aucune identité.
-// Fourchettes plutôt que chiffres exacts (VISION.md) ; une étape apparaît dès le premier détour.
+// Vue « Frictions de l'équipe » (live-view:friction-map:*), dans l'app Screenpipe : une seule vue, 5 blocs.
+// Fusion de la carte d'Andrea (détours sur 7 jours, en fourchettes) et du tableau « Frictions en direct » de
+// Haytham (en attente, résolues, règles certifiées, boucle de nuit), dont on réutilise le calcul tel quel
+// (teamstore/demo/board.ts). Les Live Views sont en lecture seule : les actions passent par les notifications.
+// On compte des DÉTOURS par étape, jamais des personnes : rien dans les blocs n'a d'identité.
+import { Board } from "../../teamstore/demo/board";
 import { API, KEY } from "./config";
 import { canonicalSteps } from "./steps";
-import type { TeamStore } from "./teamstore";
+import type { Kind, TeamStore } from "./teamstore";
 
 export const MAP_PIPE = "friction-map"; // pipe auquel les blocs sont liés (rempli ici, via source_pipe)
 export const MAP_DEEPLINK = "screenpipe://live-view/friction-map";
@@ -14,67 +16,52 @@ const WEEK_MS = 7 * 24 * 3600_000;
 const range = (n: number) => (n < 5 ? "moins de 5" : n < 10 ? "5 à 10" : n < 20 ? "10 à 20" : "plus de 20");
 const norm = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, " ").trim();
 
-type Signature = { step: string; type: string; control: string; detour: string; day: string; synthetic?: boolean };
+export async function buildMap(store: TeamStore, now = Date.now()) {
+  const kinds: Kind[] = ["signature", "request", "solution", "candidate"];
+  const rows = Object.fromEntries(await Promise.all(kinds.map(async (k) => [k, await listAll(store, k).catch(() => [])]))) as Record<Kind, Awaited<ReturnType<typeof listAll>>>;
 
-export async function buildMap(store: TeamStore) {
-  const since = Date.now() - WEEK_MS;
-  const fresh = <T>(rows: { at: string; payload: T }[]) => rows.filter((r) => r.payload && Date.parse(r.at) >= since).map((r) => r.payload);
-  const signatures = fresh<Signature>(await listAll(store, "signature"));
-  const requests = fresh<{ requestId: string; step: string }>(await listAll(store, "request"));
-  const solutions = fresh<{ requestId?: string; step: string }>(await listAll(store, "solution"));
-
-  // Libellés regroupés en étapes canoniques (modèle + cache), pour compter une étape une seule fois.
-  const canon = await canonicalSteps([...signatures, ...requests, ...solutions].map((x) => x.step).filter(Boolean));
+  // Libellés regroupés en étapes canoniques (modèle + cache) : l'IA formule la même étape de plusieurs façons.
+  const labels = kinds.flatMap((k) => rows[k].map((r) => r.payload?.step)).filter(Boolean);
+  const canon = await canonicalSteps(labels);
   const step = (label: string) => canon.get(label) ?? label;
 
-  // Étape « résolue » si une solution a été partagée pour une demande sur cette étape.
-  const solvedRequests = new Set(solutions.map((s) => s.requestId).filter(Boolean));
-  const solvedSteps = new Set(requests.filter((r) => solvedRequests.has(r.requestId)).map((r) => norm(step(r.step))));
-  for (const s of solutions) solvedSteps.add(norm(step(s.step)));
-
-  const bySteps = new Map<string, { step: string; n: number; types: Map<string, number>; controls: Map<string, number> }>();
-  const byType = new Map<string, number>();
-  for (const s of signatures) {
-    const k = norm(step(s.step));
-    const e = bySteps.get(k) ?? { step: step(s.step), n: 0, types: new Map(), controls: new Map() };
-    e.n++;
-    e.types.set(s.type, (e.types.get(s.type) ?? 0) + 1);
-    e.controls.set(s.control, (e.controls.get(s.control) ?? 0) + 1);
-    bySteps.set(k, e);
-    byType.set(s.type, (byType.get(s.type) ?? 0) + 1);
+  // Calcul de Haytham (board.ts) : en attente, résolues et délai, règles certifiées, boucle de nuit.
+  const board = new Board();
+  const byTeam = new Map<string, { seq: number; kind: Kind; data: any }[]>();
+  for (const k of kinds) for (const r of rows[k]) {
+    if (!r.payload) continue;
+    const team = String(r.payload.team ?? "Équipe");
+    // L'heure portée par le bloc (arrondie) ; sinon celle du stockage : une vieille demande n'est pas « en attente ».
+    const data = { ...r.payload, step: r.payload.step ? step(r.payload.step) : r.payload.step, at: r.payload.at ?? r.at };
+    byTeam.set(team, [...(byTeam.get(team) ?? []), { seq: r.id, kind: k, data }]);
   }
-  const top = (m: Map<string, number>) => [...m].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
-  const steps = [...bySteps.entries()].sort((a, b) => b[1].n - a[1].n);
-  const unsolved = steps.filter(([k]) => !solvedSteps.has(k)).length;
-  const synthetic = signatures.some((s) => s.synthetic);
+  for (const [team, list] of byTeam) board.add(team, team, 0, list as any);
+  const st = board.state(now);
+  const live = Board.liveView(st, now);
+
+  // Tableau des étapes sur 7 jours, avec l'état selon la règle de Haytham.
+  const since = now - WEEK_MS;
+  const signatures = rows.signature.filter((r) => r.payload?.step && Date.parse(r.at || r.payload.day) >= since).map((r) => step(r.payload.step));
+  const solutions = rows.solution.map((r) => r.payload).filter(Boolean);
+  const answered = new Set(solutions.map((s) => s.requestId).filter(Boolean));
+  const pending = new Set(st.pending.map((p) => norm(p.step)));
+  const certified = new Set(solutions.filter((s) => s.certified).map((s) => norm(step(s.step ?? ""))));
+  const solved = new Set([...solutions.map((s) => norm(step(s.step ?? ""))), ...rows.request.filter((r) => answered.has(r.payload?.requestId)).map((r) => norm(step(r.payload.step)))]);
+  const counts = new Map<string, { step: string; n: number }>();
+  for (const s of signatures) { const e = counts.get(norm(s)) ?? { step: s, n: 0 }; e.n++; counts.set(norm(s), e); }
+  for (const p of st.pending) if (!counts.has(norm(p.step))) counts.set(norm(p.step), { step: p.step, n: 0 });
+  const status = (k: string) => (pending.has(k) ? "en attente de réponse" : certified.has(k) ? "règle certifiée" : solved.has(k) ? "solution partagée" : "à documenter");
 
   return {
-    total: { value: range(signatures.length), label: "détours sur des étapes de process", unit: "7 jours" },
-    "sans-solution": { value: unsolved, label: "étapes où personne n'a encore partagé de solution" },
-    "par-type": { items: ["unclear", "switching", "rework", "waiting", "handoff"].map((t) => ({ label: t, value: byType.get(t) ?? 0 })) },
-    etapes: {
-      items: steps.slice(0, 50).map(([k, e]) => {
-        const control = top(e.controls);
-        return {
-          label: e.step,
-          value: range(e.n),
-          detail: `${top(e.types)} · contrôle ${control} · ${solvedSteps.has(k) ? "solution partagée" : "pas encore de solution"}`,
-          status: control === "required" ? "garde-fou : expliquer la règle" : solvedSteps.has(k) ? "résolue" : "à résoudre",
-        };
-      }),
-    },
-    regles: {
-      content: [
-        "**On mesure le process, jamais la personne.** Chaque ligne est une étape ; on compte des détours, pas des gens.",
-        "Les signatures sont chiffrées sur les postes et n'ont aucune identité : impossible de savoir qui a bloqué.",
-        "Fourchettes sur 7 jours glissants. `required` = garde-fou voulu (validation, conformité) : on l'explique, on ne le contourne pas.",
-        synthetic ? "\n**Contient des données de démonstration** (population synthétique, annoncée comme telle)." : "",
-      ].join("\n\n"),
-    },
+    "en-attente": live["en-attente"],
+    resolues: live.resolues,
+    detours: { value: range(signatures.length), label: "détours sur des étapes de process", unit: "7 jours" },
+    etapes: { items: [...counts.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 50).map(([k, e]) => ({ label: e.step.slice(0, 200), value: range(e.n), status: status(k) })) },
+    nuit: live.nuit,
   };
 }
 
-async function listAll(store: TeamStore, kind: "signature" | "request" | "solution") {
+async function listAll(store: TeamStore, kind: Kind) {
   const out: { id: number; at: string; payload: any }[] = [];
   for (let after = 0; ; ) {
     const page = await store.list(kind, after);

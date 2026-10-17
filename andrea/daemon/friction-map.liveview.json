@@ -1,8 +1,8 @@
 {
   "schema": "live-view-template.v1",
   "id": "friction-map",
-  "title": "Carte des frictions",
-  "revision": 1,
+  "title": "Frictions de l'équipe",
+  "revision": 2,
   "timeRange": "7d",
   "periodPolicy": {
     "type": "fixed.v1",
@@ -10,36 +10,36 @@
   },
   "blocks": [
     {
-      "id": "total",
-      "title": "Détours cette semaine",
+      "id": "en-attente",
+      "title": "En attente",
       "kind": "metric.v1",
       "width": 3,
       "order": 0,
-      "intent": "Nombre de détours sur des étapes de process, toute l'équipe. Jamais par personne.",
+      "intent": "Demandes anonymes auxquelles personne n'a encore répondu.",
       "source": {
         "type": "pipe.v1",
         "pipeName": "friction-map"
       }
     },
     {
-      "id": "sans-solution",
-      "title": "Étapes sans solution partagée",
+      "id": "resolues",
+      "title": "Résolues par un collègue",
       "kind": "metric.v1",
       "width": 3,
       "order": 1,
-      "intent": "Étapes où quelqu'un a bloqué et où personne n'a encore partagé de solution.",
+      "intent": "Demandes auxquelles un collègue a répondu, et le délai médian.",
       "source": {
         "type": "pipe.v1",
         "pipeName": "friction-map"
       }
     },
     {
-      "id": "par-type",
-      "title": "Détours par type",
-      "kind": "bar-chart.v1",
+      "id": "detours",
+      "title": "Détours, 7 jours",
+      "kind": "metric.v1",
       "width": 6,
       "order": 2,
-      "intent": "Vocabulaire Screenpipe : waiting, switching, rework, handoff, unclear.",
+      "intent": "Détours sur des étapes de process, toute l'équipe. Jamais par personne.",
       "source": {
         "type": "pipe.v1",
         "pipeName": "friction-map"
@@ -47,23 +47,23 @@
     },
     {
       "id": "etapes",
-      "title": "Frictions par étape",
+      "title": "Étapes",
       "kind": "table.v1",
       "width": 12,
       "order": 3,
-      "intent": "Étapes du process qui coûtent des détours, en fourchettes, avec la solution partagée et le niveau de contrôle.",
+      "intent": "Étapes qui coûtent des détours sur 7 jours, en fourchettes, et leur état : en attente, à documenter, solution partagée, règle certifiée.",
       "source": {
         "type": "pipe.v1",
         "pipeName": "friction-map"
       }
     },
     {
-      "id": "regles",
-      "title": "Ce que mesure cette carte",
-      "kind": "markdown.v1",
+      "id": "nuit",
+      "title": "Cette nuit, à certifier",
+      "kind": "list.v1",
       "width": 12,
       "order": 4,
-      "intent": "Règles de confidentialité de la carte.",
+      "intent": "Boucle de nuit : règles trouvées après une friction restée sans réponse, à certifier par la responsable.",
       "source": {
         "type": "pipe.v1",
         "pipeName": "friction-map"

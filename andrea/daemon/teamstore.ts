@@ -8,7 +8,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync
 import { AccessDenied, routeTeams, SupabaseStore, Team, type Membership } from "../../teamstore/client";
 import { DATABASE_URL, TEAM_DIR, TEAM_KEY_FILE, TEAMS_FILE, TEAMSTORE_ANON_KEY, TEAMSTORE_REST_PATH, TEAMSTORE_URL } from "./config";
 
-export type Kind = "request" | "solution" | "signature";
+export type Kind = "request" | "solution" | "signature" | "candidate"; // candidate : boucle de nuit (teamstore/nuit.ts)
 export type Row = { id: number; at: string; payload: any };
 
 export interface TeamStore {

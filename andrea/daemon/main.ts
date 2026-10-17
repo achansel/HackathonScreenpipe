@@ -386,7 +386,8 @@ async function run() {
       if (tick % 10 === 0) await pollFeedback();
       if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
       if (tick % 60 === 0) await nightlyFallback();
-      if (teamStore && !INSTANCE && tick % 600 === 0) log(`carte d'équipe rafraîchie : ${(await publishMap(teamStore)).length} blocs`);
+      // Vue d'équipe republiée toutes les 30 s : en démo, elle bouge pendant qu'on parle. Une erreur ne bloque pas la boucle.
+      if (teamStore && !INSTANCE && tick % 30 === 0) await publishMap(teamStore).catch((e) => debug && log("vue d'équipe :", (e as Error).message));
     } catch (e) {
       if (e instanceof ScreenpipeClosed) {
         log(`${e.message}. Nouvel essai dans 30 s.`);
@@ -464,8 +465,14 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     // Crée ou met à jour la Live View « Carte des frictions » dans l'app Screenpipe de ce poste.
     const now = new Date().toISOString();
     const tpl = { ...JSON.parse(readFileSync(new URL("./friction-map.liveview.json", import.meta.url), "utf8")), createdAt: now, updatedAt: now };
-    const r = await fetch(`${process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030"}/live-views/${tpl.id}`, {
+    const base = process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
+    // Mise à jour d'une vue existante : Screenpipe exige sa révision actuelle (expectedRevision), sinon 409.
+    const views = (await (await fetch(`${base}/live-views`, { headers: { Authorization: `Bearer ${KEY}` } })).json().catch(() => [])) as { id: string; revision: number }[];
+    const existing = Array.isArray(views) ? views.find((v) => v.id === tpl.id) : undefined;
+    if (existing) tpl.expectedRevision = existing.revision;
+    const r = await fetch(`${base}/live-views/${tpl.id}`, {
       method: "PUT", headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(tpl) });
+    if (!r.ok) console.error(await r.text());
     console.log(`Live View ${tpl.id} : HTTP ${r.status}. Ouvrir : ${MAP_DEEPLINK}`);
     break;
   }
@@ -474,8 +481,8 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     const blocks = await publishMap(store);
     await store.close();
     console.log(`Carte publiée (${blocks.join(", ")}). Ouvrir : ${MAP_DEEPLINK}`);
-    await notify({ id: `fa-map-${Date.now()}`, title: "Carte des frictions à jour", body: "Les détours de la semaine, par étape. Jamais par personne.", pipe_name: PIPE_NAME, timeout: 30_000,
-      actions: [{ id: "open", label: "Ouvrir la carte", type: "deeplink", url: MAP_DEEPLINK, primary: true }] });
+    await notify({ id: `fa-map-${Date.now()}`, title: "Frictions de l'équipe à jour", body: "En attente, résolues, étapes de la semaine. Jamais par personne.", pipe_name: PIPE_NAME, timeout: 30_000,
+      actions: [{ id: "open", label: "Ouvrir", type: "deeplink", url: MAP_DEEPLINK, primary: true }] });
     break;
   }
   case "peupler-demo": {
