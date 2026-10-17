@@ -22,9 +22,10 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import {
-  DATABASE_URL, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
+  API, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
   SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR, TEAM_DIR, TEAM_KEY_FILE, TEAM_POLL_MS,
 } from "./config";
+import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { qualify } from "./qualify";
 import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay, withoutOwnNotifications } from "./screenpipe";
@@ -105,6 +106,18 @@ const stats = { skipped: 0, qualified: 0 };
 let team: TeamSync | null = null;
 let teamStore: TeamStore | null = null;
 
+// Contexte du dossier : le dernier message client lu dans Crisp par le code de Minguk (ses « yeux »).
+// Contexte seulement, pas une friction (docs/demo.md, choix techniques) ; le nom reste local.
+let dossier: { name: string; text: string; at: number } | null = null;
+const crisp = CRISP && !SIM
+  ? new CrispWatcher({ screenpipeUrl: API, apiKey: KEY, onEvent: (e) => {
+      if (e.kind !== "message" || !e.preview) return;
+      dossier = { name: e.name, text: e.preview, at: e.detectedAt };
+      log(`Crisp : nouveau message client (contexte ${DOSSIER_MS / 60_000} min)`);
+    } })
+  : null;
+const dossierText = () => (dossier && Date.now() - dossier.at < DOSSIER_MS ? dossier.text : undefined);
+
 async function handleEpisode(ep: Episode) {
   // Notre propre notification relue par l'OCR : retirée du texte, épisode ignoré si c'était l'essentiel.
   const own = withoutOwnNotifications(ep.text);
@@ -117,8 +130,9 @@ async function handleEpisode(ep: Episode) {
     if (!d.friction && d.confidence >= SKIP_CONFIDENCE) { stats.skipped++; return { skipped: true }; }
   }
   stats.qualified++;
-  const v = await qualify(ep, solutions);
-  if (debug) log("épisode", { app: ep.app, window: ep.window, titles: ep.titles, text: ep.text, verdict: v });
+  const context = dossierText();
+  const v = await qualify(ep, solutions, context);
+  if (debug) log("épisode", { app: ep.app, window: ep.window, titles: ep.titles, text: ep.text, dossier: context, verdict: v });
   else log(`épisode ${ep.app} → ${v ? `${v.detour} (${v.type}/${v.control}) solution=${v.solution_id ?? "aucune"} conf=${v.confiance}` : "non qualifié"}`);
   if (!v?.friction || v.confiance < MIN_CONFIDENCE) return { verdict: v };
   if (team) await team.sign(v);
@@ -243,10 +257,13 @@ async function run() {
     try {
       if (!SIM) {
         const since = new Date(cursor - 1500).toISOString(); // la frame arrive ~1 s après la capture
-        const [inputs, frames] = await Promise.all([search({ content_type: "input", start_time: since }), search({ content_type: "ocr", start_time: since })]);
+        // L'une après l'autre : en parallèle, Screenpipe répond 503 « search is busy » (mesuré par Minguk).
+        const inputs = await search({ content_type: "input", start_time: since });
+        const frames = await search({ content_type: "ocr", start_time: since });
         for (const ev of inputs) builder.addInput(ev);
         for (const f of frames) builder.addFrame(f);
         cursor = Date.now();
+        if (crisp) await crisp.tick().catch((e) => debug && log("Crisp :", (e as Error).message));
         for (const ep of builder.ready(Date.now())) await handleEpisode(ep);
       }
       tick++;

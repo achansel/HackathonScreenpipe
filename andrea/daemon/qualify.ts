@@ -48,9 +48,11 @@ export async function matchStep(step: string, solutions: Solution[]): Promise<st
   return id ?? null;
 }
 
-export async function qualify(ep: Episode, solutions: Solution[]): Promise<Verdict | null> {
+/** dossier : le dernier message client (Crisp), contexte pour nommer l'étape, jamais une friction à lui seul. */
+export async function qualify(ep: Episode, solutions: Solution[], dossier?: string): Promise<Verdict | null> {
   const catalogue = solutions.map((s) => `- ${s.id} : ${s.step}`).join("\n");
-  const user = `Solutions d'équipe :\n${catalogue}\n\nAppli : ${ep.app}\nFenêtres récentes : ${ep.titles.map(redact).join(" → ")}\nTexte nouveau : ${redact(ep.text)}`;
+  const context = dossier ? `Dossier en cours (message d'un client, contexte seulement, pas une friction à lui seul) : « ${redact(dossier).slice(0, 300)} »\n` : "";
+  const user = `Solutions d'équipe :\n${catalogue}\n\n${context}Appli : ${ep.app}\nFenêtres récentes : ${ep.titles.map(redact).join(" → ")}\nTexte nouveau : ${redact(ep.text)}`;
   const out = await chat(SYSTEM, user, 400);
   try {
     const v = JSON.parse(out.match(/\{[\s\S]*\}/)?.[0] ?? "") as Verdict;

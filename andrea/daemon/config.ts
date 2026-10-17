@@ -44,6 +44,8 @@ export const PIPE_NAME = "friction-assist"; // donne les 👍/👎 natifs de Scr
 export const RELAY = { connection: "n8n", instance: INSTANCE ? `friction-assist-${INSTANCE}` : "friction-assist" };
 
 export const POLL_MS = 1000; // boucle de lecture
+export const DOSSIER_MS = 10 * 60_000; // un message client Crisp sert de contexte 10 min (lecture de Crisp de Minguk)
+export const CRISP = process.env.FRICTION_CRISP !== "0"; // FRICTION_CRISP=0 : sans la lecture de Crisp
 export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → épisode prêt
 export const LOOKBACK_MS = 3 * 60_000; // l'IA ne lit que les 3 dernières minutes
 export const BASELINE_MS = 30 * 60_000; // référence d'une fenêtre (empreintes de mots, pas de texte) gardée 30 min après sa dernière frame
