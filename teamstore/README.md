@@ -273,6 +273,8 @@ Dans `teamstore/.data/`, ignoré par git.
 
 ## Pour aller plus loin
 
+- [RAPPORT.md](RAPPORT.md) : le rapport d'ensemble (ce qui a été construit, choix, mesures, limites, suite).
+
 - [FICHE.md](FICHE.md) : ce qui a été construit, les choix, les tests, les limites.
 - [CONCEPTION.md](CONCEPTION.md) : l'analyse de départ (modèle de menace, alternatives).
 - Tests :
