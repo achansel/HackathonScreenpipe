@@ -30,6 +30,7 @@ import { CallEpisodes } from "../../minguk/src/detect/call-episodes";
 import { listenToMeeting } from "../../minguk/src/detect/call-listener";
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
 import { pollProposals } from "./certify";
+import { helped, judged, publishTrace, seconds, trace } from "./trace";
 import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { groundedRequest, qualify } from "./qualify";
@@ -59,7 +60,13 @@ const SIM_TEAM = [
 
 const hms = (t = Date.now()) => new Date(t).toLocaleTimeString("fr-FR");
 const log = (...a: unknown[]) => console.log(`[${hms()}]${INSTANCE ? ` ${INSTANCE}` : ""}`, ...a);
-const record = (e: Record<string, unknown>) => appendFileSync(EVENTS, JSON.stringify({ at: new Date().toISOString(), ...e }) + "\n");
+const record = (e: Record<string, unknown>) => {
+  appendFileSync(EVENTS, JSON.stringify({ at: new Date().toISOString(), ...e }) + "\n");
+  // Trace locale (« Mon agent, en direct ») des événements d'équipe : jamais publiée à l'équipe.
+  if (e.kind === "shown" && e.from === "team") trace("Un collègue a partagé la solution", "elle s'affiche ici et rejoint le cache de toute l'équipe");
+  if (e.kind === "shared") trace("J'ai partagé ma solution", "le collègue qui bloquait la reçoit, sans savoir que c'est moi");
+  if (e.kind === "certified") trace("Règle certifiée", "signée par la responsable : elle devient l'aide de toute l'équipe");
+};
 function* readEvents() {
   if (!existsSync(EVENTS)) return;
   for (const line of readFileSync(EVENTS, "utf8").split("\n")) if (line) yield JSON.parse(line);
@@ -137,6 +144,7 @@ async function customerCard(name: string): Promise<CustomerCard | null> {
   if (!found) return null; // erreur passagère : pas mémorisée, on réessaiera au prochain épisode
   const card = found.length === 1 ? found[0]! : null; // deux homonymes : pas de fiche plutôt qu'une fausse
   cards.set(name, card);
+  trace(card ? "HubSpot : fiche du client retrouvée par son nom" : "HubSpot : pas de fiche unique pour ce client", card ? [card.company?.name, card.company?.plan].filter(Boolean).join(" · ") : "aide générique si besoin");
   return card;
 }
 
@@ -155,6 +163,7 @@ const crisp = CRISP && !SIM
       if (e.kind !== "message" || !e.preview) return;
       dossier = { name: e.name, text: e.preview, at: e.detectedAt };
       log(`Crisp : nouveau message client (contexte ${DOSSIER_MS / 60_000} min)`);
+      trace("Crisp : message client lu", `contexte du dossier pendant ${DOSSIER_MS / 60_000} min ; fiche HubSpot préparée`);
       void customerCard(e.name); // fiche prête avant que Léa cherche dans HubSpot
     } })
   : null;
@@ -225,9 +234,14 @@ async function handleEpisode(ep: Episode) {
   // contexte ferait juger « client introuvable » avant toute recherche (mesuré en répétition, 19:10:25).
   const fold = (x: string) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const context = dossier && fold(ep.window).includes(fold(dossier.name)) ? undefined : dossierText();
+  const t0 = Date.now();
   const v = await qualify(ep, solutions, context);
+  const ms = Date.now() - t0;
   if (debug) log("épisode", { app: ep.app, window: ep.window, titles: ep.titles, text: ep.text, dossier: context, verdict: v });
   else log(`épisode ${ep.app} → ${v ? `${v.detour} (${v.type}/${v.control}) solution=${v.solution_id ?? "aucune"} conf=${v.confiance}` : "non qualifié"}`);
+  const retained = Boolean(v?.friction && v.confiance >= MIN_CONFIDENCE);
+  judged(retained);
+  if (retained) trace(`Épisode jugé : ${v!.detour}`, `${ep.app.replace(/\.exe$/i, "")} · « ${v!.step} » · confiance ${v!.confiance} · modèle ${seconds(ms)}${context ? " · avec le contexte Crisp" : ""}`);
   if (!v?.friction || v.confiance < MIN_CONFIDENCE) return { verdict: v };
   if (team) await team.sign(v);
   if (v.solution_id) {
@@ -244,6 +258,8 @@ async function handleEpisode(ep: Episode) {
     lastShown.set(shownKey, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
     log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
+    helped(Date.now() - ep.at, n.title.replace(LABEL, ""));
+    trace(`Aide affichée : ${n.title.replace(LABEL, "")}`, `${seconds(Date.now() - ep.at)} après le geste à l'écran${card ? " · fiche HubSpot à la place de l'aide générique" : ""}`);
     return { verdict: v, notified: s.id };
   }
   // Notifier peu, compter beaucoup : une demande anonyme part vers toute l'équipe, donc seulement sur une
@@ -252,7 +268,11 @@ async function handleEpisode(ep: Episode) {
   if (team) {
     if (!groundedRequest(v.step, ep.text)) { log(`demande anonyme retenue : « ${v.step} » ne s'appuie pas sur le texte de l'épisode`); return { verdict: v, held: true }; }
     const requestId = await team.ask(v);
-    if (requestId) { record({ kind: "asked", episode: ep.id, requestId, detour: v.detour, step: v.step }); log(`aucune solution locale : demande anonyme (« ${v.step} »)`); }
+    if (requestId) {
+      record({ kind: "asked", episode: ep.id, requestId, detour: v.detour, step: v.step });
+      log(`aucune solution locale : demande anonyme (« ${v.step} »)`);
+      trace("Demande anonyme à l'équipe", `« ${v.step} » : ni nom ni texte d'écran, chiffrée ; les collègues qui savent reçoivent [Partager]`);
+    }
     return { verdict: v, asked: Boolean(requestId) };
   }
   return { verdict: v };
@@ -324,11 +344,27 @@ async function nightlyFallback() {
   if (r.better) await notify({ id: `fa-learn-${Date.now()}`, title: "Nouveau détecteur prêt", body: "Il a passé la porte de validation. Relire `rapport`, puis `approuver`.", pipe_name: PIPE_NAME, timeout: 0 });
 }
 
+// Chaque envoi vers le stockage d'équipe apparaît dans la trace de l'agent (« Mon agent, en direct ») :
+// ce que lit l'équipe (déchiffré sur les postes) à côté de ce que voit le serveur (relu sur Supabase). Idée et
+// mise en scène reprises de la vue opérateur et du parcours guidé de Haytham (teamstore/).
+const UPLOAD: Record<string, string> = { request: "Envoyé à l'équipe : demande anonyme", signature: "Envoyé à l'équipe : signature pour la carte", solution: "Envoyé à l'équipe : solution" };
+function traced(store: TeamStore): TeamStore {
+  const put = store.put.bind(store);
+  store.put = async (kind, payload: any) => {
+    const seq = await put(kind, payload);
+    const team = JSON.stringify(Object.fromEntries(Object.entries({ step: payload?.step, type: payload?.type, detour: payload?.detour, title: payload?.title }).filter(([, v]) => v)));
+    const server = store instanceof RpcTeamStore ? await store.serverView(seq).catch(() => "") : "";
+    trace(UPLOAD[kind] ?? `Envoyé à l'équipe : ${kind}`, `l'équipe lit ${team}${server ? ` · le serveur voit ${server}` : ""} · ni nom, ni texte d'écran`);
+    return seq;
+  };
+  return store;
+}
+
 async function startTeam() {
   if (teamstoreConfigured() && loadMemberships().length) {
     const store = new RpcTeamStore(log);
     await store.init();
-    teamStore = store;
+    teamStore = traced(store);
     team = new TeamSync(store, solutions, { register, helpNotification, record, log });
     log("équipe connectée par RPC (blocs chiffrés par équipe, sans identité)");
     return;
@@ -384,6 +420,7 @@ async function run() {
       }
       tick++;
       if (team && tick % Math.round(TEAM_POLL_MS / POLL_MS) === 0) await team.poll();
+      await publishTrace();
       if (tick % 10 === 0) await pollFeedback();
       // Responsable d'équipe : règles de la nuit à certifier, étapes à documenter (notifications).
       if (teamStore instanceof RpcTeamStore && tick % 15 === 0) await pollProposals(teamStore, { register, record, log }).catch((e) => debug && log("propositions :", (e as Error).message));
@@ -465,18 +502,19 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     break;
   }
   case "carte-installer": {
-    // Crée ou met à jour la Live View « Carte des frictions » dans l'app Screenpipe de ce poste.
-    const now = new Date().toISOString();
-    const tpl = { ...JSON.parse(readFileSync(new URL("./friction-map.liveview.json", import.meta.url), "utf8")), createdAt: now, updatedAt: now };
+    // Crée ou met à jour les deux Live Views dans l'app Screenpipe de ce poste : l'équipe, et la trace de mon agent.
     const base = process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
-    // Mise à jour d'une vue existante : Screenpipe exige sa révision actuelle (expectedRevision), sinon 409.
     const views = (await (await fetch(`${base}/live-views`, { headers: { Authorization: `Bearer ${KEY}` } })).json().catch(() => [])) as { id: string; revision: number }[];
-    const existing = Array.isArray(views) ? views.find((v) => v.id === tpl.id) : undefined;
-    if (existing) tpl.expectedRevision = existing.revision;
-    const r = await fetch(`${base}/live-views/${tpl.id}`, {
-      method: "PUT", headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(tpl) });
-    if (!r.ok) console.error(await r.text());
-    console.log(`Live View ${tpl.id} : HTTP ${r.status}. Ouvrir : ${MAP_DEEPLINK}`);
+    for (const file of ["./friction-map.liveview.json", "./agent.liveview.json"]) {
+      const now = new Date().toISOString();
+      const tpl = { ...JSON.parse(readFileSync(new URL(file, import.meta.url), "utf8")), createdAt: now, updatedAt: now };
+      // Mise à jour d'une vue existante : Screenpipe exige sa révision actuelle (expectedRevision), sinon 409.
+      const existing = Array.isArray(views) ? views.find((v) => v.id === tpl.id) : undefined;
+      if (existing) tpl.expectedRevision = existing.revision;
+      const r = await fetch(`${base}/live-views/${tpl.id}`, {
+        method: "PUT", headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(tpl) });
+      console.log(`Live View ${tpl.id} : HTTP ${r.status}${r.ok ? "" : ` ${await r.text()}`}. Ouvrir : screenpipe://live-view/${tpl.id}`);
+    }
     break;
   }
   case "carte": {

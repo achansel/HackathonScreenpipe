@@ -172,6 +172,17 @@ export class RpcTeamStore implements TeamStore {
   }
 
   async close() {}
+
+  /** Ce que voit le serveur pour un bloc : relu tel quel sur Supabase (chiffré, sans auteur ni heure). */
+  async serverView(seq: number): Promise<string> {
+    const store = supabase();
+    for (const t of this.teams) {
+      const rows = await store.list(t.id, (t as any).keys.accessToken, seq - 1, null);
+      const r = rows.find((x) => Number(x.seq) === seq);
+      if (r) return `${r.ciphertext.slice(0, 44)}… (${r.ciphertext.length} caractères, chiffré)`;
+    }
+    return "";
+  }
 }
 
 /** Le stockage d'équipe de ce poste : RPC s'il est configuré (recommandé), sinon l'ancien Postgres direct. */

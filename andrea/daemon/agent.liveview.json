@@ -1,0 +1,49 @@
+{
+  "schema": "live-view-template.v1",
+  "id": "friction-agent",
+  "title": "Mon agent, en direct",
+  "revision": 1,
+  "timeRange": "today",
+  "periodPolicy": {
+    "type": "fixed.v1",
+    "value": "today"
+  },
+  "blocks": [
+    {
+      "id": "delai",
+      "title": "Dernière aide",
+      "kind": "metric.v1",
+      "width": 6,
+      "order": 0,
+      "intent": "Délai entre le geste à l'écran et l'aide affichée, pour la dernière aide.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-agent"
+      }
+    },
+    {
+      "id": "jugees",
+      "title": "Depuis le lancement",
+      "kind": "metric.v1",
+      "width": 6,
+      "order": 1,
+      "intent": "Épisodes jugés par le modèle depuis le lancement de l'agent, et frictions retenues.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-agent"
+      }
+    },
+    {
+      "id": "etapes",
+      "title": "Étape par étape",
+      "kind": "timeline.v1",
+      "width": 12,
+      "order": 2,
+      "intent": "Ce que fait l'agent de ce poste : lecture de Crisp, épisode jugé par le modèle, fiche retrouvée, aide affichée, demande à l'équipe. Reste sur ce poste.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-agent"
+      }
+    }
+  ]
+}
