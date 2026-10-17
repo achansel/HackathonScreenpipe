@@ -50,7 +50,7 @@ export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → �
 export const LOOKBACK_MS = 3 * 60_000; // l'IA ne lit que les 3 dernières minutes
 export const BASELINE_MS = 30 * 60_000; // référence d'une fenêtre (empreintes de mots, pas de texte) gardée 30 min après sa dernière frame
 export const SOLUTION_COOLDOWN_MS = 10 * 60_000; // pas deux fois la même aide en 10 min
-export const MIN_CONFIDENCE = 0.6;
+export const MIN_CONFIDENCE = 0.8; // éval du 17/10 sur 172 épisodes étiquetés : 0,6 → 0,8 = précision 0,44 → 0,53, rappel inchangé (0,65)
 // Filtre en direct : un épisode est écarté sans appel au modèle si le détecteur approuvé dit
 // « pas de friction » avec au moins cette confiance. Même seuil pour la validation hors ligne.
 export const SKIP_CONFIDENCE = 0.5;
