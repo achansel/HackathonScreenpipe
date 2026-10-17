@@ -4,9 +4,10 @@ import { CRISP_ONLY, PRODUCTS, RESTAURANTS } from "../src/seed/pipingtable.ts";
 const people = [...RESTAURANTS.flatMap((restaurant) => restaurant.contacts), ...CRISP_ONLY.map((entry) => entry.person)];
 
 describe("Données PipingTable", () => {
-	test("toutes les adresses sont en @example.com", () => {
+	test("toutes les adresses sont en @example.com, sauf l'adresse Crisp de Jean (docs/crisp.md, exception du 17/10)", () => {
 		const emails = people.flatMap((person) => [person.email, person.crispEmail].filter(Boolean));
-		expect(emails.filter((email) => !email!.endsWith("@example.com"))).toEqual([]);
+		// La recherche HubSpot découpe l'adresse : « example » ramène tous les contacts, d'où le « .test » réservé.
+		expect(emails.filter((email) => !email!.endsWith("@example.com"))).toEqual(["jd.resto75@resa-paris.test"]);
 	});
 
 	test("une adresse ne sert qu'à une personne", () => {
