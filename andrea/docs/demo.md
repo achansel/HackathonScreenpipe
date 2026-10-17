@@ -1,5 +1,7 @@
 # Démo finale (3 min + 2 min de questions)
 
+> **État à jour, ce qui reste et ce qui est futur : [RAPPORT-DEMO.md](../../RAPPORT-DEMO.md)** (prioritaire sur ce fichier en cas d'écart).
+
 > Basé sur ce qui tourne réellement (voir [../ETAT.md](../ETAT.md)). Deux postes : **Léa** (Windows, nouvelle, sans solution locale) et **Karim** (Mac patché ou second Windows, connaît les règles). Repli à une machine : `simuler`.
 
 ## Choix techniques pour la démo (fixés le 17/10, ne pas rouvrir)
@@ -46,7 +48,7 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && 
 | 1:05 | Karim | — | Notification **« Un collègue bloque : … dédommagement »** → **Partager**. « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | ~4 s après : **« Geste commercial : 1 mois offert maximum »** avec **Copier**. Léa répond à Jean |
 | 1:40 | Léa | Bouton « Ouvrir la carte » ou `screenpipe://live-view/friction-map` | **Carte des frictions** dans Screenpipe : détours par étape, en fourchettes, jamais par personne ; étapes sans solution ; `required` = garde-fou à expliquer |
-| 2:10 | — | — | Nos chiffres, tels quels : éval sur 172 épisodes étiquetés (précision 0,53, rappel 0,65 ; référence surtout posée par Claude). Évolution prévue, **pas montrée** : la nuit, l'IA écrit un détecteur en code, déterministe, validé et approuvé par un humain (voir « Choix techniques ») |
+| 2:10 | — | — | Nos chiffres, tels quels : éval sur 172 épisodes étiquetés, `claude-opus-5` au seuil 0,72 (précision 0,71, rappel 0,46 ; référence posée par Claude, relue par Andrea ; voir [RAPPORT-DEMO.md](../../RAPPORT-DEMO.md#5-chiffres-à-dire-les-mêmes-partout)). Évolution prévue, **pas montrée** : la nuit, l'IA écrit un détecteur en code, déterministe, validé et approuvé par un humain (voir « Choix techniques ») |
 | 2:30 | — | — | Vie privée (blocs chiffrés, aucune identité, consentement, pause) ; « tout ce que l'utilisateur voit vit dans Screenpipe : notifications, Live View, pipes, modèle » ; les 3 évolutions proposées |
 
 ## Si ça coince

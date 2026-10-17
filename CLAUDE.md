@@ -2,6 +2,14 @@
 
 Contexte produit, architecture et règles de vie privée : voir [VISION.md](VISION.md). Ne pas rouvrir les décisions « verrouillées » ni la liste « écartées ».
 
+## Démo du 18 octobre : lire RAPPORT-DEMO.md d'abord
+
+**Dès qu'une demande concerne la démo, ou dès qu'une demande est faite le 18 octobre 2026 (jour de la finale), lire d'abord [RAPPORT-DEMO.md](RAPPORT-DEMO.md)** avant d'agir : ce qui marche (avec preuve), ce qui reste, ce qui est dans la démo et ce qui est du futur (pitch seulement), l'app de Haytham et son intégration dans Screenpipe.
+
+- Ne pas rouvrir les choix techniques de la démo ([andrea/docs/demo.md](andrea/docs/demo.md), « Choix techniques ») ni faire passer un élément « futur » dans la démo sans accord de l'équipe.
+- Après tout changement ou toute répétition, **mettre à jour RAPPORT-DEMO.md** (heure, preuve) dans le même commit.
+- Une fois le tag `demo` posé : plus de changement de code, sauf correctif bloquant.
+
 ## Stack
 
 - TypeScript sous **Bun**, aucun code natif, aucun fork de Screenpipe : on n'utilise que son API locale.
