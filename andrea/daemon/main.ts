@@ -178,11 +178,11 @@ async function handleEpisode(ep: Episode) {
     if (Date.now() - (lastShown.get(v.solution_id) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
     const s = solutions.find((x) => x.id === v.solution_id)!;
     const card = s.id === "client-introuvable" && dossier && dossierText() ? await customerCard(dossier.name) : null;
-    const message = await notify(card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s));
-    if (card) log("notification : fiche client au lieu de la solution générique");
+    const n = card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s);
+    const message = await notify(n);
     lastShown.set(s.id, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
-    log(`notification « ${s.title} » : ${message}`);
+    log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
     return { verdict: v, notified: s.id };
   }
   if (team) {
