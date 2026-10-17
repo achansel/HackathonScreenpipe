@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-17T19:17:39.997Z",
+  "target": "supabase",
+  "host": "dntcfjjrbjotziczzglj.supabase.co",
+  "crypto": {
+    "sealUs": {
+      "n": 500,
+      "p50": 41.3,
+      "p95": 85.6,
+      "max": 566.9
+    },
+    "openUs": {
+      "n": 500,
+      "p50": 30.7,
+      "p95": 79,
+      "max": 784.2
+    },
+    "deriveKeysMs": 0.11,
+    "blobChars": 1403
+  },
+  "rpc": {
+    "createTeamMs": {
+      "n": 3,
+      "p50": 35.8,
+      "p95": 73.8,
+      "max": 73.8
+    },
+    "putBlobMs": {
+      "n": 30,
+      "p50": 32.2,
+      "p95": 56.6,
+      "max": 61.5
+    },
+    "listAll30Ms": {
+      "n": 15,
+      "p50": 45.8,
+      "p95": 120.1,
+      "max": 120.1
+    },
+    "listByKindMs": {
+      "n": 15,
+      "p50": 27.2,
+      "p95": 35.6,
+      "max": 35.6
+    }
+  },
+  "endToEnd": {
+    "publishToSeenMs": {
+      "n": 10,
+      "p50": 58.5,
+      "p95": 72.6,
+      "max": 72.6
+    },
+    "note": "un membre publie, l'autre relit toutes les 100 ms (la page relit toutes les 2 s, le démon toutes les 5 s)"
+  },
+  "rotation": {
+    "ms": 1241,
+    "republishedSolutions": 20
+  }
+}

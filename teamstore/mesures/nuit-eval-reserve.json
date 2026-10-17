@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-17T19:16:49.388Z",
+  "set": "réservé",
+  "model": "claude-opus-5",
+  "cases": 8,
+  "draws": 1,
+  "judgments": 8,
+  "precision": 1,
+  "recall": 1,
+  "accuracy": 1,
+  "confusion": {
+    "tp": 4,
+    "fp": 0,
+    "fn": 0,
+    "tn": 4
+  },
+  "stableCases": 8,
+  "rawLeaks": 0,
+  "publishedLeaks": 0,
+  "titlesOver60": 0,
+  "latencyMs": {
+    "p50": 3160,
+    "p95": 5885,
+    "max": 5885
+  },
+  "wallSeconds": 9,
+  "errors": [],
+  "runs": [
+    {
+      "label": "acompte remboursé",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3025.083041,
+      "rawLeak": false,
+      "title": "Acompte anti no-show : rembourser via le menu Paiements"
+    },
+    {
+      "label": "changer d'offre",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3160.1015,
+      "rawLeak": false,
+      "title": "Changement d'offre : transaction « modification d'offre »"
+    },
+    {
+      "label": "résiliation",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3289.774167,
+      "rawLeak": false,
+      "title": "Résiliation : préavis d'un mois et formulaire Notion",
+      "trap": "e-mail dans le contexte"
+    },
+    {
+      "label": "ajouter un établissement",
+      "expect": true,
+      "got": true,
+      "confidence": 0.85,
+      "ms": 4170.917834,
+      "rawLeak": false,
+      "title": "HubSpot : au-dela de 3 sites, passer en Offre Groupe"
+    },
+    {
+      "label": "renvoi vers la doc vide",
+      "expect": false,
+      "got": false,
+      "confidence": 0.88,
+      "ms": 1745.734708,
+      "rawLeak": false,
+      "trap": "renvoi sans contenu"
+    },
+    {
+      "label": "page marquée obsolète",
+      "expect": false,
+      "got": false,
+      "confidence": 0,
+      "ms": 3035.3602910000004,
+      "rawLeak": false,
+      "trap": "doc obsolète non confirmée"
+    },
+    {
+      "label": "réponse coupée",
+      "expect": false,
+      "got": false,
+      "confidence": 0.75,
+      "ms": 3159.6642920000004,
+      "rawLeak": false,
+      "trap": "réponse tronquée par la capture"
+    },
+    {
+      "label": "remise ponctuelle validée",
+      "expect": false,
+      "got": false,
+      "confidence": 0.8,
+      "ms": 5885.226375,
+      "rawLeak": false,
+      "trap": "exception ponctuelle"
+    }
+  ]
+}

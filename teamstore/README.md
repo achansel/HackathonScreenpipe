@@ -263,6 +263,14 @@ Dans `teamstore/.data/`, ignoré par git.
 | Pas de notification Screenpipe | L'app Screenpipe est-elle ouverte ? La case « Notifications Screenpipe réelles » est-elle cochée ? Screenpipe en pause bloque aussi les notifications. |
 | `verifier` échoue sur Supabase | `schema.sql` est-il exécuté en entier ? URL et clé anon bien copiées (sans espace) ? |
 
+## Tests et mesures
+
+`./teamstore/tests.sh` lance tout d'une commande (`--supabase`, `--ia`, `--perf` en plus). Les résultats, la provenance des étiquettes et les limites sont dans **[MESURES.md](MESURES.md)** :
+- 35 tests unitaires ;
+- 41 tests de bout en bout et 8 tests du circuit du démon, en local et sur Supabase ;
+- la boucle de nuit avec le vrai modèle : précision et rappel 1,00 sur 20 cas, puis sur 8 cas réservés, 0 fuite ;
+- la performance de Supabase.
+
 ## Pour aller plus loin
 
 - [FICHE.md](FICHE.md) : ce qui a été construit, les choix, les tests, les limites.

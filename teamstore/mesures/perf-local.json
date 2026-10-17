@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-17T19:17:46.303Z",
+  "target": "local",
+  "host": "127.0.0.1",
+  "crypto": {
+    "sealUs": {
+      "n": 500,
+      "p50": 42,
+      "p95": 91.2,
+      "max": 870.3
+    },
+    "openUs": {
+      "n": 500,
+      "p50": 31.9,
+      "p95": 77.5,
+      "max": 897.5
+    },
+    "deriveKeysMs": 0.12,
+    "blobChars": 1403
+  },
+  "rpc": {
+    "createTeamMs": {
+      "n": 3,
+      "p50": 0.5,
+      "p95": 2.9,
+      "max": 2.9
+    },
+    "putBlobMs": {
+      "n": 30,
+      "p50": 0.3,
+      "p95": 0.4,
+      "max": 0.4
+    },
+    "listAll30Ms": {
+      "n": 15,
+      "p50": 1.5,
+      "p95": 2.6,
+      "max": 2.6
+    },
+    "listByKindMs": {
+      "n": 15,
+      "p50": 0.2,
+      "p95": 0.2,
+      "max": 0.2
+    }
+  },
+  "endToEnd": {
+    "publishToSeenMs": {
+      "n": 10,
+      "p50": 0.5,
+      "p95": 0.6,
+      "max": 0.6
+    },
+    "note": "un membre publie, l'autre relit toutes les 100 ms (la page relit toutes les 2 s, le démon toutes les 5 s)"
+  },
+  "rotation": {
+    "ms": 12,
+    "republishedSolutions": 20
+  }
+}

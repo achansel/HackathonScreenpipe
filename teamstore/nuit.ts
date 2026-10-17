@@ -20,7 +20,7 @@ const MIN_CONFIDENCE = 0.7;
 
 const PROMPT = `Tu relis ce qu'une employée du support a vu à l'écran dans les 15 minutes APRÈS avoir bloqué sur une étape de process.
 Dis si elle a trouvé comment faire, et si oui, formule la RÈGLE GÉNÉRALE que toute l'équipe pourra réutiliser.
-- resolved : true seulement si le texte montre clairement la solution (une réponse d'un collègue, une page, un chemin dans un outil). Une question restée sans réponse, ou « je reviens vers vous », c'est false.
+- resolved : true seulement si le texte montre clairement la solution (une réponse d'un collègue, une page, un chemin dans un outil). Une question restée sans réponse, « je reviens vers vous », ou une exception accordée une seule fois (« pour ce client, cette fois ») : false, ce n'est pas une règle.
 - title : la règle en une ligne (60 caractères max), forme « Sujet : ce qu'il faut faire ».
 - body : une ou deux phrases d'explication.
 - JAMAIS de nom de personne, de client, de restaurant, d'e-mail, de téléphone, de montant propre à un client. Des rôles (« la responsable support », « les commerciaux Belgique ») si besoin.
@@ -28,7 +28,10 @@ Dis si elle a trouvé comment faire, et si oui, formule la RÈGLE GÉNÉRALE que
 Réponds uniquement par un JSON : {"resolved":bool,"title":"","body":"","how":"","confidence":0.0}`;
 
 /** Ce qui identifierait quelqu'un dans une règle : refusé avant publication (la responsable relit en plus). */
-const IDENTIFYING = /[\w.+-]+@[\w-]+\.|(?:\+|00)\d[\d .-]{8,}|\b(Léa|Claire|Karim|Yasmine|Thomas|Nadia|Sarah|Antoine|Max|Hugo|Jean|Kenji|Élodie|Pieter|Mounia)\b/i;
+// Les prénoms sont cherchés AVEC majuscule : sinon « 1 mois offert max » passait pour « Max » (mesuré, nuit-eval).
+const CONTACT = /[\w.+-]+@[\w-]+\.|(?:\+|00)\d[\d .-]{8,}|\b0\d(?:[ .-]?\d{2}){4}\b/i;
+const NAMES = /(?<![\p{L}])(Léa|Claire|Karim|Yasmine|Thomas|Nadia|Sarah|Antoine|Max|Hugo|Jean|Kenji|Élodie|Pieter|Mounia)(?![\p{L}])/u;
+export const IDENTIFYING = { test: (s: string) => CONTACT.test(s) || NAMES.test(s) };
 
 export async function judge(c: NightCase, chat: (s: string, u: string, n?: number) => Promise<string>, redact: (s: string) => string): Promise<Finding> {
   const out = await chat(PROMPT, `Étape où elle a bloqué : ${c.step}\n\nCe qu'elle a vu ensuite :\n${redact(c.context).slice(0, MAX_CONTEXT)}`, 600);

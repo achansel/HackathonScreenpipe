@@ -5,6 +5,7 @@
 > **Pour l'équipe (mode d'emploi) :** [README.md](README.md). Une commande : `./teamstore/start.sh` (Mac/Linux/WSL) ou `teamstore\start.cmd` (Windows).
 > **Tests :** 38/38 (stockage), à l'identique sur **Postgres 16 + PostgREST** (la pile de Supabase) et sur le **stockage local SQLite** ; 7/7 (circuit du démon d'Andrea) ; 15/15 (tests d'Andrea, inchangés) ; scénario PipingTable en 10 étapes dans Chrome ; **deux postes séparés** reliés par le réseau (invitation, demande, partage, réponse, rotation) ; notification Screenpipe réelle affichée. **Testé sur le vrai projet Supabase de l'équipe (région UE) : 38/38, démon 7/7, `verifier` 5/5.**
 > **Conception détaillée (avant implémentation) :** [CONCEPTION.md](CONCEPTION.md).
+> **Tests et mesures (unitaires, bout en bout, vrai modèle, performance) :** [MESURES.md](MESURES.md).
 
 ## En une minute
 

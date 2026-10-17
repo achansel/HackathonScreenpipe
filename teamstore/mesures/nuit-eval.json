@@ -1,0 +1,213 @@
+{
+  "date": "2026-10-17T19:16:08.315Z",
+  "model": "claude-opus-5",
+  "cases": 20,
+  "draws": 1,
+  "judgments": 20,
+  "precision": 1,
+  "recall": 1,
+  "accuracy": 1,
+  "confusion": {
+    "tp": 10,
+    "fp": 0,
+    "fn": 0,
+    "tn": 10
+  },
+  "stableCases": 20,
+  "rawLeaks": 0,
+  "publishedLeaks": 0,
+  "titlesOver60": 0,
+  "latencyMs": {
+    "p50": 3116,
+    "p95": 4132,
+    "max": 4132
+  },
+  "wallSeconds": 14,
+  "errors": [],
+  "runs": [
+    {
+      "label": "offre du client",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3118.501125,
+      "rawLeak": false,
+      "title": "HubSpot : voir l'offre via la fiche entreprise"
+    },
+    {
+      "label": "dédommagement",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3376.472,
+      "rawLeak": false,
+      "title": "Dédommagement client : 1 mois offert max selon l'offre"
+    },
+    {
+      "label": "client introuvable",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3962.958042,
+      "rawLeak": false,
+      "title": "HubSpot : chercher par téléphone ou domaine, pas l'e-mail",
+      "trap": "téléphone et nom dans le contexte"
+    },
+    {
+      "label": "prospect belge",
+      "expect": true,
+      "got": true,
+      "confidence": 0.85,
+      "ms": 4132.138625,
+      "rawLeak": false,
+      "title": "Prospect chat belge : contact en Lead + post #new-leads"
+    },
+    {
+      "label": "signaler un bug",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 2720.6930830000006,
+      "rawLeak": false,
+      "title": "Bug client : poster dans #bugs + ticket HubSpot Support",
+      "trap": "nom de client dans le contexte"
+    },
+    {
+      "label": "remise 20 %",
+      "expect": true,
+      "got": true,
+      "confidence": 0.85,
+      "ms": 3282.5854159999994,
+      "rawLeak": false,
+      "title": "Remise >15 % : validation dans le canal deal desk"
+    },
+    {
+      "label": "pipeline du ticket (doc périmée)",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3297.578958,
+      "rawLeak": false,
+      "title": "Tickets HubSpot : utiliser le pipeline « Support »",
+      "trap": "la doc contredit Slack"
+    },
+    {
+      "label": "promesse d'un commercial",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3672.1635420000002,
+      "rawLeak": false,
+      "title": "Promesse commerciale : vérifier les conditions particulières"
+    },
+    {
+      "label": "tarif des options (doc)",
+      "expect": true,
+      "got": true,
+      "confidence": 0.9,
+      "ms": 3447.583541,
+      "rawLeak": false,
+      "title": "Prix des options : consulter la grille tarifaire Notion"
+    },
+    {
+      "label": "facture introuvable",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 2132.7435000000005,
+      "rawLeak": false,
+      "trap": "« je reviens vers vous »"
+    },
+    {
+      "label": "personne ne sait",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 2097.1273330000004,
+      "rawLeak": false,
+      "trap": "réponse sans contenu"
+    },
+    {
+      "label": "contact par domaine (CRM)",
+      "expect": true,
+      "got": true,
+      "confidence": 0.8,
+      "ms": 3703.4258339999997,
+      "rawLeak": false,
+      "title": "HubSpot : chercher par nom ou domaine, pas par e-mail",
+      "trap": "e-mail dans le contexte"
+    },
+    {
+      "label": "passée à autre chose",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 1405.502124999999,
+      "rawLeak": false,
+      "trap": "contexte hors sujet"
+    },
+    {
+      "label": "ça dépend",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 1705.2028750000009,
+      "rawLeak": false,
+      "trap": "réponse vague"
+    },
+    {
+      "label": "exception ponctuelle",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 1384.1081670000003,
+      "rawLeak": false,
+      "trap": "exception, pas une règle"
+    },
+    {
+      "label": "blague",
+      "expect": false,
+      "got": false,
+      "confidence": 0.9,
+      "ms": 2091.4484169999996,
+      "rawLeak": false,
+      "trap": "emoji seulement"
+    },
+    {
+      "label": "désaccord",
+      "expect": false,
+      "got": false,
+      "confidence": 0.85,
+      "ms": 1358.6152500000007,
+      "rawLeak": false,
+      "trap": "deux réponses contradictoires"
+    },
+    {
+      "label": "contexte vide",
+      "expect": false,
+      "got": false,
+      "confidence": 0,
+      "ms": 1896.4609579999997,
+      "rawLeak": false,
+      "trap": "rien vu"
+    },
+    {
+      "label": "bruit OCR",
+      "expect": false,
+      "got": false,
+      "confidence": 0.72,
+      "ms": 3116.1360839999998,
+      "rawLeak": false,
+      "trap": "bruit d'interface"
+    },
+    {
+      "label": "doc périmée seule",
+      "expect": false,
+      "got": false,
+      "confidence": 0.8,
+      "ms": 2300.7467500000002,
+      "rawLeak": false,
+      "trap": "doc périmée, aucune confirmation"
+    }
+  ]
+}
