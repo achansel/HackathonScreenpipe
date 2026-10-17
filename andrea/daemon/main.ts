@@ -168,7 +168,10 @@ async function handleEpisode(ep: Episode) {
     if (!d.friction && d.confidence >= SKIP_CONFIDENCE) { stats.skipped++; return { skipped: true }; }
   }
   stats.qualified++;
-  const context = dossierText();
+  // Pas de contexte dans la conversation du client elle-même : son message y est déjà à l'écran, et le
+  // contexte ferait juger « client introuvable » avant toute recherche (mesuré en répétition, 19:10:25).
+  const fold = (x: string) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const context = dossier && fold(ep.window).includes(fold(dossier.name)) ? undefined : dossierText();
   const v = await qualify(ep, solutions, context);
   if (debug) log("épisode", { app: ep.app, window: ep.window, titles: ep.titles, text: ep.text, dossier: context, verdict: v });
   else log(`épisode ${ep.app} → ${v ? `${v.detour} (${v.type}/${v.control}) solution=${v.solution_id ?? "aucune"} conf=${v.confiance}` : "non qualifié"}`);
