@@ -19,7 +19,15 @@ const EVENTS = `${STATE_DIR}events.jsonl`; // journal du daemon (métadonnées)
 export const REPORT = `${STATE_DIR}report.json`;
 
 type Example = DetectorInput & { id: string; label: string; source: "synthetique" | "reel"; human?: boolean };
-const MIN_HUMAN_REFERENCE = 20; // à partir de là, on juge sur la vérité humaine, plus sur le modèle
+const MIN_HUMAN_REFERENCE = 20;
+/** Qui a posé les étiquettes de référence (labels.provenance.json) : à dire tel quel, une étiquette posée par une IA n'est pas humaine. */
+function provenance(): string {
+  const file = `${STATE_DIR}labels.provenance.json`;
+  if (!existsSync(file)) return "humaines";
+  const counts: Record<string, number> = {};
+  for (const who of Object.values(JSON.parse(readFileSync(file, "utf8")) as Record<string, string>)) counts[who] = (counts[who] ?? 0) + 1;
+  return Object.entries(counts).map(([who, n]) => `${n} ${who}`).join(", ");
+} // à partir de là, on juge sur la vérité humaine, plus sur le modèle
 
 const readJson = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {});
 const hash = (s: string) => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
@@ -142,7 +150,7 @@ export async function learn() {
       episodes: eps.length, labelled: all.length, train: train.length, test: test.length,
       real: all.filter((e) => e.source === "reel").length,
       human: humanRef.length, usage: Object.keys(implicitLabels()).filter((id) => eps.some((e) => e.id === id)).length,
-      reference: useHuman ? "humaine" : `modèle (moins de ${MIN_HUMAN_REFERENCE} étiquettes humaines : à prendre avec prudence)`,
+      reference: useHuman ? `étiquettes de référence (${provenance()})` : `modèle (moins de ${MIN_HUMAN_REFERENCE} étiquettes de référence : à prendre avec prudence)`,
     },
     candidate, approved, better,
     note: better ? "candidat meilleur : à relire puis `approuver`"
