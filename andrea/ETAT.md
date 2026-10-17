@@ -80,6 +80,15 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 - Agent des pipes en panne sur ce poste (`pi-subagents … toToolDeclaration is not a function`).
 - App fermée → le moteur répond 409 « search_only » (géré : message + nouvel essai).
 
+## Évolution prévue : détecteur écrit en code la nuit
+
+**Figée le 17/10 au soir, hors démo : on n'y touche plus avant la finale.**
+
+- **L'idée** : la nuit, l'IA lit les épisodes étiquetés et **écrit une fonction `detect(e)` en JavaScript** (règles sur le texte et les titres). Ce code est déterministe, rapide (< 1 ms), relisible, et il écarte le travail normal **avant** tout appel au modèle : moins de latence, moins de coût, moins de texte envoyé. Porte de validation sur des épisodes jamais vus, puis **approbation humaine** (`approuver`) : jamais de code généré mis en service tout seul.
+- **Ce qui existe** (`andrea/offline/learn.ts`, `detector.ts`, `main.ts apprendre | rapport | approuver`) : génération, compilation isolée, validation, rapport avec l'origine des étiquettes de référence. Le démon charge le détecteur approuvé s'il existe (`approvedDetector()` dans `daemon/main.ts`).
+- **Où on en est** : candidat du 17/10 sur 172 épisodes de référence : 26/26 frictions gardées, mais **0,7 % du travail normal écarté** → inutile, **non approuvé**. En direct, tout passe donc par l'inférence.
+- **Pour reprendre** : (1) plus d'épisodes étiquetés, surtout du travail normal varié ; (2) générer avec le meilleur modèle disponible (la nuit, la latence ne compte pas : `FRICTION_MODEL=claude-opus-5 bun andrea/offline/main.ts apprendre`) ; (3) viser un objectif explicite dans la porte (ex. ≥ 30 % du normal écarté, ≥ 95 % des frictions gardées) ; (4) relire le code avant `approuver`.
+
 ## À faire à la main
 
 **Avant la démo** (détail : [docs/demo.md](docs/demo.md))

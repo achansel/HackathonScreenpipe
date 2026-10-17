@@ -12,6 +12,7 @@ Ce sont des choix **pour la démo de dimanche**, pas des décisions produit. Ré
 | Boutons sous Windows | `api` relayé pour [Ça m'a aidé] [Pas ça] et [Partager] ; `link` seulement pour [Y aller]. | `api` relayé = API de Screenpipe, pas un fork, mesuré. Un `link` http ouvre toujours le navigateur (`actions.ts:346-358`, `open(url)`). |
 | Mac | **Screenpipe patché** ([screenpipe-patch/](../screenpipe-patch/)) pour que les boutons `api` marchent. Écart assumé avec « aucun fork », **pour la démo seulement**. PR vers Screenpipe plus tard. | Sans le correctif, un clic `api` n'arrive jamais sur Mac (mesuré). |
 | Lecture de Crisp | Celle de Minguk, **dans le démon** : le dernier message client sert de contexte au modèle (10 min), jamais de friction à lui seul. Ne **pas** lancer en même temps `teamstore/start.sh moi --crisp` (variante sans démon) ni `bun run simulate` sans `--sans-aide`. | Un seul décideur ; mesuré : la question Slack « geste commercial » passe de 2/5 à 5/5 avec le contexte. Chaque lecteur en plus multiplie les recherches (503 « search is busy »). |
+| Génération de code (nuit) | **Évolution prévue, hors démo, figée le 17/10.** Rien à lancer ni à montrer : en direct, tout passe par l'inférence (un appel au modèle par épisode). | Le candidat généré ce soir ne filtrait que 0,7 % du travail normal (non approuvé) ; plus le temps de l'améliorer avant dimanche. Détail et reprise : [ETAT.md](../ETAT.md#évolution-prévue--détecteur-écrit-en-code-la-nuit). |
 | Pitch sur le correctif | « On a trouvé et corrigé un bug de Screenpipe sur Mac ; c'est une des 3 évolutions qu'on leur propose. » | Ne pas présenter le build patché comme du Screenpipe d'origine. |
 
 ## Avant de monter sur scène (15 min avant)
@@ -44,7 +45,7 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && 
 | 1:05 | Karim | — | Notification **« Un collègue bloque : … dédommagement »** → **Partager**. « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | ~4 s après : **« Geste commercial : 1 mois offert maximum »** avec **Copier**. Léa répond à Jean |
 | 1:40 | Léa | Bouton « Ouvrir la carte » ou `screenpipe://live-view/friction-map` | **Carte des frictions** dans Screenpipe : détours par étape, en fourchettes, jamais par personne ; étapes sans solution ; `required` = garde-fou à expliquer |
-| 2:10 | Terminal | `bun andrea/offline/main.ts rapport` | Apprentissage de nuit : détecteur généré, porte de validation, approbation humaine |
+| 2:10 | — | — | Nos chiffres, tels quels : éval sur 172 épisodes étiquetés (précision 0,53, rappel 0,65 ; référence surtout posée par Claude). Évolution prévue, **pas montrée** : la nuit, l'IA écrit un détecteur en code, déterministe, validé et approuvé par un humain (voir « Choix techniques ») |
 | 2:30 | — | — | Vie privée (blocs chiffrés, aucune identité, consentement, pause) ; « tout ce que l'utilisateur voit vit dans Screenpipe : notifications, Live View, pipes, modèle » ; les 3 évolutions proposées |
 
 ## Si ça coince
