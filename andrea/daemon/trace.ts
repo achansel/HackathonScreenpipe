@@ -24,6 +24,37 @@ export function judged(friction: boolean) {
   if (friction) stats.frictions++;
   dirty = true;
 }
+// Le parcours du dernier épisode, repris du parcours guidé de Haytham (teamstore/demo/parcours.ts : icône,
+// étape, état). La Live View n'a pas de couleur (schéma vérifié) : l'état se lit à l'emoji.
+type State = "done" | "active" | "miss" | "skip";
+const STAGES = [
+  ["crisp", "💬", "Crisp : message client lu"],
+  ["model", "🧠", "Le modèle juge l'épisode"],
+  ["card", "🪪", "Fiche HubSpot du client"],
+  ["help", "💡", "Aide affichée"],
+  ["team", "🔒", "Envoi chiffré à l'équipe"],
+] as const;
+type Stage = (typeof STAGES)[number][0];
+const MARK: Record<State, string> = { done: "✅", active: "⏳", miss: "⚠️", skip: "▫️" };
+const stages: Partial<Record<Stage, { state: State; detail: string }>> = {};
+
+export function stage(key: Stage, state: State, detail = "") {
+  stages[key] = { state, detail };
+  dirty = true;
+}
+/** Un nouvel épisode retenu : on repart de zéro, sauf la lecture de Crisp (le dossier dure 10 min). */
+export function newEpisode() {
+  for (const k of ["model", "card", "help", "team"] as const) delete stages[k];
+  dirty = true;
+}
+function parcours() {
+  const md = (x: string) => x.replace(/[*_`[\]]/g, (c) => `\\${c}`);
+  return STAGES.map(([k, icon, label]) => {
+    const s = stages[k];
+    return s ? `${MARK[s.state]} ${icon} **${label}**${s.detail ? ` · ${md(s.detail)}` : ""}` : `▫️ ${icon} ${label}`;
+  }).join("\n\n");
+}
+
 export function helped(ms: number, title: string) {
   lastHelp = { ms, title };
   dirty = true;
@@ -36,6 +67,7 @@ export async function publishTrace() {
   const blocks: Record<string, unknown> = {
     delai: lastHelp ? { value: fmt(lastHelp.ms), label: "entre le geste et l'aide", delta: lastHelp.title } : { value: "—", label: "pas encore d'aide" },
     jugees: { value: stats.judged, label: "épisodes jugés par le modèle", delta: `${stats.frictions} friction(s) retenue(s)` },
+    parcours: { content: parcours().slice(0, 10_000) },
     etapes: { items: events.map((e) => ({ title: e.title.slice(0, 200), timestamp: new Date(e.at).toISOString(), subtitle: e.subtitle.slice(0, 500) })) },
   };
   try {

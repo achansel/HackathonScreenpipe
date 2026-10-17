@@ -2,7 +2,7 @@
   "schema": "live-view-template.v1",
   "id": "friction-agent",
   "title": "Mon agent, en direct",
-  "revision": 1,
+  "revision": 2,
   "timeRange": "today",
   "periodPolicy": {
     "type": "fixed.v1",
@@ -10,11 +10,23 @@
   },
   "blocks": [
     {
+      "id": "parcours",
+      "title": "Le dernier épisode, étape par étape",
+      "kind": "markdown.v1",
+      "width": 12,
+      "order": 0,
+      "intent": "Les étapes de l'agent pour le dernier épisode, comme le parcours de Haytham : lecture de Crisp, jugement du modèle, fiche HubSpot, aide affichée, demande anonyme chiffrée. ✅ fait, ⏳ en cours, ⚠️ manqué, ▫️ pas nécessaire.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-agent"
+      }
+    },
+    {
       "id": "delai",
       "title": "Dernière aide",
       "kind": "metric.v1",
       "width": 6,
-      "order": 0,
+      "order": 1,
       "intent": "Délai entre le geste à l'écran et l'aide affichée, pour la dernière aide.",
       "source": {
         "type": "pipe.v1",
@@ -26,7 +38,7 @@
       "title": "Depuis le lancement",
       "kind": "metric.v1",
       "width": 6,
-      "order": 1,
+      "order": 2,
       "intent": "Épisodes jugés par le modèle depuis le lancement de l'agent, et frictions retenues.",
       "source": {
         "type": "pipe.v1",
@@ -35,10 +47,10 @@
     },
     {
       "id": "etapes",
-      "title": "Étape par étape",
+      "title": "Journal",
       "kind": "timeline.v1",
       "width": 12,
-      "order": 2,
+      "order": 3,
       "intent": "Ce que fait l'agent de ce poste : lecture de Crisp, épisode jugé par le modèle, fiche retrouvée, aide affichée, demande à l'équipe. Reste sur ce poste.",
       "source": {
         "type": "pipe.v1",

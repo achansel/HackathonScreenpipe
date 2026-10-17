@@ -30,7 +30,7 @@ import { CallEpisodes } from "../../minguk/src/detect/call-episodes";
 import { listenToMeeting } from "../../minguk/src/detect/call-listener";
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
 import { pollProposals } from "./certify";
-import { helped, judged, publishTrace, seconds, trace } from "./trace";
+import { helped, judged, newEpisode, publishTrace, seconds, stage, trace } from "./trace";
 import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { groundedRequest, qualify } from "./qualify";
@@ -160,7 +160,9 @@ let teamStore: TeamStore | null = null;
 let dossier: { name: string; text: string; at: number } | null = null;
 const crisp = CRISP && !SIM
   ? new CrispWatcher({ screenpipeUrl: API, apiKey: KEY, onEvent: (e) => {
+      if (e.kind === "unread" && !(dossier && Date.now() - dossier.at < 60_000)) stage("crisp", "active", "nouveau message, en attente d'une capture lisible de la liste");
       if (e.kind !== "message" || !e.preview) return;
+      stage("crisp", "done", `contexte du dossier pendant ${DOSSIER_MS / 60_000} min`);
       dossier = { name: e.name, text: e.preview, at: e.detectedAt };
       log(`Crisp : nouveau message client (contexte ${DOSSIER_MS / 60_000} min)`);
       trace("Crisp : message client lu", `contexte du dossier pendant ${DOSSIER_MS / 60_000} min ; fiche HubSpot préparée`);
@@ -241,29 +243,36 @@ async function handleEpisode(ep: Episode) {
   else log(`épisode ${ep.app} → ${v ? `${v.detour} (${v.type}/${v.control}) solution=${v.solution_id ?? "aucune"} conf=${v.confiance}` : "non qualifié"}`);
   const retained = Boolean(v?.friction && v.confiance >= MIN_CONFIDENCE);
   judged(retained);
+  if (retained) newEpisode(), stage("model", "done", `${v!.detour} · « ${v!.step} » · confiance ${v!.confiance} · ${seconds(ms)}${context ? " · avec le contexte Crisp" : ""}`);
   if (retained) trace(`Épisode jugé : ${v!.detour}`, `${ep.app.replace(/\.exe$/i, "")} · « ${v!.step} » · confiance ${v!.confiance} · modèle ${seconds(ms)}${context ? " · avec le contexte Crisp" : ""}`);
   if (!v?.friction || v.confiance < MIN_CONFIDENCE) return { verdict: v };
   if (team) await team.sign(v);
   if (v.solution_id) {
     const s = solutions.find((x) => x.id === v.solution_id)!;
     const card = s.id === "client-introuvable" && dossier && dossierText() ? await customerCard(dossier.name) : null;
+    if (card) stage("card", "done", [card.company?.name, card.company?.plan].filter(Boolean).join(" · ") || "retrouvée par le nom");
+    else if (s.id === "client-introuvable") stage("card", "miss", dossierText() ? "pas de fiche unique à ce nom" : "aucun message Crisp lu : aide générique");
+    else stage("card", "skip", "pas besoin");
     // Anti-répétition par aide ET par client : la fiche de Jean n'est pas une répétition de l'aide générique
     // montrée une minute plus tôt (mesuré en répétition : la fiche bloquée 10 min).
     // Une solution qui collectionne les « Pas ça » (score ≤ -2) ne part qu'à 0,95 de confiance.
-    if ((s.score ?? 0) <= -2 && v.confiance < 0.95) { log(`aide « ${s.title} » retenue : souvent jugée « Pas ça » (score ${s.score})`); return { verdict: v, held: true }; }
+    if ((s.score ?? 0) <= -2 && v.confiance < 0.95) { log(`aide « ${s.title} » retenue : souvent jugée « Pas ça » (score ${s.score})`); stage("help", "skip", "retenue : souvent jugée « Pas ça »"); return { verdict: v, held: true }; }
     const shownKey = card ? `${s.id}|${card.contactId}` : s.id;
-    if (Date.now() - (lastShown.get(shownKey) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
+    if (Date.now() - (lastShown.get(shownKey) ?? 0) < SOLUTION_COOLDOWN_MS) { stage("help", "skip", "déjà montrée il y a peu"); return { verdict: v, cooldown: true }; }
     const n = card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s);
     const message = await notify(n);
     lastShown.set(shownKey, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
     log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
     helped(Date.now() - ep.at, n.title.replace(LABEL, ""));
+    stage("help", message.startsWith("NON AFFICHÉE") ? "miss" : "done", `« ${n.title.replace(LABEL, "")} » · ${seconds(Date.now() - ep.at)} après le geste`);
     trace(`Aide affichée : ${n.title.replace(LABEL, "")}`, `${seconds(Date.now() - ep.at)} après le geste à l'écran${card ? " · fiche HubSpot à la place de l'aide générique" : ""}`);
     return { verdict: v, notified: s.id };
   }
   // Notifier peu, compter beaucoup : une demande anonyme part vers toute l'équipe, donc seulement sur une
   // question explicite (éval du 17/10 : 4 demandes justes sur 12). Le reste est déjà compté sur la carte (sign).
+  if (v.detour !== "demande_aide") stage("help", "skip", "pas d'aide connue : comptée sur la carte, sans notification");
+  else stage("help", "skip", "pas d'aide connue : on demande à l'équipe");
   if (team && v.detour !== "demande_aide") { log(`friction « ${v.step} » (${v.detour}) comptée sur la carte, sans demande`); return { verdict: v, counted: true }; }
   if (team) {
     if (!groundedRequest(v.step, ep.text)) { log(`demande anonyme retenue : « ${v.step} » ne s'appuie pas sur le texte de l'épisode`); return { verdict: v, held: true }; }
@@ -354,6 +363,7 @@ function traced(store: TeamStore): TeamStore {
     const seq = await put(kind, payload);
     const team = JSON.stringify(Object.fromEntries(Object.entries({ step: payload?.step, type: payload?.type, detour: payload?.detour, title: payload?.title }).filter(([, v]) => v)));
     const server = store instanceof RpcTeamStore ? await store.serverView(seq).catch(() => "") : "";
+    stage("team", "done", `${kind === "request" ? "demande anonyme" : kind === "signature" ? "signature pour la carte" : kind} · l'équipe lit ${team}${server ? ` · le serveur voit ${server}` : ""}`);
     trace(UPLOAD[kind] ?? `Envoyé à l'équipe : ${kind}`, `l'équipe lit ${team}${server ? ` · le serveur voit ${server}` : ""} · ni nom, ni texte d'écran`);
     return seq;
   };
