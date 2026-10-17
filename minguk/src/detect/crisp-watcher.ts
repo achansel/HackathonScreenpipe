@@ -8,7 +8,7 @@
  *   avec son compteur « 💬N ». C'est ce qui révèle un message quand l'agent est sur HubSpot.
  */
 import { defined } from "../notify/defined.ts";
-import { conversationText, type FrameElement, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
+import { conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
 
 export type CrispEvent =
 	| { kind: "message"; name: string; preview: string; frameAt: number; detectedAt: number }
@@ -121,18 +121,29 @@ export class CrispWatcher {
 		const response = await this.options.fetch(`${this.options.screenpipeUrl}/frames/${frameId}/elements`, { headers: this.headers() });
 		if (!response.ok) return;
 		const elements = ((await response.json()) as { data?: FrameElement[] }).data ?? [];
+		// Un même client peut avoir deux lignes (une ancienne conversation « Élodie › Andrea ») : on garde la plus récente.
+		const byName = new Map<string, { row: ReturnType<typeof inboxRows>[number]; fresh: boolean }>();
 		for (const row of inboxRows(elements)) {
+			// « Jean > Andrea » : la conversation de Jean, assignée à Andrea. La liste n'affiche que le
+			// prénom ; le titre de l'onglet donne le nom complet quand la conversation est ouverte.
+			const first = customerName(row.name);
+			const name = opened && fold(opened).startsWith(fold(first)) ? opened : first;
 			const fresh = row.ageMinutes !== undefined && row.ageMinutes <= this.options.freshMinutes;
-			// L'OCR rate parfois l'aperçu de la liste : si la conversation est ouverte, on lit son texte.
-			const text = row.preview || (opened === row.name ? conversationText(elements) : "");
-			const known = this.rows.get(row.name);
-			this.rows.set(row.name, { text: text || known?.text || "", fresh });
+			const kept = byName.get(name);
+			if (!kept || (fresh && !kept.fresh)) byName.set(name, { row, fresh });
+		}
+		for (const [name, { row, fresh }] of byName) {
+			const isOpen = opened === name;
+			// Le texte complet se lit dans la conversation ouverte ; sinon, l'aperçu de la liste.
+			const text = (isOpen && (row.preview ? fullMessage(elements, row.preview) : conversationText(elements))) || row.preview;
+			const known = this.rows.get(name);
+			this.rows.set(name, { text: text || known?.text || "", fresh });
 			if (this.baseline || !fresh) continue;
 			// Nouveau message : la ligne vient de devenir récente, ou son aperçu a vraiment changé
 			// (pas seulement tronqué autrement par l'OCR).
 			const changed = Boolean(row.preview && known?.text && !sameText(known.text, row.preview));
 			if (known?.fresh && !changed) continue;
-			this.emit({ kind: "message", name: row.name, preview: text, frameAt });
+			this.emit({ kind: "message", name, preview: text, frameAt });
 		}
 	}
 
@@ -162,4 +173,9 @@ function latest(items: SearchItem[], cursor: number): number {
 function sameText(a: string, b: string): boolean {
 	const [x, y] = [a.replace(/…$/, ""), b.replace(/…$/, "")];
 	return x.startsWith(y) || y.startsWith(x);
+}
+
+/** Sans accents ni majuscules : l'OCR lit tantôt « Élodie », tantôt « Elodie ». */
+function fold(text: string): string {
+	return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }

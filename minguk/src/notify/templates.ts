@@ -58,7 +58,7 @@ function pathPayload(episode: Episode, help: PathHelp, link: Required<BuildOptio
 		id: episode.id,
 		title: `🧭 ${help.destination}`,
 		body: [
-			`**1 clic au lieu de ${levels}.** Chemin pris par l'équipe ${help.teamCount} fois.`,
+			`**1 clic au lieu de ${levels}.** ${help.why ?? `Chemin pris par l'équipe ${help.teamCount} fois.`}`,
 			`\`${help.breadcrumb.join(" › ")}\``,
 		].join("\n"),
 		pipe_name: PIPE_NAME,

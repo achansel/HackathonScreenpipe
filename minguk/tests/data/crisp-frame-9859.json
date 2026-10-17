@@ -1,0 +1,1520 @@
+[
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0039,
+			"top": 0.3458,
+			"width": 0.0143,
+			"height": 0.0128
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "St....",
+		"bounds": {
+			"left": 0.0186,
+			"top": 0.3471,
+			"width": 0.0151,
+			"height": 0.0129
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "4",
+		"bounds": {
+			"left": 0.0139,
+			"top": 0.4395,
+			"width": 0.0153,
+			"height": 0.0266
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Q",
+		"bounds": {
+			"left": 0.0139,
+			"top": 0.8057,
+			"width": 0.0153,
+			"height": 0.0244
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "88",
+		"bounds": {
+			"left": 0.0125,
+			"top": 0.8545,
+			"width": 0.018,
+			"height": 0.0266
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "All",
+		"bounds": {
+			"left": 0.0583,
+			"top": 0.1976,
+			"width": 0.0135,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "V",
+		"bounds": {
+			"left": 0.0728,
+			"top": 0.1976,
+			"width": 0.009,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "=",
+		"bounds": {
+			"left": 0.1512,
+			"top": 0.1976,
+			"width": 0.0136,
+			"height": 0.0134
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Filters",
+		"bounds": {
+			"left": 0.1658,
+			"top": 0.1974,
+			"width": 0.0312,
+			"height": 0.0135
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "+",
+		"bounds": {
+			"left": 0.2206,
+			"top": 0.1954,
+			"width": 0.0125,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.0998,
+			"top": 0.2265,
+			"width": 0.0244,
+			"height": 0.0159
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Team",
+		"bounds": {
+			"left": 0.1253,
+			"top": 0.2261,
+			"width": 0.0273,
+			"height": 0.0159
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "20h",
+		"bounds": {
+			"left": 0.2025,
+			"top": 0.2264,
+			"width": 0.018,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "1)",
+		"bounds": {
+			"left": 0.0832,
+			"top": 0.2575,
+			"width": 0.0139,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Enfin,",
+		"bounds": {
+			"left": 0.0985,
+			"top": 0.2575,
+			"width": 0.025,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nous",
+		"bounds": {
+			"left": 0.1249,
+			"top": 0.2575,
+			"width": 0.0222,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avons",
+		"bounds": {
+			"left": 0.1484,
+			"top": 0.2575,
+			"width": 0.0264,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "cré...",
+		"bounds": {
+			"left": 0.1762,
+			"top": 0.2575,
+			"width": 0.0236,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Jean",
+		"bounds": {
+			"left": 0.0985,
+			"top": 0.3108,
+			"width": 0.025,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ">",
+		"bounds": {
+			"left": 0.1245,
+			"top": 0.3108,
+			"width": 0.0062,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Andrea",
+		"bounds": {
+			"left": 0.1318,
+			"top": 0.3108,
+			"width": 0.0333,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "now",
+		"bounds": {
+			"left": 0.2012,
+			"top": 0.313,
+			"width": 0.0194,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "JD",
+		"bounds": {
+			"left": 0.0652,
+			"top": 0.3263,
+			"width": 0.018,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•)",
+		"bounds": {
+			"left": 0.0805,
+			"top": 0.3418,
+			"width": 0.0166,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Toujours",
+		"bounds": {
+			"left": 0.0985,
+			"top": 0.3418,
+			"width": 0.0361,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "rien...J'ai...",
+		"bounds": {
+			"left": 0.136,
+			"top": 0.3418,
+			"width": 0.0472,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "JD",
+		"bounds": {
+			"left": 0.2594,
+			"top": 0.3552,
+			"width": 0.0139,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "17m",
+		"bounds": {
+			"left": 0.2025,
+			"top": 0.3951,
+			"width": 0.018,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "JM",
+		"bounds": {
+			"left": 0.0652,
+			"top": 0.4084,
+			"width": 0.0194,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Julien",
+		"bounds": {
+			"left": 0.0985,
+			"top": 0.3929,
+			"width": 0.0303,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ">",
+		"bounds": {
+			"left": 0.1301,
+			"top": 0.3929,
+			"width": 0.0061,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Andrea",
+		"bounds": {
+			"left": 0.1373,
+			"top": 0.3929,
+			"width": 0.0347,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•)",
+		"bounds": {
+			"left": 0.0805,
+			"top": 0.4262,
+			"width": 0.0158,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "jinsiste",
+		"bounds": {
+			"left": 0.0975,
+			"top": 0.4262,
+			"width": 0.0303,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.129,
+			"top": 0.4262,
+			"width": 0.0085,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "veux",
+		"bounds": {
+			"left": 0.1387,
+			"top": 0.4262,
+			"width": 0.0206,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "un....",
+		"bounds": {
+			"left": 0.1606,
+			"top": 0.4262,
+			"width": 0.0198,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.0999,
+			"top": 0.4772,
+			"width": 0.0375,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "›",
+		"bounds": {
+			"left": 0.1384,
+			"top": 0.4772,
+			"width": 0.0052,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Andrea",
+		"bounds": {
+			"left": 0.1446,
+			"top": 0.4772,
+			"width": 0.0343,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "19h",
+		"bounds": {
+			"left": 0.2025,
+			"top": 0.4772,
+			"width": 0.018,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "см",
+		"bounds": {
+			"left": 0.0638,
+			"top": 0.4883,
+			"width": 0.0236,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "→",
+		"bounds": {
+			"left": 0.5216,
+			"top": 0.1954,
+			"width": 0.0146,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Unresolved",
+		"bounds": {
+			"left": 0.5372,
+			"top": 0.1954,
+			"width": 0.044,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "JD",
+		"bounds": {
+			"left": 0.2594,
+			"top": 0.586,
+			"width": 0.0139,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Start",
+		"bounds": {
+			"left": 0.3884,
+			"top": 0.2508,
+			"width": 0.0198,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "LiveTranslate",
+		"bounds": {
+			"left": 0.4092,
+			"top": 0.2508,
+			"width": 0.0527,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Today",
+		"bounds": {
+			"left": 0.4134,
+			"top": 0.2908,
+			"width": 0.0222,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Bonjour,",
+		"bounds": {
+			"left": 0.2927,
+			"top": 0.333,
+			"width": 0.0352,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ma",
+		"bounds": {
+			"left": 0.3291,
+			"top": 0.333,
+			"width": 0.0146,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "page",
+		"bounds": {
+			"left": 0.3449,
+			"top": 0.333,
+			"width": 0.0231,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "de",
+		"bounds": {
+			"left": 0.3692,
+			"top": 0.333,
+			"width": 0.0121,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "réservation",
+		"bounds": {
+			"left": 0.3825,
+			"top": 0.333,
+			"width": 0.0498,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "est",
+		"bounds": {
+			"left": 0.4335,
+			"top": 0.333,
+			"width": 0.0134,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "en",
+		"bounds": {
+			"left": 0.4481,
+			"top": 0.333,
+			"width": 0.0121,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "panne",
+		"bounds": {
+			"left": 0.4614,
+			"top": 0.333,
+			"width": 0.0267,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "!!",
+		"bounds": {
+			"left": 0.4894,
+			"top": 0.333,
+			"width": 0.0085,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Les",
+		"bounds": {
+			"left": 0.4991,
+			"top": 0.333,
+			"width": 0.0146,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "clients",
+		"bounds": {
+			"left": 0.5149,
+			"top": 0.333,
+			"width": 0.0291,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ne",
+		"bounds": {
+			"left": 0.5452,
+			"top": 0.333,
+			"width": 0.0125,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "peuvent",
+		"bounds": {
+			"left": 0.2927,
+			"top": 0.3529,
+			"width": 0.0352,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "plus",
+		"bounds": {
+			"left": 0.3291,
+			"top": 0.3529,
+			"width": 0.0194,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "réserver",
+		"bounds": {
+			"left": 0.3498,
+			"top": 0.3529,
+			"width": 0.0364,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "pour",
+		"bounds": {
+			"left": 0.3874,
+			"top": 0.3529,
+			"width": 0.0218,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ce",
+		"bounds": {
+			"left": 0.4105,
+			"top": 0.3529,
+			"width": 0.0109,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "soir.",
+		"bounds": {
+			"left": 0.4226,
+			"top": 0.3529,
+			"width": 0.0186,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Bonjour",
+		"bounds": {
+			"left": 0.3662,
+			"top": 0.4129,
+			"width": 0.0343,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Jean,",
+		"bounds": {
+			"left": 0.4021,
+			"top": 0.4129,
+			"width": 0.0234,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "j'ai",
+		"bounds": {
+			"left": 0.4271,
+			"top": 0.4129,
+			"width": 0.014,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "mis",
+		"bounds": {
+			"left": 0.4427,
+			"top": 0.4129,
+			"width": 0.0156,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "mon",
+		"bounds": {
+			"left": 0.4599,
+			"top": 0.4129,
+			"width": 0.0187,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "agent",
+		"bounds": {
+			"left": 0.4802,
+			"top": 0.4129,
+			"width": 0.0265,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "sur",
+		"bounds": {
+			"left": 0.5083,
+			"top": 0.4129,
+			"width": 0.0125,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "le",
+		"bounds": {
+			"left": 0.5223,
+			"top": 0.4129,
+			"width": 0.0094,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "coup.",
+		"bounds": {
+			"left": 0.5332,
+			"top": 0.4129,
+			"width": 0.0245,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Read",
+		"bounds": {
+			"left": 0.5022,
+			"top": 0.4484,
+			"width": 0.0312,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.5345,
+			"top": 0.4484,
+			"width": 0.0073,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chat",
+		"bounds": {
+			"left": 0.5428,
+			"top": 0.4484,
+			"width": 0.0191,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Toujours",
+		"bounds": {
+			"left": 0.2886,
+			"top": 0.495,
+			"width": 0.0382,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "rien...",
+		"bounds": {
+			"left": 0.3284,
+			"top": 0.495,
+			"width": 0.0277,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "J'ai",
+		"bounds": {
+			"left": 0.3579,
+			"top": 0.495,
+			"width": 0.0139,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "perdu",
+		"bounds": {
+			"left": 0.3735,
+			"top": 0.495,
+			"width": 0.0243,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "des",
+		"bounds": {
+			"left": 0.3995,
+			"top": 0.495,
+			"width": 0.0156,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "réservations",
+		"bounds": {
+			"left": 0.4169,
+			"top": 0.495,
+			"width": 0.0555,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ce",
+		"bounds": {
+			"left": 0.4741,
+			"top": 0.495,
+			"width": 0.0104,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "midi,",
+		"bounds": {
+			"left": 0.4862,
+			"top": 0.495,
+			"width": 0.0208,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.5088,
+			"top": 0.495,
+			"width": 0.0087,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "veux",
+		"bounds": {
+			"left": 0.5192,
+			"top": 0.495,
+			"width": 0.0208,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "un",
+		"bounds": {
+			"left": 0.5417,
+			"top": 0.495,
+			"width": 0.0132,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "dédommagement.",
+		"bounds": {
+			"left": 0.2899,
+			"top": 0.5127,
+			"width": 0.0832,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Toujours",
+		"bounds": {
+			"left": 0.2872,
+			"top": 0.5616,
+			"width": 0.0406,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "rien...",
+		"bounds": {
+			"left": 0.3293,
+			"top": 0.5616,
+			"width": 0.0265,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "J'ai",
+		"bounds": {
+			"left": 0.3574,
+			"top": 0.5616,
+			"width": 0.014,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "perdu",
+		"bounds": {
+			"left": 0.373,
+			"top": 0.5616,
+			"width": 0.025,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "des",
+		"bounds": {
+			"left": 0.3995,
+			"top": 0.5616,
+			"width": 0.0172,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "réservations",
+		"bounds": {
+			"left": 0.4183,
+			"top": 0.5616,
+			"width": 0.0531,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ce",
+		"bounds": {
+			"left": 0.4729,
+			"top": 0.5616,
+			"width": 0.0109,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "midi,",
+		"bounds": {
+			"left": 0.4854,
+			"top": 0.5616,
+			"width": 0.0218,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.5088,
+			"top": 0.5616,
+			"width": 0.0078,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "veux",
+		"bounds": {
+			"left": 0.5182,
+			"top": 0.5616,
+			"width": 0.0218,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "un",
+		"bounds": {
+			"left": 0.5416,
+			"top": 0.5616,
+			"width": 0.0134,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "dédommagement.",
+		"bounds": {
+			"left": 0.2913,
+			"top": 0.5815,
+			"width": 0.0818,
+			"height": 0.02
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "M",
+		"bounds": {
+			"left": 0.1595,
+			"top": 0.5993,
+			"width": 0.0222,
+			"height": 0.0311
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.061,
+			"top": 0.6659,
+			"width": 0.0376,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messaging",
+		"bounds": {
+			"left": 0.0999,
+			"top": 0.6659,
+			"width": 0.051,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "channels",
+		"bounds": {
+			"left": 0.1521,
+			"top": 0.6659,
+			"width": 0.0421,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Manage",
+		"bounds": {
+			"left": 0.061,
+			"top": 0.6947,
+			"width": 0.0316,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "all",
+		"bounds": {
+			"left": 0.0938,
+			"top": 0.6947,
+			"width": 0.0109,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.106,
+			"top": 0.6947,
+			"width": 0.0182,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chats",
+		"bounds": {
+			"left": 0.1254,
+			"top": 0.6947,
+			"width": 0.0218,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.1484,
+			"top": 0.6947,
+			"width": 0.0085,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "one",
+		"bounds": {
+			"left": 0.1582,
+			"top": 0.6947,
+			"width": 0.0158,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "inbox",
+		"bounds": {
+			"left": 0.1751,
+			"top": 0.6947,
+			"width": 0.0231,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "by",
+		"bounds": {
+			"left": 0.1994,
+			"top": 0.6947,
+			"width": 0.0128,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "integrating",
+		"bounds": {
+			"left": 0.0597,
+			"top": 0.7169,
+			"width": 0.0437,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.1046,
+			"top": 0.7169,
+			"width": 0.0218,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "with",
+		"bounds": {
+			"left": 0.1276,
+			"top": 0.7169,
+			"width": 0.0182,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "WhatsApp.",
+		"bounds": {
+			"left": 0.1471,
+			"top": 0.7169,
+			"width": 0.043,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Messenger,",
+		"bounds": {
+			"left": 0.0597,
+			"top": 0.7391,
+			"width": 0.0461,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Instagram,",
+		"bounds": {
+			"left": 0.107,
+			"top": 0.7391,
+			"width": 0.0425,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Line,",
+		"bounds": {
+			"left": 0.1507,
+			"top": 0.7391,
+			"width": 0.0206,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Telegram,",
+		"bounds": {
+			"left": 0.1725,
+			"top": 0.7391,
+			"width": 0.0388,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "and",
+		"bounds": {
+			"left": 0.2126,
+			"top": 0.7391,
+			"width": 0.0177,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "more.",
+		"bounds": {
+			"left": 0.0597,
+			"top": 0.7635,
+			"width": 0.025,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0708,
+			"top": 0.8168,
+			"width": 0.0135,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.0853,
+			"top": 0.8168,
+			"width": 0.0298,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reply",
+		"bounds": {
+			"left": 0.2636,
+			"top": 0.8279,
+			"width": 0.025,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Edit",
+		"bounds": {
+			"left": 0.3024,
+			"top": 0.8257,
+			"width": 0.018,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Note",
+		"bounds": {
+			"left": 0.3357,
+			"top": 0.8279,
+			"width": 0.0208,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reminder",
+		"bounds": {
+			"left": 0.3718,
+			"top": 0.8279,
+			"width": 0.0388,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "000.",
+		"bounds": {
+			"left": 0.1179,
+			"top": 0.8745,
+			"width": 0.0666,
+			"height": 0.0466
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ".••",
+		"bounds": {
+			"left": 0.222,
+			"top": 0.8878,
+			"width": 0.0153,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Shortcuts",
+		"bounds": {
+			"left": 0.4259,
+			"top": 0.8256,
+			"width": 0.0375,
+			"height": 0.0135
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Knowledge",
+		"bounds": {
+			"left": 0.4771,
+			"top": 0.8155,
+			"width": 0.0475,
+			"height": 0.0203
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Base",
+		"bounds": {
+			"left": 0.48,
+			"top": 0.8368,
+			"width": 0.0208,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Aa",
+		"bounds": {
+			"left": 0.4675,
+			"top": 0.8834,
+			"width": 0.0153,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•",
+		"bounds": {
+			"left": 0.5438,
+			"top": 0.8834,
+			"width": 0.0231,
+			"height": 0.0155
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "v",
+		"bounds": {
+			"left": 0.5681,
+			"top": 0.8834,
+			"width": 0.0104,
+			"height": 0.0155
+		}
+	}
+]

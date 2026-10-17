@@ -121,6 +121,8 @@ export function inboxRows(elements: FrameElement[]): InboxRow[] {
 /** Repères de la colonne de droite (fiche du client) : la conversation s'arrête à sa gauche. */
 const PROFILE_PANE = /View .*Profile|Voir le profil|Conversation Routing|Main information|Visitor device/i;
 const NOT_A_MESSAGE = /^(Today|Aujourd'hui|Yesterday|Hier|Start LiveTranslate)$/i;
+/** La barre sous la conversation : « Reply Edit Note Reminder Shortcuts », « Knowledge Base ». */
+const TOOLBAR = /\b(Reply|Répondre|Shortcuts|Knowledge)\b/;
 
 /**
  * Le texte de la conversation ouverte : la colonne entre la liste et la fiche du client,
@@ -133,7 +135,8 @@ export function conversationText(elements: FrameElement[]): string {
 	const listRight = Math.max(...anchors.map((anchor) => anchor.right));
 	const profileLeft = Math.min(0.78, ...all.filter((line) => PROFILE_PANE.test(line.text)).map((line) => line.left));
 	const today = all.find((line) => NOT_A_MESSAGE.test(line.text) && line.left > listRight);
-	const toolbar = all.find((line) => /^(Reply|Répondre)\b/.test(line.text) && line.left > listRight);
+	// La barre peut tenir sur deux lignes (« Knowledge » au-dessus de « Reply… ») : on prend la plus haute.
+	const toolbar = all.filter((line) => TOOLBAR.test(line.text) && line.left > listRight).sort((a, b) => a.top - b.top)[0];
 	const text = all
 		.filter(
 			(line) =>
@@ -149,6 +152,27 @@ export function conversationText(elements: FrameElement[]): string {
 		.join(" ");
 	// Mot coupé en fin de ligne : « peu- vent » → « peuvent ».
 	return text.replace(/(\p{L})-\s+(\p{Ll})/gu, "$1$2").trim();
+}
+
+/**
+ * Le message complet dont la liste ne montre que le début : on retrouve, dans la conversation ouverte,
+ * la ligne qui commence comme l'aperçu, puis les lignes qui la suivent dans la même bulle.
+ */
+export function fullMessage(elements: FrameElement[], preview: string): string | undefined {
+	// Comparaison en minuscules seulement : elle garde les positions du texte d'origine.
+	const start = preview.replace(/(…|\.{2,})$/, "").slice(0, 12).toLowerCase();
+	if (start.length < 4) return undefined;
+	const text = conversationText(elements);
+	// Le même début peut revenir (message renvoyé) : le plus récent est le dernier.
+	const index = text.toLowerCase().lastIndexOf(start);
+	if (index < 0) return undefined;
+	// Faute de repère plus sûr entre deux bulles, le message court jusqu'à la fin de la conversation visible.
+	return text.slice(index).trim();
+}
+
+/** « Jean > Andrea » : la conversation de Jean, assignée à Andrea. On garde le client. */
+export function customerName(rowName: string): string {
+	return rowName.split(/\s*[>›»]\s*/)[0]!.trim();
 }
 
 /** La conversation ouverte : le titre de l'onglet est « Nom du client | Crisp », précédé d'un compteur s'il y a du non-lu. */

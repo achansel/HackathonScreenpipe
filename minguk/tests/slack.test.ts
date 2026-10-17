@@ -40,6 +40,11 @@ function fakeSlack(options: { failOnce?: string } = {}) {
 }
 
 describe("Historique Slack", () => {
+	test("les portraits restent sous la limite de longueur de Slack", async () => {
+		const { PERSONAS } = await import("../src/seed/slack-story.ts");
+		expect(Object.values(PERSONAS).filter((persona) => persona.avatar.length > 250)).toEqual([]);
+	});
+
 	test("canaux, messages sous un nom emprunté, fils et épingle", async () => {
 		const t = fakeSlack();
 		await seedSlack(t.slack, t.manifest, () => {}, () => {}, STORY);

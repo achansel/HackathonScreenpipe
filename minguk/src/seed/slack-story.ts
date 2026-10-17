@@ -8,18 +8,23 @@
 
 export interface Persona {
 	name: string;
-	emoji: string;
+	/** Portrait illustré (DiceBear, style « avataaars ») : pas un vrai visage. */
+	avatar: string;
 }
 
+// Slack refuse une icon_url de plus de ~255 caractères : seulement les traits qui comptent.
+const AVATAR = "https://api.dicebear.com/9.x/avataaars/png?mouth=smile&eyes=default&eyebrows=defaultNatural&clothing=blazerAndShirt";
+const avatar = (look: Record<string, string>) => `${AVATAR}&${new URLSearchParams({ facialHairProbability: "0", ...look })}`;
+
 export const PERSONAS = {
-	claire: { name: "Claire Morin (resp. support)", emoji: ":woman_office_worker:" },
-	karim: { name: "Karim Bensaïd (support)", emoji: ":man_technologist:" },
-	yasmine: { name: "Yasmine Roche (support)", emoji: ":woman_technologist:" },
-	thomas: { name: "Thomas Girard (ventes)", emoji: ":briefcase:" },
-	nadia: { name: "Nadia Benali (ventes)", emoji: ":handshake:" },
-	sarah: { name: "Sarah Lambert (ventes Belgique)", emoji: ":flag-be:" },
-	antoine: { name: "Antoine Rey (COO)", emoji: ":chart_with_upwards_trend:" },
-	max: { name: "Max Durand (tech)", emoji: ":wrench:" },
+	claire: { name: "Claire Morin (resp. support)", avatar: avatar({ seed: "Claire", top: "bob", hairColor: "4a312c", skinColor: "edb98a", backgroundColor: "c0aede" }) },
+	karim: { name: "Karim Bensaïd (support)", avatar: avatar({ seed: "Karim", top: "shortFlat", hairColor: "2c1b18", skinColor: "ae5d29", backgroundColor: "b6e3f4", facialHair: "beardLight", facialHairProbability: "100" }) },
+	yasmine: { name: "Yasmine Roche (support)", avatar: avatar({ seed: "Yasmine", top: "longButNotTooLong", hairColor: "2c1b18", skinColor: "d08b5b", backgroundColor: "ffd5dc" }) },
+	thomas: { name: "Thomas Girard (ventes)", avatar: avatar({ seed: "Thomas", top: "shortWaved", hairColor: "a55728", skinColor: "ffdbb4", backgroundColor: "d1d4f9" }) },
+	nadia: { name: "Nadia Benali (ventes)", avatar: avatar({ seed: "Nadia", top: "curly", hairColor: "2c1b18", skinColor: "ae5d29", backgroundColor: "ffdfbf" }) },
+	sarah: { name: "Sarah Lambert (ventes Belgique)", avatar: avatar({ seed: "Sarah", top: "straight01", hairColor: "d6b370", skinColor: "ffdbb4", backgroundColor: "c0aede" }) },
+	antoine: { name: "Antoine Rey (COO)", avatar: avatar({ seed: "Antoine", top: "sides", hairColor: "4a312c", skinColor: "edb98a", backgroundColor: "b6e3f4", facialHair: "beardMedium", facialHairProbability: "100" }) },
+	max: { name: "Max Durand (tech)", avatar: avatar({ seed: "Max", top: "shortCurly", hairColor: "724133", skinColor: "ffdbb4", backgroundColor: "d1d4f9" }) },
 } satisfies Record<string, Persona>;
 
 export type PersonaKey = keyof typeof PERSONAS;

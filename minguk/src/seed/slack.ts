@@ -95,7 +95,7 @@ export async function seedSlack(slack: Slack, manifest: SlackManifest, log: Log,
 			if (index++ < record.messages.length) {
 				parentTs = record.messages[index - 1];
 			} else {
-				const posted = await slack.call<{ ts: string }>("chat.postMessage", { channel: record.id, text: message.text, username: persona.name, icon_emoji: persona.emoji });
+				const posted = await slack.call<{ ts: string }>("chat.postMessage", { channel: record.id, text: message.text, username: persona.name, icon_url: persona.avatar });
 				parentTs = posted.ts;
 				record.messages.push(posted.ts);
 				save();
@@ -109,7 +109,7 @@ export async function seedSlack(slack: Slack, manifest: SlackManifest, log: Log,
 					thread_ts: parentTs,
 					text: reply.text,
 					username: replyPersona.name,
-					icon_emoji: replyPersona.emoji,
+					icon_url: replyPersona.avatar,
 				});
 				record.messages.push(posted.ts);
 				save();
@@ -118,6 +118,23 @@ export async function seedSlack(slack: Slack, manifest: SlackManifest, log: Log,
 		record.complete = true;
 		save();
 		log(`  ✓ #${channel.name}`);
+	}
+}
+
+/** Supprime les messages postés mais garde les canaux : pour reposter l'historique (nouveaux portraits, textes corrigés). */
+export async function clearMessages(slack: Slack, manifest: SlackManifest, log: Log, save: () => void): Promise<void> {
+	for (const [name, record] of Object.entries(manifest.channels)) {
+		for (const ts of [...record.messages].reverse()) {
+			try {
+				await slack.call("chat.delete", { channel: record.id, ts });
+			} catch (error) {
+				if (!(error instanceof SlackError && error.code === "message_not_found")) throw error;
+			}
+		}
+		record.messages = [];
+		record.complete = false;
+		save();
+		log(`  vidé : #${name}`);
 	}
 }
 

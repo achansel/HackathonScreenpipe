@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { ageMinutes, conversationText, type FrameElement, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
+import { ageMinutes, conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
 import { type CrispEvent, CrispWatcher } from "../src/detect/crisp-watcher.ts";
 
 // Deux vraies captures de la boîte Crisp (16 octobre), e-mails et nom de l'agent masqués.
@@ -7,6 +7,9 @@ const frame1089: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-108
 const frame1090: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-1090.json", import.meta.url)).json();
 // Le premier vrai message de Jean Dupont (17 octobre) : l'OCR a raté l'aperçu de la liste.
 const frame8486: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-8486.json", import.meta.url)).json();
+// Une réponse de l'agent (il y a 34 min), puis le deuxième message de Jean, le même jour.
+const frame9786: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-9786.json", import.meta.url)).json();
+const frame9859: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-9859.json", import.meta.url)).json();
 
 describe("Lecture de la boîte Crisp", () => {
 	test("la liste des conversations : nom, horodatage, aperçu", () => {
@@ -23,6 +26,12 @@ describe("Lecture de la boîte Crisp", () => {
 	test("aperçu manqué par l'OCR : le texte se lit dans la conversation ouverte", () => {
 		expect(inboxRows(frame8486)[0]).toMatchObject({ name: "Jean Dupont", ago: "now", preview: "" });
 		expect(conversationText(frame8486)).toBe("Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir.");
+	});
+
+	test("message complet retrouvé dans la conversation, nom du client sans l'agent assigné", () => {
+		const jean = inboxRows(frame9859).find((row) => row.name.startsWith("Jean"))!;
+		expect(customerName(jean.name)).toBe("Jean");
+		expect(fullMessage(frame9859, jean.preview)).toBe("Toujours rien... J'ai perdu des réservations ce midi, je veux un dédommagement.");
 	});
 
 	test("ancienneté", () => {
@@ -116,6 +125,28 @@ describe("Surveillance de Crisp", () => {
 		t.capture({ window: "Inbox | Crisp", url: INBOX, elements: row(0.25, "Jean Dupont", "1m", "Ma page de réservation est...") });
 		await t.watcher.tick();
 		expect(t.events.filter((event) => event.kind === "message")).toHaveLength(1);
+	});
+
+	test("vraie capture : « Jean > Andrea » est la conversation de Jean assignée à Andrea, et son message est lu en entier", async () => {
+		const t = setup();
+		t.capture({ window: "Jean Dupont | Crisp", url: `${INBOX}session_1`, elements: frame9786 });
+		await t.watcher.tick();
+		t.capture({ window: "Jean Dupont | Crisp", url: `${INBOX}session_1`, elements: frame9859 });
+		await t.watcher.tick();
+		expect(t.events.filter((event) => event.kind === "message")).toMatchObject([
+			{ name: "Jean Dupont", preview: "Toujours rien... J'ai perdu des réservations ce midi, je veux un dédommagement." },
+		]);
+	});
+
+	test("une ancienne conversation du même client (« Élodie › Andrea ») ne fait pas redétecter le message", async () => {
+		const t = setup();
+		await t.watcher.tick();
+		const frame = [...row(0.25, "Elodie Marchand", "now", "Thomas m'avait..."), ...row(0.4, "Élodie › Andrea", "19h", "test")];
+		t.capture({ window: "Elodie Marchand | Crisp", url: `${INBOX}session_2`, elements: frame });
+		await t.watcher.tick();
+		t.capture({ window: "Elodie Marchand | Crisp", url: `${INBOX}session_2`, elements: frame });
+		await t.watcher.tick();
+		expect(t.events.filter((event) => event.kind === "message").map((event) => event.kind === "message" && event.name)).toEqual(["Elodie Marchand"]);
 	});
 
 	test("un vieux message qui remonte dans la liste n'est pas un nouveau message", async () => {

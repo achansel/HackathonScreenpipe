@@ -33,6 +33,8 @@ export interface PathHelp {
 	fallbackUrl: string;
 	/** « Chemin pris par l'équipe N fois ». */
 	teamCount: number;
+	/** Remplace « Chemin pris par l'équipe N fois » quand on sait mieux pourquoi cette fiche (« Offre Premium · trouvé par son nom »). */
+	why?: string;
 }
 
 export interface SlackHelp {

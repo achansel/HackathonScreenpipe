@@ -3,6 +3,7 @@
  *
  * `bun run seed:slack --dry-run`   ce qui serait posté, sans réseau
  * `bun run seed:slack`             crée ; reprend là où un passage précédent s'est arrêté
+ * `bun run seed:slack --repost`    supprime les messages postés et les reposte (mêmes canaux)
  * `bun run seed:slack --wipe`      supprime les messages postés et archive les canaux créés
  *
  * Jeton : SLACK_SEED_TOKEN (~/.config/friction/env), jamais affiché.
@@ -12,12 +13,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
-import { channelUrl, Slack, type SlackManifest, seedSlack, wipeSlack } from "../seed/slack.ts";
+import { channelUrl, clearMessages, Slack, type SlackManifest, seedSlack, wipeSlack } from "../seed/slack.ts";
 import { CHANNELS, PERSONAS } from "../seed/slack-story.ts";
 
 const { values } = parseArgs({
 	args: Bun.argv.slice(2),
-	options: { "dry-run": { type: "boolean", default: false }, wipe: { type: "boolean", default: false } },
+	options: {
+		"dry-run": { type: "boolean", default: false },
+		repost: { type: "boolean", default: false },
+		wipe: { type: "boolean", default: false },
+	},
 });
 const manifestPath = process.env.FRICTION_SLACK_MANIFEST || join(homedir(), ".local", "share", "friction", "slack-seed.json");
 const log = (line: string) => console.log(line);
@@ -55,6 +60,7 @@ async function main(): Promise<void> {
 	}
 
 	log(`Espace Slack : ${auth.team}`);
+	if (values.repost) await clearMessages(slack, manifest, log, save);
 	await seedSlack(slack, manifest, log, save);
 	const support = manifest.channels.support;
 	const bugs = manifest.channels.bugs;

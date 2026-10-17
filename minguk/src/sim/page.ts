@@ -19,6 +19,7 @@ const STYLE = `
 	button .when { display: inline-block; min-width: 76px; color: var(--muted); font-size: 13px; }
 	textarea { width: 100%; box-sizing: border-box; min-height: 64px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
 	#log { font-size: 13px; color: var(--muted); }
+	#journal { font: 12px/1.6 ui-monospace, Menlo, monospace; white-space: pre-wrap; max-height: 260px; overflow-y: auto; }
 `;
 
 function shell(title: string, body: string, head = ""): string {
@@ -63,6 +64,16 @@ export function customerPage(customer: CrispCustomer): string {
 			const button = event.target.closest("button[data-index]");
 			if (button) send(messages[Number(button.dataset.index)]);
 		});
+		// Ce que Screenpipe a détecté, sans avoir à regarder le terminal.
+		let since = Date.now() - 5 * 60 * 1000;
+		setInterval(async () => {
+			const entries = await fetch("/journal?since=" + since).then((r) => r.json()).catch(() => []);
+			const box = document.getElementById("journal");
+			for (const entry of entries) {
+				since = Math.max(since, entry.at);
+				box.textContent = new Date(entry.at).toLocaleTimeString("fr-FR") + "  " + entry.line + "\\n" + box.textContent;
+			}
+		}, 1000);
 		document.getElementById("free").addEventListener("submit", (event) => {
 			event.preventDefault();
 			const field = document.getElementById("text");
@@ -77,6 +88,7 @@ export function customerPage(customer: CrispCustomer): string {
 		<div class="card">${buttons}</div>
 		<form id="free" class="card"><textarea id="text" placeholder="Message libre"></textarea><button type="submit">Envoyer en tant que ${escape(customer.nickname)}</button></form>
 		<p id="log"></p>
+		<div class="card"><strong>Détection Screenpipe</strong><p class="muted">Garder Crisp au premier plan après l'envoi : Screenpipe capture la fenêtre active.</p><div id="journal"></div></div>
 		<script>${script}</script>
 		<script src="https://client.crisp.chat/l.js" async></script>`,
 	);
