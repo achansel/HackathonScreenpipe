@@ -38,17 +38,21 @@ Hackathon Screenpipe (42 Paris, 16–18/10, finale dimanche : 3 min de démo + 2
 - `filter_pii` sans effet chez nous. App fermée → 409 `search_only`.
 - Firefox : texte d'accessibilité parfois d'un autre onglet, `browser_url` périmé → Chrome. Titres parfois attribués à une autre appli.
 
-## Où on en est
+## Où on en est (17/10, 20 h)
 
-Étapes 1 (aide en direct), 2 (partage d'équipe, simulé à deux daemons), 3 (apprentissage de nuit), 4 (carte Live View, regroupement des étapes) **codées, testées par morceaux, poussées** ; 20 tests (`bun test andrea/`). Scénario réel joué le 17/10 après-midi (puis 10 scénarios étiquetés à la main) : 5 séries de correctifs, clics reçus ; détail et chiffres dans ETAT.md « Limites connues ». **La recherche HubSpot à 0 résultat n'a jamais été jouée en direct.** Jamais lancé sur une vraie journée.
+- **Ouverture de la démo jouée en direct, réussie** (19:14) : Jean écrit (Crisp) → Léa colle son adresse dans HubSpot, « 0 contacts » → fiche « Client : Jean Dupont · Le Bistro · Premium » avec [Y aller]. Déroulé exact et cases à cocher : `docs/demo.md`.
+- Démon : **`claude-opus-5`, seuil 0,72** (haiku n'est pas autorisé par la passerelle, il était remplacé en silence). Éval sur 172 épisodes : précision 0,71, rappel 0,46. Lecture Crisp de Minguk branchée (contexte du dossier, fiche HubSpot), corrigée pour Windows (OCR et accessibilité). Recherches dans l'URL = épisodes. Demandes anonymes seulement sur question explicite, ancrées dans le texte. Détails et limites : `ETAT.md`.
+- Étiquettes de référence : 22 d'Andrea + 150 de Claude (`andrea/daemon/.state/labels.human.json`, origine dans `labels.provenance.json`) : **pas une vérité humaine**, le dire.
+- Détecteur écrit en code la nuit : **figé, hors démo**.
+- Tests : `bun test andrea/` 23/23, `cd minguk && bun test` 118/118.
 
 ## Prochaines étapes
 
-1. **Scénario réel** sur l'écran d'Andrea : `bun andrea/daemon/main.ts activer` (par Andrea), puis `bun andrea/daemon/main.ts --debug` ; jouer Jean Dupont (Crisp, Chrome) → recherche HubSpot → question Slack ; lire les journaux, corriger. Étape c validée (« Geste commercial » sur la question Slack, 15:38). **À jouer : la recherche HubSpot à 0 résultat** (`jd.resto75@resa-paris.test`).
-2. Étiquetage humain : `bun andrea/offline/main.ts etiqueter` (~40 épisodes), puis `apprendre` / `rapport` / `approuver`.
-3. Poster `docs/discord.md` ; compiler le correctif Mac et faire `docs/test-mac.md` ; tester à deux vraies machines.
+1. **Répéter l'ouverture avec opus-5** (jamais rejouée avec ce modèle) : Jean écrit (`scratchpad` : `send-one.ts`, ou simulateur de Minguk `--sans-aide`), recherche collée, fiche attendue.
+2. **Demande anonyme → Karim partage, sur deux vraies machines** (jamais joué) ; Mac : correctif compilé par Minguk (`reponse-minguk.md`).
+3. Slide « nos chiffres » pour Louis (éval, limites, « notifier peu, compter beaucoup »).
 4. Voir la carte à l'écran (`screenpipe://live-view/friction-map`).
-5. Fusionner `andrea/VISION.md` dans `VISION.md` (3 phrases devenues fausses). Après le hackathon : régénérer le mot de passe Supabase.
+5. Après le hackathon : régénérer le mot de passe Supabase et la clé HubSpot (passée en clair dans la conversation).
 
 ## Façon de travailler avec Andrea
 
