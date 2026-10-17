@@ -62,7 +62,9 @@ export class Board {
     const byStep = new Map<string, number>();
     for (const s of sigs) byStep.set(s.data.step, (byStep.get(s.data.step) ?? 0) + 1);
     for (const p of pending) if (!byStep.has(p.step)) byStep.set(p.step, 0);
-    const solvedSteps = new Set(sols.map((s) => s.data.step));
+    // Une étape est « résolue » si une solution porte ce libellé, ou si une demande sur cette étape a reçu une réponse
+    // (l'IA du démon formule l'étape à sa façon : le libellé de la demande diffère de celui de la solution).
+    const solvedSteps = new Set([...sols.map((s) => s.data.step), ...requests.filter((r) => answered.has(r.data.requestId)).map((r) => r.data.step)]);
     const certSteps = new Set(sols.filter((s) => s.data.certified).map((s) => s.data.step));
     const pendingSteps = new Set(pending.map((p) => p.step));
     const steps = [...byStep.entries()].sort((a, b) => b[1] - a[1]).map(([step, n]) => ({
