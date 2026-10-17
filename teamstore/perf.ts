@@ -19,7 +19,7 @@ const target = local ? "local" : "supabase";
 
 const stats = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); const q = (p: number) => +s[Math.min(s.length - 1, Math.floor(p * s.length))].toFixed(1); return { n: s.length, p50: q(0.5), p95: q(0.95), max: +s.at(-1)!.toFixed(1) }; };
 const time = async <T>(fn: () => Promise<T>) => { const t = performance.now(); const r = await fn(); return [performance.now() - t, r] as const; };
-const out: Record<string, unknown> = { date: new Date().toISOString(), target, host: local ? "127.0.0.1" : new URL(url).host };
+const out: Record<string, unknown> = { date: new Date().toISOString(), target, host: local ? "127.0.0.1" : "supabase (projet de l'équipe, UE)" };
 
 // 1. Chiffrement (sur le poste, sans réseau)
 const keys = await deriveTeamKeys(randomKey());
