@@ -24,6 +24,7 @@ export const TEAM_DIR = `${homedir()}/.config/friction-assist/`;
 export const TEAM_KEY_FILE = `${TEAM_DIR}team.key`;
 export const TEAM_POLL_MS = 5000;
 export const REQUEST_COOLDOWN_MS = 30 * 60_000; // une même étape ne redemande pas d'aide avant 30 min
+export const REQUEST_TTL_MS = 30 * 60_000; // une demande plus ancienne est ignorée (premier démarrage d'un poste, daemon arrêté)
 // Anonymat : délai aléatoire avant de publier une demande, pour que l'heure ne désigne pas qui bloque
 // (petite équipe). En secondes, « min-max » ; 0 en simulation pour garder la démo rapide.
 const [jMin, jMax] = (process.env.FRICTION_REQUEST_JITTER ?? (process.env.FRICTION_SIM === "1" ? "0-0" : "10-60")).split("-").map(Number);

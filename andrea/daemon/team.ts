@@ -5,7 +5,7 @@
 // Karim ne sait pas qui a demandé ; Léa ne sait pas qui a répondu, sauf le rôle `owner` de la solution.
 import { randomBytes } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { LABEL, MAX_SHARE_PROMPTS_PER_DAY, PIPE_NAME, REQUEST_COOLDOWN_MS, REQUEST_JITTER_MS, STATE_DIR } from "./config";
+import { LABEL, MAX_SHARE_PROMPTS_PER_DAY, PIPE_NAME, REQUEST_COOLDOWN_MS, REQUEST_JITTER_MS, REQUEST_TTL_MS, STATE_DIR } from "./config";
 import { matchStep, type Verdict } from "./qualify";
 import { notify, relayUrl } from "./screenpipe";
 import { saveSolutions, type Solution } from "./solutions";
@@ -62,6 +62,7 @@ export class TeamSync {
       this.st.request = r.id;
       const req = r.payload;
       if (!req?.requestId || this.st.mine[req.requestId]) continue; // illisible, ou ma propre demande
+      if (Date.now() - Date.parse(r.at) > REQUEST_TTL_MS) continue; // périmée : le collègue est passé à autre chose
       const mine = this.solutions.filter((s) => !s.shared);
       const today = new Date().toISOString().slice(0, 10);
       if (this.st.prompts?.day !== today) this.st.prompts = { day: today, n: 0 };
