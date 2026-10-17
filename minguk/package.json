@@ -1,0 +1,20 @@
+{
+	"name": "friction-assist",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check-env": "bun run src/cli/check-env.ts",
+		"demo": "bun run src/cli/demo.ts",
+		"demo:check": "bun run src/cli/check-env.ts --notify",
+		"seed": "bun run src/cli/seed.ts",
+		"seed:slack": "bun run src/cli/seed-slack.ts",
+		"watch:crisp": "bun run src/cli/watch-crisp.ts",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.4.3",
+		"typescript": "^7.0.2"
+	}
+}

@@ -1,0 +1,1872 @@
+[
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "All",
+		"bounds": {
+			"left": 0.1541,
+			"top": 0.1962,
+			"width": 0.0247,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "=",
+		"bounds": {
+			"left": 0.2951,
+			"top": 0.1962,
+			"width": 0.0134,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Filters",
+		"bounds": {
+			"left": 0.3097,
+			"top": 0.1962,
+			"width": 0.0304,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "+",
+		"bounds": {
+			"left": 0.3634,
+			"top": 0.1892,
+			"width": 0.0174,
+			"height": 0.0302
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Piping",
+		"bounds": {
+			"left": 0.0465,
+			"top": 0.2172,
+			"width": 0.0282,
+			"height": 0.0212
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Company",
+		"bounds": {
+			"left": 0.0762,
+			"top": 0.2168,
+			"width": 0.0416,
+			"height": 0.0213
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "pipingcompany.dev",
+		"bounds": {
+			"left": 0.048,
+			"top": 0.2404,
+			"width": 0.0799,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Start",
+		"bounds": {
+			"left": 0.5523,
+			"top": 0.245,
+			"width": 0.0197,
+			"height": 0.0117
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "LiveTranslate",
+		"bounds": {
+			"left": 0.5729,
+			"top": 0.245,
+			"width": 0.0521,
+			"height": 0.0117
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0334,
+			"top": 0.3311,
+			"width": 0.0173,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.0516,
+			"top": 0.3311,
+			"width": 0.0327,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•",
+		"bounds": {
+			"left": 0.0159,
+			"top": 0.4098,
+			"width": 0.0105,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inbox",
+		"bounds": {
+			"left": 0.0305,
+			"top": 0.41,
+			"width": 0.0291,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Default",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.4474,
+			"width": 0.0303,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0458,
+			"top": 0.4474,
+			"width": 0.0356,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Main",
+		"bounds": {
+			"left": 0.0276,
+			"top": 0.4776,
+			"width": 0.0392,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inbox",
+		"bounds": {
+			"left": 0.0681,
+			"top": 0.4776,
+			"width": 0.0278,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "L",
+		"bounds": {
+			"left": 0.0276,
+			"top": 0.515,
+			"width": 0.0141,
+			"height": 0.021
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Assigned",
+		"bounds": {
+			"left": 0.0432,
+			"top": 0.5147,
+			"width": 0.0422,
+			"height": 0.0203
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "to",
+		"bounds": {
+			"left": 0.087,
+			"top": 0.5146,
+			"width": 0.0079,
+			"height": 0.0201
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "...",
+		"bounds": {
+			"left": 0.0963,
+			"top": 0.5145,
+			"width": 0.0113,
+			"height": 0.021
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Your",
+		"bounds": {
+			"left": 0.0131,
+			"top": 0.5544,
+			"width": 0.0204,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0346,
+			"top": 0.5544,
+			"width": 0.0361,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "v",
+		"bounds": {
+			"left": 0.0719,
+			"top": 0.5544,
+			"width": 0.0081,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "+",
+		"bounds": {
+			"left": 0.0262,
+			"top": 0.5844,
+			"width": 0.015,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "New",
+		"bounds": {
+			"left": 0.0426,
+			"top": 0.5844,
+			"width": 0.0207,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "sub-inbox",
+		"bounds": {
+			"left": 0.0648,
+			"top": 0.5844,
+			"width": 0.0457,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Other",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.6242,
+			"width": 0.024,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0396,
+			"top": 0.6244,
+			"width": 0.0354,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "v",
+		"bounds": {
+			"left": 0.076,
+			"top": 0.6242,
+			"width": 0.0083,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0334,
+			"top": 0.6753,
+			"width": 0.0166,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "help",
+		"bounds": {
+			"left": 0.051,
+			"top": 0.6753,
+			"width": 0.0216,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Q",
+		"bounds": {
+			"left": 0.0174,
+			"top": 0.7144,
+			"width": 0.0142,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Search",
+		"bounds": {
+			"left": 0.033,
+			"top": 0.7144,
+			"width": 0.0324,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "88",
+		"bounds": {
+			"left": 0.013,
+			"top": 0.754,
+			"width": 0.0173,
+			"height": 0.0212
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Plugins",
+		"bounds": {
+			"left": 0.0318,
+			"top": 0.7543,
+			"width": 0.0352,
+			"height": 0.0215
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Settings",
+		"bounds": {
+			"left": 0.013,
+			"top": 0.796,
+			"width": 0.0582,
+			"height": 0.0216
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.0436,
+			"top": 0.8638,
+			"width": 0.032,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.0769,
+			"top": 0.8635,
+			"width": 0.0292,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "[EMAIL]",
+		"bounds": {
+			"left": 0.0436,
+			"top": 0.887,
+			"width": 0.0887,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.1948,
+			"top": 0.2566,
+			"width": 0.0366,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Martin",
+		"bounds": {
+			"left": 0.2328,
+			"top": 0.2566,
+			"width": 0.0332,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "CM",
+		"bounds": {
+			"left": 0.1613,
+			"top": 0.2706,
+			"width": 0.0218,
+			"height": 0.0209
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "2m",
+		"bounds": {
+			"left": 0.3605,
+			"top": 0.2566,
+			"width": 0.0145,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•",
+		"bounds": {
+			"left": 0.1744,
+			"top": 0.2822,
+			"width": 0.0179,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Bonjour,",
+		"bounds": {
+			"left": 0.1943,
+			"top": 0.2822,
+			"width": 0.0359,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.2322,
+			"top": 0.2822,
+			"width": 0.008,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "suis",
+		"bounds": {
+			"left": 0.2422,
+			"top": 0.2822,
+			"width": 0.018,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.2622,
+			"top": 0.2822,
+			"width": 0.0319,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Marti...",
+		"bounds": {
+			"left": 0.2961,
+			"top": 0.2822,
+			"width": 0.0339,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "OD•",
+		"bounds": {
+			"left": 0.332,
+			"top": 0.2822,
+			"width": 0.0415,
+			"height": 0.0256
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Today",
+		"bounds": {
+			"left": 0.5785,
+			"top": 0.2915,
+			"width": 0.0218,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Hello,",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.3311,
+			"width": 0.0248,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "I",
+		"bounds": {
+			"left": 0.4622,
+			"top": 0.3311,
+			"width": 0.0039,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "would",
+		"bounds": {
+			"left": 0.4674,
+			"top": 0.3311,
+			"width": 0.0273,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "need",
+		"bounds": {
+			"left": 0.496,
+			"top": 0.3311,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "assistance",
+		"bounds": {
+			"left": 0.5194,
+			"top": 0.3311,
+			"width": 0.0456,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "please",
+		"bounds": {
+			"left": 0.5663,
+			"top": 0.3311,
+			"width": 0.0311,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.1947,
+			"top": 0.3398,
+			"width": 0.0265,
+			"height": 0.0191
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Team",
+		"bounds": {
+			"left": 0.2225,
+			"top": 0.3404,
+			"width": 0.0276,
+			"height": 0.0192
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Enfin,",
+		"bounds": {
+			"left": 0.1961,
+			"top": 0.3679,
+			"width": 0.0235,
+			"height": 0.0171
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nous",
+		"bounds": {
+			"left": 0.2209,
+			"top": 0.3683,
+			"width": 0.0222,
+			"height": 0.017
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avons",
+		"bounds": {
+			"left": 0.2443,
+			"top": 0.3687,
+			"width": 0.0275,
+			"height": 0.0171
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "créé",
+		"bounds": {
+			"left": 0.2729,
+			"top": 0.3692,
+			"width": 0.0196,
+			"height": 0.017
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "quelques...",
+		"bounds": {
+			"left": 0.2938,
+			"top": 0.3695,
+			"width": 0.0493,
+			"height": 0.0175
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "27m",
+		"bounds": {
+			"left": 0.3561,
+			"top": 0.3404,
+			"width": 0.0189,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "CM",
+		"bounds": {
+			"left": 0.3997,
+			"top": 0.3799,
+			"width": 0.0189,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Bonjour,",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.3776,
+			"width": 0.0353,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.4726,
+			"top": 0.3778,
+			"width": 0.0085,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "suis",
+		"bounds": {
+			"left": 0.4823,
+			"top": 0.3778,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.503,
+			"top": 0.3778,
+			"width": 0.0316,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Martin",
+		"bounds": {
+			"left": 0.5358,
+			"top": 0.3778,
+			"width": 0.028,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "en",
+		"bounds": {
+			"left": 0.5649,
+			"top": 0.3778,
+			"width": 0.0122,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "réalité",
+		"bounds": {
+			"left": 0.5783,
+			"top": 0.3776,
+			"width": 0.0293,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "A",
+		"bounds": {
+			"left": 0.2267,
+			"top": 0.6144,
+			"width": 0.0238,
+			"height": 0.0333
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "M",
+		"bounds": {
+			"left": 0.2531,
+			"top": 0.6144,
+			"width": 0.0259,
+			"height": 0.0333
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.1555,
+			"top": 0.6844,
+			"width": 0.0396,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messaging",
+		"bounds": {
+			"left": 0.1968,
+			"top": 0.6844,
+			"width": 0.0495,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "channels",
+		"bounds": {
+			"left": 0.2479,
+			"top": 0.6844,
+			"width": 0.0428,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Manage",
+		"bounds": {
+			"left": 0.1555,
+			"top": 0.7122,
+			"width": 0.0328,
+			"height": 0.0236
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "all",
+		"bounds": {
+			"left": 0.1902,
+			"top": 0.7122,
+			"width": 0.0109,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.203,
+			"top": 0.7122,
+			"width": 0.0182,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chats",
+		"bounds": {
+			"left": 0.223,
+			"top": 0.7122,
+			"width": 0.0201,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.2449,
+			"top": 0.7122,
+			"width": 0.0091,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "one",
+		"bounds": {
+			"left": 0.2558,
+			"top": 0.7122,
+			"width": 0.0146,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "inbox",
+		"bounds": {
+			"left": 0.2722,
+			"top": 0.7122,
+			"width": 0.0219,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "by",
+		"bounds": {
+			"left": 0.2959,
+			"top": 0.7122,
+			"width": 0.0091,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "integrating",
+		"bounds": {
+			"left": 0.3069,
+			"top": 0.7122,
+			"width": 0.0438,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.3524,
+			"top": 0.7122,
+			"width": 0.0226,
+			"height": 0.0236
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "with",
+		"bounds": {
+			"left": 0.1541,
+			"top": 0.7311,
+			"width": 0.0201,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "WhatsApp,",
+		"bounds": {
+			"left": 0.176,
+			"top": 0.7311,
+			"width": 0.0437,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Messenger,",
+		"bounds": {
+			"left": 0.2216,
+			"top": 0.7311,
+			"width": 0.0456,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Instagram,",
+		"bounds": {
+			"left": 0.269,
+			"top": 0.7311,
+			"width": 0.0419,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Line,",
+		"bounds": {
+			"left": 0.3128,
+			"top": 0.7311,
+			"width": 0.0182,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Telegram,",
+		"bounds": {
+			"left": 0.3328,
+			"top": 0.7311,
+			"width": 0.0407,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "and",
+		"bounds": {
+			"left": 0.1555,
+			"top": 0.7568,
+			"width": 0.0153,
+			"height": 0.0188
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "more.",
+		"bounds": {
+			"left": 0.1722,
+			"top": 0.7566,
+			"width": 0.027,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.1672,
+			"top": 0.8122,
+			"width": 0.0138,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.182,
+			"top": 0.8122,
+			"width": 0.0327,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ">",
+		"bounds": {
+			"left": 0.2159,
+			"top": 0.8122,
+			"width": 0.0065,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reply",
+		"bounds": {
+			"left": 0.407,
+			"top": 0.8335,
+			"width": 0.0247,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Edit",
+		"bounds": {
+			"left": 0.4491,
+			"top": 0.8335,
+			"width": 0.016,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Note",
+		"bounds": {
+			"left": 0.4811,
+			"top": 0.8335,
+			"width": 0.0203,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reminder",
+		"bounds": {
+			"left": 0.5174,
+			"top": 0.8335,
+			"width": 0.0378,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Shortcuts",
+		"bounds": {
+			"left": 0.5698,
+			"top": 0.8335,
+			"width": 0.0378,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Knowledge",
+		"bounds": {
+			"left": 0.625,
+			"top": 0.8333,
+			"width": 0.0417,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Base",
+		"bounds": {
+			"left": 0.668,
+			"top": 0.8333,
+			"width": 0.021,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "00.0.",
+		"bounds": {
+			"left": 0.2384,
+			"top": 0.8731,
+			"width": 0.0654,
+			"height": 0.0442
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Send",
+		"bounds": {
+			"left": 0.4099,
+			"top": 0.8822,
+			"width": 0.0233,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.4345,
+			"top": 0.8822,
+			"width": 0.0208,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "message",
+		"bounds": {
+			"left": 0.4566,
+			"top": 0.8822,
+			"width": 0.0404,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "to",
+		"bounds": {
+			"left": 0.4983,
+			"top": 0.8822,
+			"width": 0.0117,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.5113,
+			"top": 0.8822,
+			"width": 0.0326,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Martin",
+		"bounds": {
+			"left": 0.5451,
+			"top": 0.8822,
+			"width": 0.0286,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.5751,
+			"top": 0.8822,
+			"width": 0.0091,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chat....",
+		"bounds": {
+			"left": 0.5855,
+			"top": 0.8822,
+			"width": 0.0279,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Aa",
+		"bounds": {
+			"left": 0.6497,
+			"top": 0.8824,
+			"width": 0.0174,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "...",
+		"bounds": {
+			"left": 0.6962,
+			"top": 0.8824,
+			"width": 0.0131,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "→",
+		"bounds": {
+			"left": 0.718,
+			"top": 0.1962,
+			"width": 0.0146,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Pending",
+		"bounds": {
+			"left": 0.7337,
+			"top": 0.1962,
+			"width": 0.0323,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "18%",
+		"bounds": {
+			"left": 0.798,
+			"top": 0.3916,
+			"width": 0.016,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "CN",
+		"bounds": {
+			"left": 0.8081,
+			"top": 0.2264,
+			"width": 0.0218,
+			"height": 0.0209
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.8517,
+			"top": 0.2055,
+			"width": 0.0476,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Martin",
+		"bounds": {
+			"left": 0.9008,
+			"top": 0.2055,
+			"width": 0.0396,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "[EMAIL]",
+		"bounds": {
+			"left": 0.8532,
+			"top": 0.2311,
+			"width": 0.1235,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Paris",
+		"bounds": {
+			"left": 0.8517,
+			"top": 0.259,
+			"width": 0.0233,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "&",
+		"bounds": {
+			"left": 0.8256,
+			"top": 0.3078,
+			"width": 0.0131,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "View",
+		"bounds": {
+			"left": 0.84,
+			"top": 0.3078,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.8635,
+			"top": 0.3078,
+			"width": 0.0312,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Profile",
+		"bounds": {
+			"left": 0.896,
+			"top": 0.3078,
+			"width": 0.027,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.8227,
+			"top": 0.3889,
+			"width": 0.0159,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.8398,
+			"top": 0.3889,
+			"width": 0.0326,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.8737,
+			"top": 0.3889,
+			"width": 0.0339,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ":",
+		"bounds": {
+			"left": 0.9089,
+			"top": 0.3889,
+			"width": 0.0098,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8183,
+			"top": 0.4378,
+			"width": 0.0271,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8467,
+			"top": 0.4378,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "workspace",
+		"bounds": {
+			"left": 0.8675,
+			"top": 0.4378,
+			"width": 0.0467,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Invite",
+		"bounds": {
+			"left": 0.8154,
+			"top": 0.4844,
+			"width": 0.0246,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8413,
+			"top": 0.4844,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "teammates",
+		"bounds": {
+			"left": 0.8622,
+			"top": 0.4844,
+			"width": 0.0477,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Install",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.5311,
+			"width": 0.0245,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.8427,
+			"top": 0.5311,
+			"width": 0.0234,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "on",
+		"bounds": {
+			"left": 0.8674,
+			"top": 0.5311,
+			"width": 0.0104,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8792,
+			"top": 0.5311,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "website",
+		"bounds": {
+			"left": 0.9,
+			"top": 0.5311,
+			"width": 0.0346,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Setup",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.58,
+			"width": 0.0258,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Hugo",
+		"bounds": {
+			"left": 0.8437,
+			"top": 0.58,
+			"width": 0.0237,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Al",
+		"bounds": {
+			"left": 0.8686,
+			"top": 0.58,
+			"width": 0.0102,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.8799,
+			"top": 0.58,
+			"width": 0.0271,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.6265,
+			"width": 0.029,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.847,
+			"top": 0.6267,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "knowledge",
+		"bounds": {
+			"left": 0.8677,
+			"top": 0.6267,
+			"width": 0.0462,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "base",
+		"bounds": {
+			"left": 0.9151,
+			"top": 0.6265,
+			"width": 0.0224,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.6753,
+			"width": 0.0363,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messaging",
+		"bounds": {
+			"left": 0.8542,
+			"top": 0.6756,
+			"width": 0.0458,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "channels",
+		"bounds": {
+			"left": 0.901,
+			"top": 0.6753,
+			"width": 0.0394,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.7219,
+			"width": 0.0363,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8543,
+			"top": 0.7222,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "mailbox",
+		"bounds": {
+			"left": 0.875,
+			"top": 0.7219,
+			"width": 0.0334,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Customize",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.7707,
+			"width": 0.0446,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8625,
+			"top": 0.7711,
+			"width": 0.0198,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chat",
+		"bounds": {
+			"left": 0.8833,
+			"top": 0.7711,
+			"width": 0.0188,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "widget",
+		"bounds": {
+			"left": 0.9031,
+			"top": 0.7707,
+			"width": 0.03,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.8172,
+			"width": 0.029,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.847,
+			"top": 0.8178,
+			"width": 0.0182,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "first",
+		"bounds": {
+			"left": 0.8665,
+			"top": 0.8178,
+			"width": 0.017,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "shortcut",
+		"bounds": {
+			"left": 0.8847,
+			"top": 0.8172,
+			"width": 0.0368,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Import",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.8656,
+			"width": 0.028,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.846,
+			"top": 0.8656,
+			"width": 0.0192,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "contacts",
+		"bounds": {
+			"left": 0.8663,
+			"top": 0.8656,
+			"width": 0.0363,
+			"height": 0.0145
+		}
+	}
+]

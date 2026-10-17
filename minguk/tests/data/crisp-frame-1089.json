@@ -1,0 +1,3126 @@
+[
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "All",
+		"bounds": {
+			"left": 0.1541,
+			"top": 0.1962,
+			"width": 0.0147,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "accessibility",
+		"role": "AXStaticText",
+		"text": "app.crisp.chat/website/…/session_d034238a-5858-4ace-b10b-af4d1ee41a9c/",
+		"bounds": {
+			"left": 0.0035,
+			"top": 0.9067,
+			"width": 0.325,
+			"height": 0.0222
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "V",
+		"bounds": {
+			"left": 0.1698,
+			"top": 0.1962,
+			"width": 0.009,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "=",
+		"bounds": {
+			"left": 0.295,
+			"top": 0.1955,
+			"width": 0.0123,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Filters",
+		"bounds": {
+			"left": 0.3083,
+			"top": 0.1959,
+			"width": 0.0319,
+			"height": 0.0173
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "+",
+		"bounds": {
+			"left": 0.3634,
+			"top": 0.1892,
+			"width": 0.0174,
+			"height": 0.0302
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Piping",
+		"bounds": {
+			"left": 0.0479,
+			"top": 0.2172,
+			"width": 0.0265,
+			"height": 0.0188
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Company",
+		"bounds": {
+			"left": 0.0757,
+			"top": 0.2168,
+			"width": 0.0421,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "pipingcompany.dev",
+		"bounds": {
+			"left": 0.048,
+			"top": 0.2404,
+			"width": 0.0799,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0349,
+			"top": 0.3311,
+			"width": 0.0155,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.0512,
+			"top": 0.3311,
+			"width": 0.0331,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•",
+		"bounds": {
+			"left": 0.0159,
+			"top": 0.4097,
+			"width": 0.0105,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inbox",
+		"bounds": {
+			"left": 0.0305,
+			"top": 0.41,
+			"width": 0.0291,
+			"height": 0.0146
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Default",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.4474,
+			"width": 0.0303,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0458,
+			"top": 0.4474,
+			"width": 0.0356,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•",
+		"bounds": {
+			"left": 0.0276,
+			"top": 0.4776,
+			"width": 0.0158,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Main",
+		"bounds": {
+			"left": 0.0444,
+			"top": 0.4778,
+			"width": 0.0229,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inbox",
+		"bounds": {
+			"left": 0.0684,
+			"top": 0.4776,
+			"width": 0.0261,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "L",
+		"bounds": {
+			"left": 0.0276,
+			"top": 0.5151,
+			"width": 0.0141,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Assigned",
+		"bounds": {
+			"left": 0.0432,
+			"top": 0.5147,
+			"width": 0.0423,
+			"height": 0.0204
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "to",
+		"bounds": {
+			"left": 0.087,
+			"top": 0.5146,
+			"width": 0.0079,
+			"height": 0.0201
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "...",
+		"bounds": {
+			"left": 0.0963,
+			"top": 0.5145,
+			"width": 0.0113,
+			"height": 0.021
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Your",
+		"bounds": {
+			"left": 0.0131,
+			"top": 0.5544,
+			"width": 0.0204,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0346,
+			"top": 0.5544,
+			"width": 0.0361,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "v",
+		"bounds": {
+			"left": 0.0719,
+			"top": 0.5544,
+			"width": 0.0081,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "+",
+		"bounds": {
+			"left": 0.0262,
+			"top": 0.5844,
+			"width": 0.015,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "New",
+		"bounds": {
+			"left": 0.0426,
+			"top": 0.5844,
+			"width": 0.0207,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "sub-inbox",
+		"bounds": {
+			"left": 0.0648,
+			"top": 0.5844,
+			"width": 0.0457,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Other",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.6242,
+			"width": 0.024,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Inboxes",
+		"bounds": {
+			"left": 0.0396,
+			"top": 0.6244,
+			"width": 0.0354,
+			"height": 0.0133
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "v",
+		"bounds": {
+			"left": 0.076,
+			"top": 0.6242,
+			"width": 0.0083,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.0334,
+			"top": 0.6753,
+			"width": 0.0166,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "help",
+		"bounds": {
+			"left": 0.051,
+			"top": 0.6753,
+			"width": 0.0216,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Q",
+		"bounds": {
+			"left": 0.0174,
+			"top": 0.7144,
+			"width": 0.0142,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Search",
+		"bounds": {
+			"left": 0.033,
+			"top": 0.7144,
+			"width": 0.0324,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "80",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.7545,
+			"width": 0.0167,
+			"height": 0.0187
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Plugins",
+		"bounds": {
+			"left": 0.0326,
+			"top": 0.7543,
+			"width": 0.0343,
+			"height": 0.0187
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "©",
+		"bounds": {
+			"left": 0.0145,
+			"top": 0.7963,
+			"width": 0.0167,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Settings",
+		"bounds": {
+			"left": 0.0326,
+			"top": 0.7963,
+			"width": 0.0386,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.1962,
+			"top": 0.2566,
+			"width": 0.0355,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Martin",
+		"bounds": {
+			"left": 0.233,
+			"top": 0.2566,
+			"width": 0.033,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "CM",
+		"bounds": {
+			"left": 0.1613,
+			"top": 0.2706,
+			"width": 0.0218,
+			"height": 0.0209
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "•)",
+		"bounds": {
+			"left": 0.1744,
+			"top": 0.2844,
+			"width": 0.0181,
+			"height": 0.0234
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Bonjour,",
+		"bounds": {
+			"left": 0.1944,
+			"top": 0.2844,
+			"width": 0.0365,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "je",
+		"bounds": {
+			"left": 0.2326,
+			"top": 0.2844,
+			"width": 0.0073,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "suis",
+		"bounds": {
+			"left": 0.2418,
+			"top": 0.2844,
+			"width": 0.0182,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Camille",
+		"bounds": {
+			"left": 0.2618,
+			"top": 0.2844,
+			"width": 0.0328,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Marti...",
+		"bounds": {
+			"left": 0.2964,
+			"top": 0.2844,
+			"width": 0.0328,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "O9",
+		"bounds": {
+			"left": 0.3311,
+			"top": 0.2844,
+			"width": 0.0255,
+			"height": 0.0233
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "→",
+		"bounds": {
+			"left": 0.3584,
+			"top": 0.2844,
+			"width": 0.0137,
+			"height": 0.0234
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.1961,
+			"top": 0.3397,
+			"width": 0.0257,
+			"height": 0.0169
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Team",
+		"bounds": {
+			"left": 0.2229,
+			"top": 0.3404,
+			"width": 0.0272,
+			"height": 0.017
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "27m",
+		"bounds": {
+			"left": 0.3561,
+			"top": 0.3404,
+			"width": 0.0189,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Enfin,",
+		"bounds": {
+			"left": 0.1961,
+			"top": 0.3612,
+			"width": 0.024,
+			"height": 0.0241
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nous",
+		"bounds": {
+			"left": 0.2216,
+			"top": 0.3619,
+			"width": 0.0221,
+			"height": 0.0239
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avons",
+		"bounds": {
+			"left": 0.2453,
+			"top": 0.3625,
+			"width": 0.0258,
+			"height": 0.024
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "créé",
+		"bounds": {
+			"left": 0.2726,
+			"top": 0.3633,
+			"width": 0.0185,
+			"height": 0.0238
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "quelque..",
+		"bounds": {
+			"left": 0.2927,
+			"top": 0.3639,
+			"width": 0.0476,
+			"height": 0.0247
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "0€",
+		"bounds": {
+			"left": 0.3419,
+			"top": 0.3652,
+			"width": 0.0304,
+			"height": 0.0243
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "M",
+		"bounds": {
+			"left": 0.2558,
+			"top": 0.6172,
+			"width": 0.0218,
+			"height": 0.0302
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.157,
+			"top": 0.6844,
+			"width": 0.0383,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messaging",
+		"bounds": {
+			"left": 0.1968,
+			"top": 0.6844,
+			"width": 0.0502,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "channels",
+		"bounds": {
+			"left": 0.2484,
+			"top": 0.6844,
+			"width": 0.0423,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Manage",
+		"bounds": {
+			"left": 0.1555,
+			"top": 0.7144,
+			"width": 0.033,
+			"height": 0.0214
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "all",
+		"bounds": {
+			"left": 0.1902,
+			"top": 0.7144,
+			"width": 0.0115,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.2034,
+			"top": 0.7144,
+			"width": 0.0165,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chats",
+		"bounds": {
+			"left": 0.2215,
+			"top": 0.7144,
+			"width": 0.0214,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.2446,
+			"top": 0.7144,
+			"width": 0.0082,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "one",
+		"bounds": {
+			"left": 0.2545,
+			"top": 0.7144,
+			"width": 0.0148,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "inbox",
+		"bounds": {
+			"left": 0.271,
+			"top": 0.7144,
+			"width": 0.0231,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "by",
+		"bounds": {
+			"left": 0.2957,
+			"top": 0.7144,
+			"width": 0.0099,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "integrating",
+		"bounds": {
+			"left": 0.3073,
+			"top": 0.7144,
+			"width": 0.0445,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.3535,
+			"top": 0.7144,
+			"width": 0.0215,
+			"height": 0.0214
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "with",
+		"bounds": {
+			"left": 0.1541,
+			"top": 0.7356,
+			"width": 0.0193,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "WhatsApp,",
+		"bounds": {
+			"left": 0.1748,
+			"top": 0.7356,
+			"width": 0.0443,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Messenger,",
+		"bounds": {
+			"left": 0.2206,
+			"top": 0.7356,
+			"width": 0.0457,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Instagram,",
+		"bounds": {
+			"left": 0.2678,
+			"top": 0.7356,
+			"width": 0.0428,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Line,",
+		"bounds": {
+			"left": 0.3121,
+			"top": 0.7356,
+			"width": 0.0192,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Telegram,",
+		"bounds": {
+			"left": 0.3327,
+			"top": 0.7356,
+			"width": 0.0408,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "and",
+		"bounds": {
+			"left": 0.1569,
+			"top": 0.7569,
+			"width": 0.0147,
+			"height": 0.0166
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "more.",
+		"bounds": {
+			"left": 0.1727,
+			"top": 0.7563,
+			"width": 0.025,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.1672,
+			"top": 0.8122,
+			"width": 0.0138,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.182,
+			"top": 0.8122,
+			"width": 0.0327,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ">",
+		"bounds": {
+			"left": 0.2159,
+			"top": 0.8122,
+			"width": 0.0065,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "→",
+		"bounds": {
+			"left": 0.718,
+			"top": 0.1962,
+			"width": 0.0146,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Pending",
+		"bounds": {
+			"left": 0.7337,
+			"top": 0.1962,
+			"width": 0.0338,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Start",
+		"bounds": {
+			"left": 0.5538,
+			"top": 0.245,
+			"width": 0.0188,
+			"height": 0.0117
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "LiveTranslate",
+		"bounds": {
+			"left": 0.5734,
+			"top": 0.245,
+			"width": 0.0516,
+			"height": 0.0117
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Today",
+		"bounds": {
+			"left": 0.5727,
+			"top": 0.2822,
+			"width": 0.0218,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Si",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.31,
+			"width": 0.0079,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vous",
+		"bounds": {
+			"left": 0.4452,
+			"top": 0.31,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avez",
+		"bounds": {
+			"left": 0.4687,
+			"top": 0.31,
+			"width": 0.0208,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "besoin",
+		"bounds": {
+			"left": 0.4908,
+			"top": 0.31,
+			"width": 0.0299,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "d'aide",
+		"bounds": {
+			"left": 0.522,
+			"top": 0.31,
+			"width": 0.0273,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "en",
+		"bounds": {
+			"left": 0.5507,
+			"top": 0.31,
+			"width": 0.0117,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "direct,",
+		"bounds": {
+			"left": 0.5637,
+			"top": 0.31,
+			"width": 0.0299,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "contactez",
+		"bounds": {
+			"left": 0.595,
+			"top": 0.31,
+			"width": 0.0417,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nous",
+		"bounds": {
+			"left": 0.6379,
+			"top": 0.31,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "directement",
+		"bounds": {
+			"left": 0.6614,
+			"top": 0.31,
+			"width": 0.0521,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "sur",
+		"bounds": {
+			"left": 0.7148,
+			"top": 0.31,
+			"width": 0.0149,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "https://crisp.chat/fr/",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.3311,
+			"width": 0.0828,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "La",
+		"bounds": {
+			"left": 0.452,
+			"top": 0.3567,
+			"width": 0.0125,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "piaterorme",
+		"bounds": {
+			"left": 0.4656,
+			"top": 0.3567,
+			"width": 0.0576,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "trançaise",
+		"bounds": {
+			"left": 0.5243,
+			"top": 0.3567,
+			"width": 0.0508,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "de",
+		"bounds": {
+			"left": 0.5762,
+			"top": 0.3567,
+			"width": 0.0135,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "service",
+		"bounds": {
+			"left": 0.5909,
+			"top": 0.3567,
+			"width": 0.0395,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "cilent",
+		"bounds": {
+			"left": 0.6315,
+			"top": 0.3567,
+			"width": 0.0313,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avec",
+		"bounds": {
+			"left": 0.452,
+			"top": 0.3753,
+			"width": 0.025,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "IA,",
+		"bounds": {
+			"left": 0.4785,
+			"top": 0.3756,
+			"width": 0.0139,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "tout-en-un",
+		"bounds": {
+			"left": 0.4938,
+			"top": 0.3753,
+			"width": 0.06,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.452,
+			"top": 0.4055,
+			"width": 0.0181,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "est",
+		"bounds": {
+			"left": 0.4713,
+			"top": 0.4056,
+			"width": 0.0102,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "la",
+		"bounds": {
+			"left": 0.4826,
+			"top": 0.4056,
+			"width": 0.0068,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "plateforme",
+		"bounds": {
+			"left": 0.4905,
+			"top": 0.4056,
+			"width": 0.0372,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nourri",
+		"bounds": {
+			"left": 0.5288,
+			"top": 0.4056,
+			"width": 0.0203,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "à",
+		"bounds": {
+			"left": 0.5503,
+			"top": 0.4056,
+			"width": 0.0034,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "l'intelligence",
+		"bounds": {
+			"left": 0.5548,
+			"top": 0.4056,
+			"width": 0.0429,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "artificielle",
+		"bounds": {
+			"left": 0.5988,
+			"top": 0.4056,
+			"width": 0.0327,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "qui",
+		"bounds": {
+			"left": 0.6326,
+			"top": 0.4056,
+			"width": 0.0113,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "aide",
+		"bounds": {
+			"left": 0.6451,
+			"top": 0.4056,
+			"width": 0.0135,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "les",
+		"bounds": {
+			"left": 0.6597,
+			"top": 0.4055,
+			"width": 0.0118,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "entreprises",
+		"bounds": {
+			"left": 0.452,
+			"top": 0.4241,
+			"width": 0.0382,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "à",
+		"bounds": {
+			"left": 0.4911,
+			"top": 0.4244,
+			"width": 0.0043,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "améliorer",
+		"bounds": {
+			"left": 0.4964,
+			"top": 0.4244,
+			"width": 0.0321,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "leur",
+		"bounds": {
+			"left": 0.5293,
+			"top": 0.4244,
+			"width": 0.0139,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "service",
+		"bounds": {
+			"left": 0.5441,
+			"top": 0.4244,
+			"width": 0.0252,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "client",
+		"bounds": {
+			"left": 0.5701,
+			"top": 0.4244,
+			"width": 0.0191,
+			"height": 0.0111
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "multicanal.",
+		"bounds": {
+			"left": 0.5901,
+			"top": 0.4241,
+			"width": 0.0363,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "La",
+		"bounds": {
+			"left": 0.4666,
+			"top": 0.4678,
+			"width": 0.0125,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "plateforme",
+		"bounds": {
+			"left": 0.4802,
+			"top": 0.4678,
+			"width": 0.0463,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "française",
+		"bounds": {
+			"left": 0.5276,
+			"top": 0.4678,
+			"width": 0.0384,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "de",
+		"bounds": {
+			"left": 0.5671,
+			"top": 0.4678,
+			"width": 0.0113,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "service",
+		"bounds": {
+			"left": 0.5795,
+			"top": 0.4678,
+			"width": 0.0305,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "client",
+		"bounds": {
+			"left": 0.6111,
+			"top": 0.4678,
+			"width": 0.0237,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avec",
+		"bounds": {
+			"left": 0.6359,
+			"top": 0.4678,
+			"width": 0.0203,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "IA,",
+		"bounds": {
+			"left": 0.6574,
+			"top": 0.4678,
+			"width": 0.0113,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "tout-e...",
+		"bounds": {
+			"left": 0.6698,
+			"top": 0.4678,
+			"width": 0.0337,
+			"height": 0.0145
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Enfin,",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.5218,
+			"width": 0.0237,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "nous",
+		"bounds": {
+			"left": 0.4611,
+			"top": 0.5222,
+			"width": 0.0222,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avons",
+		"bounds": {
+			"left": 0.4847,
+			"top": 0.5222,
+			"width": 0.0264,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "créé",
+		"bounds": {
+			"left": 0.5125,
+			"top": 0.5222,
+			"width": 0.0194,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "quelques",
+		"bounds": {
+			"left": 0.5333,
+			"top": 0.5222,
+			"width": 0.0403,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "ressources",
+		"bounds": {
+			"left": 0.575,
+			"top": 0.5222,
+			"width": 0.0486,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "pour",
+		"bounds": {
+			"left": 0.625,
+			"top": 0.5222,
+			"width": 0.0208,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vous",
+		"bounds": {
+			"left": 0.6472,
+			"top": 0.5222,
+			"width": 0.0208,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "aider",
+		"bounds": {
+			"left": 0.6694,
+			"top": 0.5222,
+			"width": 0.0236,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "à",
+		"bounds": {
+			"left": 0.6944,
+			"top": 0.5222,
+			"width": 0.0056,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "utiliser",
+		"bounds": {
+			"left": 0.7014,
+			"top": 0.5218,
+			"width": 0.0312,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp:",
+		"bounds": {
+			"left": 0.4346,
+			"top": 0.5428,
+			"width": 0.0276,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Comment",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.5822,
+			"width": 0.0414,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "installer",
+		"bounds": {
+			"left": 0.4789,
+			"top": 0.5822,
+			"width": 0.0339,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "la",
+		"bounds": {
+			"left": 0.5143,
+			"top": 0.5822,
+			"width": 0.0089,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chatbox",
+		"bounds": {
+			"left": 0.5247,
+			"top": 0.5822,
+			"width": 0.0354,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.5615,
+			"top": 0.5822,
+			"width": 0.0221,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "sur",
+		"bounds": {
+			"left": 0.5852,
+			"top": 0.5822,
+			"width": 0.0148,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "mon",
+		"bounds": {
+			"left": 0.6014,
+			"top": 0.5822,
+			"width": 0.0192,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "site",
+		"bounds": {
+			"left": 0.622,
+			"top": 0.5822,
+			"width": 0.0162,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "web",
+		"bounds": {
+			"left": 0.6398,
+			"top": 0.5822,
+			"width": 0.0192,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "(c'est",
+		"bounds": {
+			"left": 0.6604,
+			"top": 0.5822,
+			"width": 0.0236,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "le",
+		"bounds": {
+			"left": 0.6855,
+			"top": 0.5822,
+			"width": 0.0089,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "code",
+		"bounds": {
+			"left": 0.6958,
+			"top": 0.5822,
+			"width": 0.0236,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "que",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.6032,
+			"width": 0.017,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vous",
+		"bounds": {
+			"left": 0.4543,
+			"top": 0.6033,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "allez",
+		"bounds": {
+			"left": 0.4778,
+			"top": 0.6033,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "installer",
+		"bounds": {
+			"left": 0.4986,
+			"top": 0.6033,
+			"width": 0.0352,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "dans",
+		"bounds": {
+			"left": 0.5351,
+			"top": 0.6033,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "site",
+		"bounds": {
+			"left": 0.5585,
+			"top": 0.6033,
+			"width": 0.0156,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "HTML)",
+		"bounds": {
+			"left": 0.5754,
+			"top": 0.6032,
+			"width": 0.0307,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Installer",
+		"bounds": {
+			"left": 0.4346,
+			"top": 0.6218,
+			"width": 0.0349,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.4708,
+			"top": 0.6222,
+			"width": 0.0236,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.4958,
+			"top": 0.6222,
+			"width": 0.0222,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "avec",
+		"bounds": {
+			"left": 0.5194,
+			"top": 0.6222,
+			"width": 0.0222,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Facebook",
+		"bounds": {
+			"left": 0.5431,
+			"top": 0.6222,
+			"width": 0.0431,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Messenger",
+		"bounds": {
+			"left": 0.5875,
+			"top": 0.6222,
+			"width": 0.0486,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "(vos",
+		"bounds": {
+			"left": 0.6375,
+			"top": 0.6222,
+			"width": 0.0194,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "clients",
+		"bounds": {
+			"left": 0.6583,
+			"top": 0.6222,
+			"width": 0.0278,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "pourront",
+		"bounds": {
+			"left": 0.6875,
+			"top": 0.6218,
+			"width": 0.0392,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vous",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.6422,
+			"width": 0.0209,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "contacter",
+		"bounds": {
+			"left": 0.4582,
+			"top": 0.6422,
+			"width": 0.0417,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "depuis",
+		"bounds": {
+			"left": 0.5012,
+			"top": 0.6422,
+			"width": 0.0299,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Facebook",
+		"bounds": {
+			"left": 0.5325,
+			"top": 0.6422,
+			"width": 0.043,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Messenger)",
+		"bounds": {
+			"left": 0.5767,
+			"top": 0.6422,
+			"width": 0.0526,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Configurer",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.6611,
+			"width": 0.0458,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "votre",
+		"bounds": {
+			"left": 0.4833,
+			"top": 0.6611,
+			"width": 0.0221,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "centre",
+		"bounds": {
+			"left": 0.5069,
+			"top": 0.6611,
+			"width": 0.028,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "d'aide",
+		"bounds": {
+			"left": 0.5365,
+			"top": 0.6611,
+			"width": 0.028,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "(pour",
+		"bounds": {
+			"left": 0.566,
+			"top": 0.6611,
+			"width": 0.0236,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "créé",
+		"bounds": {
+			"left": 0.5911,
+			"top": 0.6611,
+			"width": 0.0192,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "une",
+		"bounds": {
+			"left": 0.6117,
+			"top": 0.6611,
+			"width": 0.0177,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "FAQ",
+		"bounds": {
+			"left": 0.6309,
+			"top": 0.6611,
+			"width": 0.0192,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "et",
+		"bounds": {
+			"left": 0.6516,
+			"top": 0.6611,
+			"width": 0.0089,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "guider",
+		"bounds": {
+			"left": 0.6619,
+			"top": 0.6611,
+			"width": 0.0295,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vos",
+		"bounds": {
+			"left": 0.6929,
+			"top": 0.6611,
+			"width": 0.0164,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "clients)",
+		"bounds": {
+			"left": 0.4346,
+			"top": 0.6823,
+			"width": 0.0334,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Comment",
+		"bounds": {
+			"left": 0.4346,
+			"top": 0.7033,
+			"width": 0.0429,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "utiliser",
+		"bounds": {
+			"left": 0.479,
+			"top": 0.7033,
+			"width": 0.0295,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "les",
+		"bounds": {
+			"left": 0.51,
+			"top": 0.7033,
+			"width": 0.0118,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "triggers",
+		"bounds": {
+			"left": 0.5233,
+			"top": 0.7033,
+			"width": 0.0354,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "(pour",
+		"bounds": {
+			"left": 0.5602,
+			"top": 0.7033,
+			"width": 0.0236,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "envoyer",
+		"bounds": {
+			"left": 0.5852,
+			"top": 0.7033,
+			"width": 0.0354,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "des",
+		"bounds": {
+			"left": 0.6221,
+			"top": 0.7033,
+			"width": 0.0162,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messages",
+		"bounds": {
+			"left": 0.6398,
+			"top": 0.7033,
+			"width": 0.0443,
+			"height": 0.0189
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "automa-",
+		"bounds": {
+			"left": 0.6856,
+			"top": 0.7033,
+			"width": 0.0382,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "tisés",
+		"bounds": {
+			"left": 0.4346,
+			"top": 0.7219,
+			"width": 0.0224,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "à",
+		"bounds": {
+			"left": 0.4583,
+			"top": 0.7222,
+			"width": 0.0056,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "vos",
+		"bounds": {
+			"left": 0.4653,
+			"top": 0.7222,
+			"width": 0.0153,
+			"height": 0.0178
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "clients)",
+		"bounds": {
+			"left": 0.4819,
+			"top": 0.7219,
+			"width": 0.0326,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Comment",
+		"bounds": {
+			"left": 0.436,
+			"top": 0.7428,
+			"width": 0.0426,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "changer",
+		"bounds": {
+			"left": 0.4799,
+			"top": 0.7433,
+			"width": 0.0352,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "la",
+		"bounds": {
+			"left": 0.5163,
+			"top": 0.7433,
+			"width": 0.0085,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "couleur",
+		"bounds": {
+			"left": 0.526,
+			"top": 0.7433,
+			"width": 0.034,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "de",
+		"bounds": {
+			"left": 0.5613,
+			"top": 0.7433,
+			"width": 0.0122,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "la",
+		"bounds": {
+			"left": 0.5747,
+			"top": 0.7433,
+			"width": 0.0085,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chatbox",
+		"bounds": {
+			"left": 0.5844,
+			"top": 0.7428,
+			"width": 0.0363,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reply",
+		"bounds": {
+			"left": 0.4084,
+			"top": 0.8335,
+			"width": 0.0247,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Edit",
+		"bounds": {
+			"left": 0.4491,
+			"top": 0.8335,
+			"width": 0.0174,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Note",
+		"bounds": {
+			"left": 0.4797,
+			"top": 0.8335,
+			"width": 0.0218,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Reminder",
+		"bounds": {
+			"left": 0.5174,
+			"top": 0.8335,
+			"width": 0.0378,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Shortcuts",
+		"bounds": {
+			"left": 0.5712,
+			"top": 0.8335,
+			"width": 0.0363,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Knowledge",
+		"bounds": {
+			"left": 0.6235,
+			"top": 0.8333,
+			"width": 0.0441,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Base",
+		"bounds": {
+			"left": 0.6687,
+			"top": 0.8333,
+			"width": 0.0202,
+			"height": 0.0144
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.0436,
+			"top": 0.8637,
+			"width": 0.032,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.0769,
+			"top": 0.8634,
+			"width": 0.0293,
+			"height": 0.019
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "[EMAIL]",
+		"bounds": {
+			"left": 0.0436,
+			"top": 0.887,
+			"width": 0.0872,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "app.crisp.chat/website/../session_d034238a-5858-4ace-b10b-af4d1ee41a9c/",
+		"bounds": {
+			"left": 0.0015,
+			"top": 0.9103,
+			"width": 0.314,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "end",
+		"bounds": {
+			"left": 0.4084,
+			"top": 0.8777,
+			"width": 0.0246,
+			"height": 0.0212
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.4347,
+			"top": 0.8778,
+			"width": 0.0198,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "message",
+		"bounds": {
+			"left": 0.4562,
+			"top": 0.8778,
+			"width": 0.0412,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "to",
+		"bounds": {
+			"left": 0.499,
+			"top": 0.8778,
+			"width": 0.0099,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.5106,
+			"top": 0.8778,
+			"width": 0.0231,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Team",
+		"bounds": {
+			"left": 0.5353,
+			"top": 0.8778,
+			"width": 0.0231,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "in",
+		"bounds": {
+			"left": 0.5601,
+			"top": 0.8778,
+			"width": 0.0099,
+			"height": 0.0211
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chat...",
+		"bounds": {
+			"left": 0.5716,
+			"top": 0.8777,
+			"width": 0.0287,
+			"height": 0.0212
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Aa",
+		"bounds": {
+			"left": 0.6497,
+			"top": 0.8824,
+			"width": 0.0174,
+			"height": 0.014
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "...",
+		"bounds": {
+			"left": 0.6962,
+			"top": 0.8824,
+			"width": 0.0131,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "18%",
+		"bounds": {
+			"left": 0.798,
+			"top": 0.3916,
+			"width": 0.016,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.8517,
+			"top": 0.2053,
+			"width": 0.033,
+			"height": 0.0235
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Team",
+		"bounds": {
+			"left": 0.8864,
+			"top": 0.2055,
+			"width": 0.0336,
+			"height": 0.0235
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "[EMAIL]",
+		"bounds": {
+			"left": 0.8517,
+			"top": 0.2311,
+			"width": 0.1047,
+			"height": 0.0186
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Nantes",
+		"bounds": {
+			"left": 0.8532,
+			"top": 0.259,
+			"width": 0.0305,
+			"height": 0.0116
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "&",
+		"bounds": {
+			"left": 0.8488,
+			"top": 0.3078,
+			"width": 0.0128,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "View",
+		"bounds": {
+			"left": 0.8629,
+			"top": 0.3078,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.8864,
+			"top": 0.3078,
+			"width": 0.0221,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Profile",
+		"bounds": {
+			"left": 0.9098,
+			"top": 0.3078,
+			"width": 0.0277,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Get",
+		"bounds": {
+			"left": 0.8227,
+			"top": 0.3889,
+			"width": 0.0159,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Started",
+		"bounds": {
+			"left": 0.8398,
+			"top": 0.3889,
+			"width": 0.0326,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.8737,
+			"top": 0.3889,
+			"width": 0.0339,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": ":",
+		"bounds": {
+			"left": 0.9089,
+			"top": 0.3889,
+			"width": 0.0098,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.4378,
+			"width": 0.0285,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8466,
+			"top": 0.4378,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "workspace",
+		"bounds": {
+			"left": 0.8674,
+			"top": 0.4378,
+			"width": 0.0468,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Invite",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.4844,
+			"width": 0.0232,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8414,
+			"top": 0.4844,
+			"width": 0.0182,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "teammates",
+		"bounds": {
+			"left": 0.8609,
+			"top": 0.4844,
+			"width": 0.0489,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Install",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.5311,
+			"width": 0.0245,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Crisp",
+		"bounds": {
+			"left": 0.8427,
+			"top": 0.5311,
+			"width": 0.0234,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "on",
+		"bounds": {
+			"left": 0.8674,
+			"top": 0.5311,
+			"width": 0.0104,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8792,
+			"top": 0.5311,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "website",
+		"bounds": {
+			"left": 0.9,
+			"top": 0.5311,
+			"width": 0.0346,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Setup",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.5776,
+			"width": 0.0245,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Hugo",
+		"bounds": {
+			"left": 0.8427,
+			"top": 0.5778,
+			"width": 0.0247,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Al",
+		"bounds": {
+			"left": 0.8687,
+			"top": 0.5778,
+			"width": 0.0091,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Agent",
+		"bounds": {
+			"left": 0.8792,
+			"top": 0.5776,
+			"width": 0.0278,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.6265,
+			"width": 0.029,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.847,
+			"top": 0.6267,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "knowledge",
+		"bounds": {
+			"left": 0.8677,
+			"top": 0.6267,
+			"width": 0.0462,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "base",
+		"bounds": {
+			"left": 0.9151,
+			"top": 0.6265,
+			"width": 0.0224,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.6753,
+			"width": 0.0363,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "messaging",
+		"bounds": {
+			"left": 0.8543,
+			"top": 0.6756,
+			"width": 0.045,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "channels",
+		"bounds": {
+			"left": 0.9005,
+			"top": 0.6753,
+			"width": 0.0399,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Connect",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.7219,
+			"width": 0.0363,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8543,
+			"top": 0.7222,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "mailbox",
+		"bounds": {
+			"left": 0.875,
+			"top": 0.7219,
+			"width": 0.0334,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Customize",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.7707,
+			"width": 0.0448,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8628,
+			"top": 0.7711,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "chat",
+		"bounds": {
+			"left": 0.8835,
+			"top": 0.7711,
+			"width": 0.0182,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "widget",
+		"bounds": {
+			"left": 0.903,
+			"top": 0.7707,
+			"width": 0.0302,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Create",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.8172,
+			"width": 0.029,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.847,
+			"top": 0.8178,
+			"width": 0.0194,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "first",
+		"bounds": {
+			"left": 0.8677,
+			"top": 0.8178,
+			"width": 0.0158,
+			"height": 0.0156
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "shortcut",
+		"bounds": {
+			"left": 0.8847,
+			"top": 0.8172,
+			"width": 0.0368,
+			"height": 0.0163
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "Import",
+		"bounds": {
+			"left": 0.8169,
+			"top": 0.8656,
+			"width": 0.0271,
+			"height": 0.0168
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "your",
+		"bounds": {
+			"left": 0.8453,
+			"top": 0.8656,
+			"width": 0.0195,
+			"height": 0.0167
+		}
+	},
+	{
+		"source": "ocr",
+		"role": "block",
+		"text": "contacts",
+		"bounds": {
+			"left": 0.8661,
+			"top": 0.8656,
+			"width": 0.0365,
+			"height": 0.0168
+		}
+	}
+]
