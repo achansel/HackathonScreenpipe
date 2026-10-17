@@ -100,7 +100,7 @@ Puis Ctrl+C dans T1.
 | Test | Affiché à l'écran ? | Résultat | Notes |
 | --- | --- | --- | --- |
 | 2. relais direct | — | | |
-| A. `api` via relais | | | ligne dans T1 ? |
+| A. `api` via relais | | **échec (17/10)** : le clic n'arrive pas au récepteur | conforme au code (`native_actions.rs:1131`) |
 | B. `link` | | | page + ligne `GET /go/…` ? |
 | C. `copy` | | | `pbpaste` ? |
 | D. 👍/👎 + correction | | | où est le bouton ? `comment` présent ? |

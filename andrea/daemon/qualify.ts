@@ -1,0 +1,44 @@
+// Qualifie un épisode en un appel : friction ou non, type (vocabulaire Screenpipe + détour),
+// et solution d'équipe correspondante. Les identifiants évidents sont masqués avant l'envoi.
+import type { Episode } from "./episodes";
+import { chat } from "./screenpipe";
+import type { Solution } from "./solutions";
+
+export type Verdict = {
+  friction: boolean;
+  detour: string;
+  type: string;
+  control: string;
+  step: string;
+  solution_id: string | null;
+  confiance: number;
+};
+
+const SYSTEM = `Tu repères les frictions de PROCESS d'un employé à partir d'un extrait de son écran.
+Friction = détour sur une étape de process que des collègues connaissent (règle non écrite, champ obligatoire, validation, outil à trouver).
+Pas une friction : travail normal, réponse courtoise à un client, discussion sociale, message de succès, panne technique (404, timeout).
+detour : blocage | demande_aide | recherche | tatonnement | parcours | ressaisie | contournement | attente_relance | aucun.
+type (Screenpipe) : waiting | switching | rework | handoff | unclear. control : direct | influence | external | required.
+step : l'étape du process en 4 à 8 mots, sans nom de personne, e-mail, numéro ni identifiant client.
+solution_id : l'id de la solution d'équipe qui répond à CETTE étape, ou null si aucune ne correspond vraiment.
+Réponds uniquement par un JSON : {"friction":bool,"detour":"","type":"","control":"","step":"","solution_id":null,"confiance":0.0}`;
+
+export function redact(s: string): string {
+  return s
+    .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "[EMAIL]")
+    .replace(/(?:\+|00)\d[\d .-]{8,14}\d/g, "[PHONE]")
+    .replace(/\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{4}){3,7}\b/g, "[IBAN]");
+}
+
+export async function qualify(ep: Episode, solutions: Solution[]): Promise<Verdict | null> {
+  const catalogue = solutions.map((s) => `- ${s.id} : ${s.step}`).join("\n");
+  const user = `Solutions d'équipe :\n${catalogue}\n\nAppli : ${ep.app}\nFenêtres récentes : ${ep.titles.map(redact).join(" → ")}\nTexte nouveau : ${redact(ep.text)}`;
+  const out = await chat(SYSTEM, user, 400);
+  try {
+    const v = JSON.parse(out.match(/\{[\s\S]*\}/)?.[0] ?? "") as Verdict;
+    if (v.solution_id && !solutions.some((s) => s.id === v.solution_id)) v.solution_id = null;
+    return v;
+  } catch {
+    return null;
+  }
+}

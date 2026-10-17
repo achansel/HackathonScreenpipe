@@ -1,0 +1,46 @@
+[
+  {
+    "id": "geste-commercial",
+    "step": "Crisp : un client demande un dédommagement ou un remboursement",
+    "type": "unclear", "control": "required", "detour": "demande_aide",
+    "title": "Geste commercial : 1 mois offert max",
+    "body": "**Premium seulement.** Ajouter la note `geste commercial` dans HubSpot.",
+    "copy": "Geste commercial : 1 mois offert (client premium).",
+    "owner": "support-ops", "reviewed": "2026-10-17", "uses": 3
+  },
+  {
+    "id": "pipeline-support",
+    "step": "HubSpot : choisir le pipeline d'un ticket support",
+    "type": "unclear", "control": "direct", "detour": "demande_aide",
+    "title": "Ticket : pipeline « Support », pas « Support OLD »",
+    "body": "« Support OLD » est archivé. Lier le ticket à la fiche client.",
+    "copy": "Support",
+    "owner": "revops", "reviewed": "2026-10-17", "uses": 5
+  },
+  {
+    "id": "remise-15",
+    "step": "HubSpot : remise supérieure à 15 % bloquée",
+    "type": "waiting", "control": "required", "detour": "blocage",
+    "title": "Remise > 15 % : validation dans #deal-desk",
+    "body": "Poster la demande dans `#deal-desk` avec le montant et la durée. Réponse sous 24 h.",
+    "copy": "Demande de remise : [client], [montant], [durée], merci de valider.",
+    "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 4
+  },
+  {
+    "id": "client-introuvable",
+    "step": "HubSpot : client introuvable depuis un chat Crisp",
+    "type": "unclear", "control": "direct", "detour": "recherche",
+    "title": "Client introuvable : chercher par domaine",
+    "body": "L'e-mail du chat diffère souvent de celui de HubSpot. Chercher par **domaine** ou par **téléphone**.",
+    "owner": "support-ops", "reviewed": "2026-10-17", "uses": 6
+  },
+  {
+    "id": "prospect-belge",
+    "step": "HubSpot : créer un prospect venu du chat",
+    "type": "handoff", "control": "influence", "detour": "demande_aide",
+    "title": "Prospect : stage « Lead », puis #new-leads",
+    "body": "Créer le contact en `Lead`. Belgique : responsable Sarah. Prévenir dans `#new-leads`.",
+    "copy": "Nouveau lead : [entreprise], [pays], [besoin].",
+    "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 2
+  }
+]

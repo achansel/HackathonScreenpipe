@@ -119,9 +119,10 @@ Modèle de [notification.md](../notification.md) §4.1 (titre = la réponse, 2 b
 | `link` → `http://127.0.0.1:PORT/go/<id>?t=<nonce>` | [Y aller] + preuve de clic, page de consentement de Karim | oui, traité en Rust **[code]** | oui **[code]** |
 | `copy` | [Copier] | oui, natif **[code]** | oui **[code]** |
 | 👍/👎 → `GET /feedback` | utile / pas utile, escalade | **[à vérifier]** | **oui [mesuré]** : derrière le menu « … » → Feedback |
-| `api` → `POST :3030/connections/n8n/proxy` (relais webhook vers le daemon) | clic silencieux | **non fiable** (`native_actions.rs:1131`) | **oui [mesuré]** |
+| `api` → `POST :3030/connections/n8n/proxy` (relais webhook vers le daemon) | clic silencieux | **non [mesuré, 17/10]** : le clic n'arrive pas (attendu, `native_actions.rs:1131`) | **oui [mesuré]** |
 
-- `api` ne vise que `:3030` (`lib/notifications/actions.ts:306`) → pas d'appel direct au daemon. Le relais webhook ne valide que `http(s)` (`connections_api.rs`, `webhook_proxy`) : il marche vers `127.0.0.1`, mais ce n'est pas multiplateforme → bonus Windows seulement.
+- `api` ne vise que `:3030` (`lib/notifications/actions.ts:306`) → pas d'appel direct au daemon. Le relais webhook ne valide que `http(s)` (`connections_api.rs`, `webhook_proxy`) : il marche vers `127.0.0.1`.
+- **Décision (17/10)** : boutons `api` + relais = voie principale, pas de `link`. Sur Mac, correctif Screenpipe : [screenpipe-patch/](screenpipe-patch/) (bouton `api` traité en Rust, même règle de cible). Relais isolé dans une **instance** dédiée (`PUT /connections/n8n/instances/friction-assist`, appel `…/proxy?instance=friction-assist`) : aucun n8n existant n'est touché.
 - **Relais, mesuré sous Windows (17/10)** : connexion n8n avec `webhook_url: http://127.0.0.1:8787/hook` (`POST /connections/n8n {"credentials":{...}}`), puis clic sur un bouton `api` → corps JSON reçu tel quel par le daemon dans WSL (réseau `mirrored`), 24 ms en appel direct. En-têtes transmis : `content-type`, `content-length`, `accept`, `host` ; **pas d'`Authorization`**.
 - **`/feedback`, mesuré sous Windows** : un 👍 donne `{"target":{"kind":"notification","id":"<id de la notif>"},"rating":"up","producer_ref":"pipe:friction-assist"}`, lisible par `GET /feedback?kind=notification&target_id=<id>`. Le commentaire n'est accepté qu'avec `down` (`ai_feedback.rs:261`), non testé. Sous Windows, le bouton Feedback est dans le menu « … » : peu visible, à dire à l'utilisateur ou à doubler par nos propres boutons.
 - **Panneau Windows vide [mesuré]** : après une relance de l'enregistrement, `/notify` répond « Notification sent successfully », le journal dit `outcome=shown_on_panel`, la fenêtre de 340 × 380 est visible et au premier plan… mais rien n'est dessiné. Relancer toute l'app répare. **Un 200 de `/notify` ne prouve pas l'affichage** : vérifier à l'œil avant chaque démo. App 2.7.109.
@@ -147,6 +148,7 @@ Modèle de [notification.md](../notification.md) §4.1 (titre = la réponse, 2 b
 - [ ] `filter_pii` actif et latence réelle.
 - [ ] Précision sur de **vrais** épisodes (`scripts/collect-episodes.ts` → étiquetage → `bench/`).
 - [x] Relais webhook + bouton `api` sous Windows ; `GET /feedback` après un 👍 sous Windows.
+- [x] Bouton `api` sur Mac : **ne passe pas** (17/10). Confirme le choix : `link` = voie principale, relais = bonus Windows.
 - [ ] `link` / `copy` / 👍👎 sur Mac ; commentaire avec 👎 ; `link` et `copy` sous Windows.
 - [ ] Panneau Windows qui reste vide après une relance de l'enregistrement : reproduire, puis le signaler à Ezra.
 - [ ] Live View (`GET /live-views/schema`, test 6).
@@ -157,4 +159,4 @@ Modèle de [notification.md](../notification.md) §4.1 (titre = la réponse, 2 b
 
 - Partage entre collègues : cœur du produit (track « Make it work for a team ») ; absent de Screenpipe.
 - Debounce sur la frappe : oui. Messages clients : lisibles. IA cloud : oui, « comme Screenpipe » (§7).
-- Sans fork. Relais webhook : bonus Windows, pas la voie principale.
+- Un correctif minimal de Screenpipe (boutons `api` sur Mac), proposé upstream ; le reste sans modification de Screenpipe. Relais webhook = voie principale des clics.

@@ -12,5 +12,7 @@ Rien ici ne remplace les documents de l'équipe à la racine : ce sont des propo
 | `scripts/collect-episodes.ts` | extrait des épisodes réels de Screenpipe vers `bench/real/` |
 | `scripts/poll-input.ts` | prototype de détection en direct (événements d'entrée, compteurs dans les titres) |
 | `scripts/test-receiver.ts` | récepteur local de test (joue le daemon) |
+| `daemon/` | **étape 1 de la proposition** : daemon friction-assist (détection, qualification, notification, relais des clics, 👍/👎). `bun andrea/daemon/main.ts activer`, `relais`, puis lancer ; `test-notif` pour la chaîne sans détection |
+| `screenpipe-patch/` | correctif Screenpipe : boutons `api` traités en Rust sur Mac (non compilé ici) |
 
 Commandes depuis la racine du dépôt, après `source ~/.config/screenpipe/env`.

@@ -1,0 +1,39 @@
+# Patch Screenpipe : boutons `api` traités en Rust (macOS)
+
+**Problème** : sur Mac, un clic sur un bouton de notification de type `api` ne fait rien. Le panneau natif renvoie l'action au JavaScript de la fenêtre overlay, « usually not mounted » (`native_actions.rs:1131`). Mesuré le 17/10 : le clic n'arrive jamais. Seul `record-hd` est traité en Rust.
+
+**Correctif** (`native-api-action.patch`, 93 lignes, contre `screenpipe/screenpipe@30b50bb`) : dans `apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs`, un bouton `api` sans deeplink est exécuté en Rust, comme `record-hd` :
+- **même règle de cible** que `isLocalApiUrl` (`lib/api.ts`) : chemin relatif, ou `http://localhost|127.0.0.1:<port de l'API>` ; tout le reste est refusé (la requête porte la clé) ;
+- `method` / `body` de l'action, clé ajoutée par `LocalApiContext::apply_auth_blocking` ;
+- les actions avec `deeplinkUrl` restent sur le chemin JS ;
+- tests unitaires de `local_api_action_target` (cibles acceptées / refusées).
+
+**Statut** : non compilé (pas de toolchain Rust ici). À compiler et tester sur Mac. Bon candidat pour une PR upstream (corrige un bug réel, ne change pas la règle de sécurité).
+
+## Appliquer et compiler (Mac)
+
+Procédure du dépôt Screenpipe (`AGENTS.md`, `docs/macos-dev-builds.md`) : uniquement leurs scripts, jamais `cargo` à la main pour `src-tauri`.
+
+```bash
+git clone https://github.com/screenpipe/screenpipe && cd screenpipe && git checkout 30b50bb
+```
+
+```bash
+git apply /chemin/vers/HackathonScreenpipe/andrea/screenpipe-patch/native-api-action.patch
+```
+
+```bash
+cd apps/screenpipe-app-tauri && bun install && bun run test:tauri local_api_action_target
+```
+
+```bash
+bun run build:tauri:dev
+```
+
+- Une app recompilée change d'identité : **redonner l'enregistrement d'écran et l'accessibilité** (Réglages système → Confidentialité). `docs/macos-dev-builds.md` décrit le chemin signé si l'identité doit rester stable.
+- Quitter l'app officielle avant de lancer la version patchée (même port 3030).
+- Test : `andrea/docs/test-mac.md`, notification A.
+
+## Licence
+
+Licence commerciale Screenpipe (`LICENSE.md`) : modifier et compiler est permis pour « Evaluation, development, and testing for up to seven (7) days » et pour un usage non commercial ou éducatif. Interdit sans licence commerciale : distribuer dans un produit commercial, l'offrir en service hébergé. Une machine cloud peut **compiler** ; **faire tourner** l'app sur une machine non rattachée à un utilisateur licencié demande un accord commercial (§3). Les modifications appartiennent à Screenpipe (§6).

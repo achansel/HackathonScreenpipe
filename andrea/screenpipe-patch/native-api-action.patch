@@ -1,0 +1,118 @@
+diff --git a/apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs b/apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs
+index 4b1c149..a56d541 100644
+--- a/apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs
++++ b/apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs
+@@ -1128,6 +1128,53 @@ pub(crate) fn dispatch_notification_action(json: String) {
+         return;
+     }
+ 
++    // Generic local-API action ("api" without a record-hd payload). Handled in
++    // Rust for the same reason as record-hd above: the JS listener lives in
++    // the overlay webview, which is usually not mounted when a native
++    // notification is clicked, so the click silently did nothing on macOS.
++    // Same target rule as `isLocalApiUrl` (lib/api.ts): only a relative path
++    // or an http URL on localhost/127.0.0.1 at the local API port, because the
++    // request carries the user's bearer key. Actions that also open a
++    // deeplink keep going through the JS handler.
++    if action_type == Some("api") {
++        if let Some(action) = parsed.as_ref() {
++            let has_deeplink = action
++                .get("deeplinkUrl")
++                .or_else(|| action.get("deeplink_url"))
++                .is_some();
++            if let (Some(url), false) = (action.get("url").and_then(|v| v.as_str()), has_deeplink) {
++                let api = crate::recording::local_api_context_from_app(app);
++                let Some(target) = local_api_action_target(url, api.port) else {
++                    warn!("refused api action to non-local url: {}", url);
++                    return;
++                };
++                let method = action
++                    .get("method")
++                    .and_then(|v| v.as_str())
++                    .unwrap_or("POST")
++                    .to_uppercase();
++                let body = action.get("body").cloned();
++                std::thread::spawn(move || {
++                    let client = reqwest::blocking::Client::new();
++                    let method = reqwest::Method::from_bytes(method.as_bytes())
++                        .unwrap_or(reqwest::Method::POST);
++                    let mut req = api.apply_auth_blocking(client.request(method, &target));
++                    if let Some(body) = body {
++                        req = req
++                            .header("Content-Type", "application/json")
++                            .body(body.to_string());
++                    }
++                    match req.send() {
++                        Ok(res) if res.status().is_success() => {}
++                        Ok(res) => error!("api action {} failed: HTTP {}", target, res.status()),
++                        Err(e) => error!("api action {} failed: {}", target, e),
++                    }
++                });
++                return;
++            }
++        }
++    }
++
+     // Chat-opening actions ("chat", and "pipe" with open_in_chat) and
+     // background pipe runs are handled in Rust for the same reason as
+     // link/deeplink above: their JS listener lives in the Main overlay
+@@ -1173,6 +1220,21 @@ pub(crate) fn dispatch_notification_action(json: String) {
+     let _ = app.emit("native-notification-action", &json);
+ }
+ 
++/// Resolve an `api` notification action URL to a local-API target, or `None`
++/// when it points anywhere else. Mirrors `isLocalApiUrl` in lib/api.ts.
++fn local_api_action_target(url: &str, api_port: u16) -> Option<String> {
++    if url.starts_with('/') && !url.starts_with("//") {
++        return Some(format!("http://localhost:{}{}", api_port, url));
++    }
++    let parsed = url::Url::parse(url).ok()?;
++    let host_ok = matches!(parsed.host_str(), Some("localhost") | Some("127.0.0.1"));
++    if parsed.scheme() == "http" && host_ok && parsed.port() == Some(api_port) {
++        Some(parsed.to_string())
++    } else {
++        None
++    }
++}
++
+ fn is_meeting_deeplink(url: &str) -> bool {
+     url.starts_with("screenpipe://meeting/") || url.starts_with("screenpipe://meeting?")
+ }
+@@ -1630,6 +1692,37 @@ fn native_shortcut_action_callback_inner(action_ptr: *const std::os::raw::c_char
+     }
+ }
+ 
++#[cfg(test)]
++mod local_api_action_target_tests {
++    use super::local_api_action_target;
++
++    #[test]
++    fn accepts_relative_paths_and_local_api_urls() {
++        assert_eq!(
++            local_api_action_target("/connections/n8n/proxy", 3030).as_deref(),
++            Some("http://localhost:3030/connections/n8n/proxy")
++        );
++        assert_eq!(
++            local_api_action_target("http://127.0.0.1:3030/feedback", 3030).as_deref(),
++            Some("http://127.0.0.1:3030/feedback")
++        );
++    }
++
++    #[test]
++    fn refuses_other_hosts_ports_and_schemes() {
++        for url in [
++            "http://127.0.0.1:8787/hook",
++            "http://localhost:11435/notify",
++            "https://localhost:3030/feedback",
++            "http://evil.example:3030/feedback",
++            "//evil.example/feedback",
++            "file:///etc/passwd",
++        ] {
++            assert_eq!(local_api_action_target(url, 3030), None, "{url}");
++        }
++    }
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::{
