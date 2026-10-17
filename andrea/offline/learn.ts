@@ -51,7 +51,9 @@ async function labelEpisodes(eps: Episode[]): Promise<Record<string, string>> {
 }
 
 /** Étiquettes confirmées par l'usage, sans effort humain : « Ça m'a aidé » sur une aide,
- *  ou une demande à laquelle un collègue a répondu en partageant. « Pas ça » est ambigu : ignoré. */
+ *  ou une demande à laquelle un collègue a répondu en partageant. « Pas ça » (sans « Ça m'a aidé »
+ *  sur le même épisode) donne « aucun » : étiquette faible (mauvaise aide ou pas de friction), mais
+ *  c'est le seul exemple de faux positif que l'usage fournit ; une étiquette de référence passe avant. */
 export function implicitLabels(eventsFile = EVENTS): Record<string, string> {
   if (!existsSync(eventsFile)) return {};
   const ev = readFileSync(eventsFile, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
@@ -64,6 +66,7 @@ export function implicitLabels(eventsFile = EVENTS): Record<string, string> {
       const a = String(e.episode).startsWith("team-") ? asked.get(String(e.episode).slice(5)) : undefined;
       if (a?.episode && a.detour) out[a.episode] = a.detour;
     }
+    if (e.kind === "feedback" && e.rating === "down" && shown.has(e.episode) && !(e.episode in out)) out[e.episode] = "aucun";
     if (e.kind === "solved") {
       const a = asked.get(e.requestId);
       if (a?.episode && a.detour) out[a.episode] = a.detour;

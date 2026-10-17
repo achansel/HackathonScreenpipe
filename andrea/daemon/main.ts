@@ -182,6 +182,8 @@ async function handleEpisode(ep: Episode) {
     const card = s.id === "client-introuvable" && dossier && dossierText() ? await customerCard(dossier.name) : null;
     // Anti-répétition par aide ET par client : la fiche de Jean n'est pas une répétition de l'aide générique
     // montrée une minute plus tôt (mesuré en répétition : la fiche bloquée 10 min).
+    // Une solution qui collectionne les « Pas ça » (score ≤ -2) ne part qu'à 0,95 de confiance.
+    if ((s.score ?? 0) <= -2 && v.confiance < 0.95) { log(`aide « ${s.title} » retenue : souvent jugée « Pas ça » (score ${s.score})`); return { verdict: v, held: true }; }
     const shownKey = card ? `${s.id}|${card.contactId}` : s.id;
     if (Date.now() - (lastShown.get(shownKey) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
     const n = card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s);
@@ -191,6 +193,9 @@ async function handleEpisode(ep: Episode) {
     log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
     return { verdict: v, notified: s.id };
   }
+  // Notifier peu, compter beaucoup : une demande anonyme part vers toute l'équipe, donc seulement sur une
+  // question explicite (éval du 17/10 : 4 demandes justes sur 12). Le reste est déjà compté sur la carte (sign).
+  if (team && v.detour !== "demande_aide") { log(`friction « ${v.step} » (${v.detour}) comptée sur la carte, sans demande`); return { verdict: v, counted: true }; }
   if (team) {
     if (!groundedRequest(v.step, ep.text)) { log(`demande anonyme retenue : « ${v.step} » ne s'appuie pas sur le texte de l'épisode`); return { verdict: v, held: true }; }
     const requestId = await team.ask(v);
