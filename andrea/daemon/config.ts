@@ -36,7 +36,7 @@ export const REQUEST_TTL_MS = 30 * 60_000; // une demande plus ancienne est igno
 const [jMin, jMax] = (process.env.FRICTION_REQUEST_JITTER ?? (process.env.FRICTION_SIM === "1" ? "0-0" : "10-60")).split("-").map(Number);
 export const REQUEST_JITTER_MS = { min: (jMin || 0) * 1000, max: (jMax || jMin || 0) * 1000 };
 export const MAX_SHARE_PROMPTS_PER_DAY = Number(process.env.FRICTION_MAX_SHARE_PROMPTS ?? 5); // contre la fatigue de celui qui sait
-export const MODEL = process.env.FRICTION_MODEL ?? "claude-haiku-4-5";
+export const MODEL = process.env.FRICTION_MODEL ?? "claude-opus-5"; // 17/10 : claude-haiku-4-5 n'est pas dans la liste autorisée de la passerelle (remplacé en silence) ; opus-5 mesuré meilleur
 
 export const PIPE_NAME = "friction-assist"; // donne les 👍/👎 natifs de Screenpipe
 // Instance dédiée de la connexion n8n : relaie les clics des boutons `api` vers ce daemon
@@ -50,7 +50,7 @@ export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → �
 export const LOOKBACK_MS = 3 * 60_000; // l'IA ne lit que les 3 dernières minutes
 export const BASELINE_MS = 30 * 60_000; // référence d'une fenêtre (empreintes de mots, pas de texte) gardée 30 min après sa dernière frame
 export const SOLUTION_COOLDOWN_MS = 10 * 60_000; // pas deux fois la même aide en 10 min
-export const MIN_CONFIDENCE = 0.8; // éval du 17/10 sur 172 épisodes étiquetés : 0,6 → 0,8 = précision 0,44 → 0,53, rappel inchangé (0,65)
+export const MIN_CONFIDENCE = Number(process.env.FRICTION_MIN_CONFIDENCE ?? 0.72); // éval 17/10, 172 épisodes : opus-5 à 0,72 = précision 0,71, rappel 0,46 (haiku à 0,8 : 0,46 / 0,50). Seuil propre au modèle : les gros modèles donnent des confiances plus basses
 // Filtre en direct : un épisode est écarté sans appel au modèle si le détecteur approuvé dit
 // « pas de friction » avec au moins cette confiance. Même seuil pour la validation hors ligne.
 export const SKIP_CONFIDENCE = 0.5;
