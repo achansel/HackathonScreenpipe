@@ -14,6 +14,9 @@ const auth = { Authorization: `Bearer ${KEY}` };
 const WEEK_MS = 7 * 24 * 3600_000;
 
 const range = (n: number) => (n < 5 ? "moins de 5" : n < 10 ? "5 à 10" : n < 20 ? "10 à 20" : "plus de 20");
+const ORDER = ["en attente de réponse", "à documenter", "solution partagée", "règle certifiée"];
+const ROWS = 8; // le tableau tient dans la vue sans défiler
+const short = (s: string) => (s.length > 60 ? `${s.slice(0, 59)}…` : s);
 const norm = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, " ").trim();
 
 export async function buildMap(store: TeamStore, now = Date.now()) {
@@ -56,8 +59,13 @@ export async function buildMap(store: TeamStore, now = Date.now()) {
     "en-attente": live["en-attente"],
     resolues: live.resolues,
     detours: { value: range(signatures.length), label: "détours sur des étapes de process", unit: "7 jours" },
-    etapes: { items: [...counts.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 50).map(([k, e]) => ({ label: e.step.slice(0, 200), value: range(e.n), status: status(k) })) },
-    nuit: live.nuit,
+    // Trié par état (ce qui demande une action d'abord), puis par détours ; 8 lignes pour tenir à l'écran.
+    etapes: { items: [...counts.entries()]
+      .map(([k, e]) => ({ ...e, status: status(k) }))
+      .sort((a, b) => ORDER.indexOf(a.status) - ORDER.indexOf(b.status) || b.n - a.n)
+      .slice(0, ROWS)
+      .map((e) => ({ label: short(e.step), value: range(e.n), status: e.status })) },
+    nuit: { items: (live.nuit as { items: unknown[] }).items.slice(0, 5) },
   };
 }
 
