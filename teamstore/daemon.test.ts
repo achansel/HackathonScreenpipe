@@ -90,9 +90,10 @@ test("la responsable certifie une solution → le cache de Karim la marque certi
 test("la carte d'équipe (map.ts) se construit sur le stockage RPC : signatures comptées, étape résolue", async () => {
   await karim.sign({ friction: true, detour: "demande_aide", type: "unclear", control: "required", step: geste.step, solution_id: null, confiance: 0.9 });
   const map = await buildMap(karimStore);
-  const row = map.etapes.items.find((i: any) => i.label === geste.step);
-  expect(map.total.value).toBe("moins de 5");
-  expect(row?.detail).toContain("solution partagée");
+  // Libellés raccourcis à 60 caractères pour tenir dans la Live View (« … » au bout).
+  const row = map.etapes.items.find((i: any) => geste.step.startsWith(i.label.replace(/…$/, "")));
+  expect(map.detours.value).toBe("moins de 5");
+  expect(row?.status).toBe("règle certifiée"); // certifiée au test précédent : l'état le plus avancé l'emporte
 });
 
 test("Karim retiré du Support (rotation) : son daemon continue avec Ventes et le signale une fois", async () => {

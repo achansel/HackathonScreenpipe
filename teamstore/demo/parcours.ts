@@ -64,6 +64,11 @@ function ask(actions: { label: string; act: string; primary?: boolean }[]): Prom
     if (auto()) setTimeout(() => resolveAct?.(actions.find((a) => a.primary)?.act ?? actions[0].act), 2600);
   });
 }
+// Cocher « Mode présentation » pendant qu'un bouton attend le clique aussi (sinon le parcours restait bloqué).
+$("auto").addEventListener("change", () => {
+  const pending = ui.actions;
+  if (auto() && resolveAct && pending.length) setTimeout(() => { if (auto() && ui.actions === pending) resolveAct?.(pending.find((a) => a.primary)?.act ?? pending[0].act); }, 1200);
+});
 document.addEventListener("click", (e) => {
   const b = (e.target as HTMLElement).closest("[data-act]") as HTMLElement | null;
   if (b && resolveAct) { b.classList.add("pressed"); resolveAct(b.dataset.act!); }
