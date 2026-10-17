@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # friction-assist — équipes chiffrées : une commande (Mac, Linux, WSL). Voir teamstore/README.md.
-#   ./teamstore/start.sh            démo à 4 postes
+#   ./teamstore/start.sh            démo PipingTable
 #   ./teamstore/start.sh moi        mon poste, avec mes collègues (options : --heberger, --serveur <url>)
 set -euo pipefail
 cd "$(dirname "$0")/.."

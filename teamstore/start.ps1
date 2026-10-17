@@ -1,5 +1,5 @@
 # friction-assist — équipes chiffrées : une commande (Windows). Voir teamstore\README.md.
-#   teamstore\start.cmd            démo à 4 postes
+#   teamstore\start.cmd            démo PipingTable
 #   teamstore\start.cmd moi        mon poste, avec mes collègues (options : --heberger, --serveur <url>)
 $ErrorActionPreference = "Stop"
 Set-Location (Join-Path $PSScriptRoot "..")

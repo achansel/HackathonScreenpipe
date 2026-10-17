@@ -1,6 +1,6 @@
 // Point d'entrée unique (Mac, Windows, Linux/WSL). Voir teamstore/README.md.
 //
-//   bun teamstore/start.ts                    démo : 4 postes simulés sur cette machine
+//   bun teamstore/start.ts                    démo : les 5 collègues de PipingTable simulés sur cette machine
 //   bun teamstore/start.ts moi                mon poste : avec mes vrais collègues
 //   bun teamstore/start.ts moi --heberger     … et cette machine sert de stockage à l'équipe (même réseau)
 //   bun teamstore/start.ts moi --serveur http://192.168.1.20:3001     … stockage hébergé par un collègue
@@ -125,7 +125,7 @@ try {
 }
 
 const page = `http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"}`;
-console.log(`\nfriction-assist : ${mode === "moi" ? "mon poste" : "démo à 4 postes"}`);
+console.log(`\nfriction-assist : ${mode === "moi" ? "mon poste" : "démo PipingTable (5 collègues simulés)"}`);
 console.log(`  page     : ${page}`);
 console.log(`  stockage : ${store.label}`);
 if (flag("--heberger")) {
