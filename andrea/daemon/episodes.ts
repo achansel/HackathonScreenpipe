@@ -16,9 +16,14 @@ export type Episode = {
 // seen : empreintes des mots déjà vus dans la fenêtre (pas le texte), toutes frames confondues : Slack
 // alterne OCR (~240 mots) et accessibilité (220 puis 750 mots, historique chargé) [mesuré], comparer à la
 // seule frame précédente ferait passer l'historique pour nouveau. seenAt : dernière frame vue.
-type WindowState = { app: string; window: string; seen: Set<string>; delta: string[]; changedAt: number; seenAt: number };
+type WindowState = { app: string; window: string; seen: Set<string>; delta: string[]; changedAt: number; seenAt: number; search: string; searchAt?: number; searchWords?: number };
+// Paramètre de recherche de l'URL (noms usuels du web, aucune appli en particulier).
+const SEARCH_PARAM = /^(q|query|search|term|keyword|s)$/i;
+const searchTerm = (url: string) => { try { for (const [k, v] of new URL(url).searchParams) if (SEARCH_PARAM.test(k) && v.trim()) return v.trim(); } catch {} return ""; };
 const SEEN_MAX = 20_000;
 const CONTEXT = 4; // mots gardés de part et d'autre d'un mot nouveau
+const SEARCH_SETTLE_MS = 6000; // une recherche attend 6 s de calme avant de partir (résultat affiché)
+const SEARCH_WORDS = 120; // derniers mots de la page gardés avec une nouvelle recherche (mesuré : « 0 contacts » vers la fin)
 
 const t = (c: Item) => new Date(c.timestamp).getTime();
 // Domaine seulement : l'URL entière peut citer l'outil sans en être (mesuré : connexion Google
@@ -63,6 +68,9 @@ function clean(app: string, text: string): string[] {
 export class EpisodeBuilder {
   private windows = new Map<string, WindowState>();
   private titles: { at: number; title: string }[] = [];
+  // Dernière URL vue par titre de fenêtre : sous Windows, les captures OCR n'ont pas d'URL (mesuré), et
+  // « Contacts | All contacts » ne dit pas HubSpot. Même titre, même onglet : on reprend son URL.
+  private urlByWindow = new Map<string, string>();
 
   addInput(ev: Item) {
     if (!["app_switch", "window_focus"].includes(ev.event_type)) return;
@@ -74,6 +82,8 @@ export class EpisodeBuilder {
   addFrame(f: Item) {
     const app = f.app_name ?? "";
     const window = f.window_name ?? "";
+    if (f.browser_url) this.urlByWindow.set(`${app}|${window}`, f.browser_url);
+    else if (this.urlByWindow.has(`${app}|${window}`)) f = { ...f, browser_url: this.urlByWindow.get(`${app}|${window}`) };
     if (!f.text || IGNORE.test(`${app} ${window} ${host(f.browser_url ?? "")}`) || !inScope(app, window, f.browser_url)) return;
     // Firefox : le texte d'accessibilité peut venir d'un autre onglet (mesuré) → OCR seulement.
     if (/firefox/i.test(app) && f.text_source === "accessibility") return;
@@ -84,7 +94,7 @@ export class EpisodeBuilder {
     // veille qualifiée en friction). Changer de canal ou de page change le titre, donc la fenêtre.
     // Les résultats d'une recherche HubSpot s'affichent dans la même page (mesuré) : détectés.
     if (!this.windows.has(key)) {
-      this.windows.set(key, { app, window, seen: new Set(w.map(hash)), delta: [], changedAt: t(f), seenAt: t(f) });
+      this.windows.set(key, { app, window, seen: new Set(w.map(hash)), delta: [], changedAt: t(f), seenAt: t(f), search: searchTerm(f.browser_url ?? "") });
       return;
     }
     const st = this.windows.get(key)!;
@@ -92,7 +102,26 @@ export class EpisodeBuilder {
     for (const x of w) { st.seen.delete(hash(x)); st.seen.add(hash(x)); } // ordre = récence, pour l'éviction
     for (const h of st.seen) { if (st.seen.size <= SEEN_MAX) break; st.seen.delete(h); }
     st.seenAt = t(f);
-    if (isFresh.filter(Boolean).length >= 3) {
+    // Une nouvelle recherche dans l'URL est un geste de l'utilisateur, même si la page ne change presque pas :
+    // deux recherches à 0 résultat de suite n'apportent qu'un mot nouveau (mesuré le 17/10, HubSpot).
+    const term = searchTerm(f.browser_url ?? "");
+    // Page brute, sans le filtre du texte d'interface : « No Contacts match » revient à chaque recherche vide,
+    // il serait retiré comme de l'interface (mesuré). La fin de la page : le résultat suit la navigation.
+    const raw = words(f.text);
+    const searchText = () => `Recherche « ${st.search} » : ${raw.slice(-SEARCH_WORDS).join(" ")}`;
+    if (term && term !== st.search) {
+      st.search = term;
+      st.delta.push(searchText());
+      st.searchAt = st.delta.length - 1;
+      st.searchWords = raw.length;
+      st.changedAt = t(f);
+    } else if ((!term || term === st.search) && st.searchAt !== undefined && st.searchAt < st.delta.length && raw.length > (st.searchWords ?? 0)) {
+      // Même recherche, page plus remplie (mesuré : la 1re capture précède l'affichage du résultat ; sous
+      // Windows, les captures OCR n'ont pas d'URL et c'est souvent elles qui montrent le résultat).
+      st.delta[st.searchAt] = searchText();
+      st.searchWords = raw.length;
+      st.changedAt = t(f);
+    } else if (isFresh.filter(Boolean).length >= 3) {
       // Chaque mot nouveau garde ses voisins : « On peut offrir qqchose a un client premium ou quoi »
       // ne doit pas perdre « un client premium », déjà vu dans l'historique du canal (mesuré).
       const keep = w.map((_, i) => isFresh.slice(Math.max(0, i - CONTEXT), i + CONTEXT + 1).some(Boolean));
@@ -109,7 +138,8 @@ export class EpisodeBuilder {
     for (const [key, st] of this.windows) {
       if (now - st.seenAt > BASELINE_MS) { this.windows.delete(key); continue; }
       if (now - st.changedAt > LOOKBACK_MS) st.delta = []; // le texte, lui, n'est pas gardé au-delà de 3 min
-      if (!st.delta.length || now - st.changedAt < DEBOUNCE_MS) continue;
+      // Une recherche attend son résultat : les captures arrivent toutes les ~3 s (mesuré).
+      if (!st.delta.length || now - st.changedAt < (st.searchAt !== undefined ? SEARCH_SETTLE_MS : DEBOUNCE_MS)) continue;
       out.push({
         id: `ep${st.changedAt.toString(36)}${hash(key)}`,
         app: st.app,
@@ -119,6 +149,7 @@ export class EpisodeBuilder {
         at: st.changedAt,
       });
       st.delta = [];
+      st.searchAt = undefined;
     }
     return out;
   }

@@ -102,3 +102,18 @@ test("identifiant déterministe : même historique, même épisode", () => {
   };
   expect(run()).toBe(run());
 });
+
+test("recherche dans l'URL, résultat sur une capture OCR sans URL (Windows) : un épisode avec la recherche et son résultat", () => {
+  const b = new EpisodeBuilder();
+  const w = "Contacts | All contacts - Google Chrome"; // le titre ne dit pas HubSpot : seule l'URL le dit
+  const list = "https://app-eu1.hubspot.com/contacts/1/objects/0-1/views/all/list";
+  const nav = "Home Contacts Companies Deals Tasks Segments Marketing Sales Platform Workflows More";
+  b.addFrame({ ...frame("chrome.exe", w, `${nav} Jean Dupont Kenji Mori 12 contacts`, 0), browser_url: list });
+  b.addFrame({ ...frame("chrome.exe", w, nav, 3000), browser_url: `${list}?query=km.0412%40zvk.test` });
+  expect(b.ready(T0 + 5500)).toHaveLength(0); // une recherche attend son résultat
+  b.addFrame(frame("chrome.exe", w, `${nav} No Contacts match the current filters 0 contacts`, 6000, "ocr")); // pas d'URL
+  const eps = b.ready(T0 + 13_000);
+  expect(eps).toHaveLength(1);
+  expect(eps[0].text).toContain("Recherche « km.0412@zvk.test »");
+  expect(eps[0].text).toContain("0 contacts");
+});
