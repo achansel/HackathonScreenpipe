@@ -1,5 +1,5 @@
 // Transforme le flux de frames et d'événements d'entrée en épisodes :
-// une fenêtre dont le texte a changé puis est resté stable DEBOUNCE_MS.
+// une fenêtre dont le texte a changé (après sa première frame) puis est resté stable DEBOUNCE_MS.
 // Rien n'est conservé au-delà de LOOKBACK_MS.
 import { BROWSERS, DEBOUNCE_MS, IGNORE, LOOKBACK_MS, SCOPE } from "./config";
 import type { Item } from "./screenpipe";
@@ -16,7 +16,10 @@ export type Episode = {
 type WindowState = { app: string; window: string; lastWords: Set<string>; delta: string[]; changedAt: number };
 
 const t = (c: Item) => new Date(c.timestamp).getTime();
-const inScope = (app: string, window: string, url = "") => (BROWSERS.test(app) ? SCOPE.test(`${window} ${url}`) : SCOPE.test(app));
+// Domaine seulement : l'URL entière peut citer l'outil sans en être (mesuré : connexion Google
+// accounts.google.com/…?continue=…hubspot… lue comme HubSpot).
+const host = (url: string) => { try { return new URL(url).hostname; } catch { return ""; } };
+const inScope = (app: string, window: string, url = "") => (BROWSERS.test(app) ? SCOPE.test(`${window} ${host(url)}`) : SCOPE.test(app));
 // Identifiant déterministe (fenêtre + instant du changement) : le rejeu hors ligne ne double pas un épisode.
 const hash = (s: string) => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return (h >>> 0).toString(36); };
 const words = (s: string) => s.split(/\s+/).filter(Boolean);
@@ -66,9 +69,17 @@ export class EpisodeBuilder {
     // Firefox : le texte d'accessibilité peut venir d'un autre onglet (mesuré) → OCR seulement.
     if (/firefox/i.test(app) && f.text_source === "accessibility") return;
     const key = `${app}|${window}`;
-    const st = this.windows.get(key) ?? { app, window, lastWords: new Set<string>(), delta: [], changedAt: 0 };
     const w = clean(app, f.text);
-    const fresh = st.lastWords.size ? w.filter((x) => !st.lastWords.has(x)) : w;
+    // Première frame d'une fenêtre = référence, pas un épisode : ce qui est déjà affiché à
+    // l'ouverture est de l'historique (mesuré : canal Slack ouvert → question d'un collègue de la
+    // veille qualifiée en friction). Changer de canal ou de page change le titre, donc la fenêtre.
+    // Les résultats d'une recherche HubSpot s'affichent dans la même page (mesuré) : détectés.
+    if (!this.windows.has(key)) {
+      this.windows.set(key, { app, window, lastWords: new Set(w), delta: [], changedAt: t(f) });
+      return;
+    }
+    const st = this.windows.get(key)!;
+    const fresh = w.filter((x) => !st.lastWords.has(x));
     st.lastWords = new Set(w);
     if (fresh.length >= 3) {
       st.delta.push(fresh.join(" "));
