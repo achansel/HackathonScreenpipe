@@ -175,12 +175,15 @@ async function handleEpisode(ep: Episode) {
   if (!v?.friction || v.confiance < MIN_CONFIDENCE) return { verdict: v };
   if (team) await team.sign(v);
   if (v.solution_id) {
-    if (Date.now() - (lastShown.get(v.solution_id) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
     const s = solutions.find((x) => x.id === v.solution_id)!;
     const card = s.id === "client-introuvable" && dossier && dossierText() ? await customerCard(dossier.name) : null;
+    // Anti-répétition par aide ET par client : la fiche de Jean n'est pas une répétition de l'aide générique
+    // montrée une minute plus tôt (mesuré en répétition : la fiche bloquée 10 min).
+    const shownKey = card ? `${s.id}|${card.contactId}` : s.id;
+    if (Date.now() - (lastShown.get(shownKey) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
     const n = card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s);
     const message = await notify(n);
-    lastShown.set(s.id, Date.now());
+    lastShown.set(shownKey, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
     log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
     return { verdict: v, notified: s.id };
