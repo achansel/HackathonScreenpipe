@@ -130,7 +130,8 @@ async function customerCard(name: string): Promise<CustomerCard | null> {
   })().catch((e) => { log("HubSpot :", (e as Error).message); return null; });
   const lookup = await hubspot;
   if (!lookup) return null;
-  const found = await lookup.byName(name).catch(() => []);
+  const found = await lookup.byName(name).catch((e) => { log("HubSpot :", (e as Error).message); return null; });
+  if (!found) return null; // erreur passagère : pas mémorisée, on réessaiera au prochain épisode
   const card = found.length === 1 ? found[0]! : null; // deux homonymes : pas de fiche plutôt qu'une fausse
   cards.set(name, card);
   return card;
@@ -299,6 +300,9 @@ async function run() {
   startServer();
   await startTeam();
   const builder = new EpisodeBuilder();
+  const queue: Episode[] = [];
+  let inFlight = 0;
+  const MAX_IN_FLIGHT = 3;
   let cursor = Date.now() - 5000;
   let tick = 0;
   log(`friction-assist ${SIM ? "en SIMULATION (aucun écran lu)" : "actif"} (port ${PORT}, ${solutions.length} solutions). « pause » pour couper.`);
@@ -316,7 +320,14 @@ async function run() {
         for (const f of frames) builder.addFrame(f);
         cursor = Date.now();
         if (crisp) await crisp.tick().catch((e) => debug && log("Crisp :", (e as Error).message));
-        for (const ep of builder.ready(Date.now())) await handleEpisode(ep);
+        // Jugés en parallèle (3 au plus) : un appel au modèle prend ~3 s, la lecture de l'écran et l'équipe
+        // ne l'attendent pas, et l'échec d'un épisode ne fait pas perdre les autres.
+        for (const ep of builder.ready(Date.now())) queue.push(ep);
+        while (queue.length && inFlight < MAX_IN_FLIGHT) {
+          const ep = queue.shift()!;
+          inFlight++;
+          handleEpisode(ep).catch((e) => log("épisode non traité :", (e as Error).message)).finally(() => inFlight--);
+        }
       }
       tick++;
       if (team && tick % Math.round(TEAM_POLL_MS / POLL_MS) === 0) await team.poll();

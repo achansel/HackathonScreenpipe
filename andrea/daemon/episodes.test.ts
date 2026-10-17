@@ -117,3 +117,18 @@ test("recherche dans l'URL, résultat sur une capture OCR sans URL (Windows) : u
   expect(eps[0].text).toContain("Recherche « km.0412@zvk.test »");
   expect(eps[0].text).toContain("0 contacts");
 });
+
+test("même recherche refaite après avoir vidé le champ : nouveau geste (répétition juste avant la démo)", () => {
+  const b = new EpisodeBuilder();
+  const w = "Contacts | All contacts - Google Chrome";
+  const list = "https://app-eu1.hubspot.com/contacts/1/objects/0-1/views/all/list";
+  const nav = "Home Contacts Companies Deals Tasks Segments Marketing Sales Platform Workflows More";
+  b.addFrame({ ...frame("chrome.exe", w, `${nav} 12 contacts`, 0), browser_url: list });
+  b.addFrame({ ...frame("chrome.exe", w, `${nav} 0 contacts`, 3000), browser_url: `${list}?query=jd.resto75%40resa-paris.test` });
+  expect(b.ready(T0 + 10_000)).toHaveLength(1);
+  b.addFrame({ ...frame("chrome.exe", w, `${nav} 12 contacts`, 12_000), browser_url: list }); // champ vidé
+  b.addFrame({ ...frame("chrome.exe", w, `${nav} 0 contacts`, 15_000), browser_url: `${list}?query=jd.resto75%40resa-paris.test` });
+  const eps = b.ready(T0 + 22_000);
+  expect(eps).toHaveLength(1);
+  expect(eps[0].text).toContain("Recherche « jd.resto75@resa-paris.test »");
+});

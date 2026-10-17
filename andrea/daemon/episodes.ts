@@ -105,6 +105,9 @@ export class EpisodeBuilder {
     // Une nouvelle recherche dans l'URL est un geste de l'utilisateur, même si la page ne change presque pas :
     // deux recherches à 0 résultat de suite n'apportent qu'un mot nouveau (mesuré le 17/10, HubSpot).
     const term = searchTerm(f.browser_url ?? "");
+    // Champ de recherche vidé (URL lue, sans recherche) : la même recherche refaite ensuite est un nouveau geste
+    // (sinon une répétition moins de 30 min avant la démo rendrait la vraie recherche invisible).
+    if (f.browser_url && !term) st.search = "";
     // Page brute, sans le filtre du texte d'interface : « No Contacts match » revient à chaque recherche vide,
     // il serait retiré comme de l'interface (mesuré). La fin de la page : le résultat suit la navigation.
     const raw = words(f.text);
@@ -137,7 +140,7 @@ export class EpisodeBuilder {
     this.titles = this.titles.filter((x) => now - x.at < LOOKBACK_MS);
     for (const [key, st] of this.windows) {
       if (now - st.seenAt > BASELINE_MS) { this.windows.delete(key); continue; }
-      if (now - st.changedAt > LOOKBACK_MS) st.delta = []; // le texte, lui, n'est pas gardé au-delà de 3 min
+      if (now - st.changedAt > LOOKBACK_MS) { st.delta = []; st.searchAt = undefined; } // le texte, lui, n'est pas gardé au-delà de 3 min
       // Une recherche attend son résultat : les captures arrivent toutes les ~3 s (mesuré).
       if (!st.delta.length || now - st.changedAt < (st.searchAt !== undefined ? SEARCH_SETTLE_MS : DEBOUNCE_MS)) continue;
       out.push({
