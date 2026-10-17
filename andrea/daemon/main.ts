@@ -25,7 +25,9 @@ import {
   API, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
   SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR, TEAM_DIR, TEAM_KEY_FILE, TEAM_POLL_MS,
 } from "./config";
+import { type CustomerCard, HubSpotLookup } from "../../minguk/src/assist/hubspot-lookup";
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
+import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { qualify } from "./qualify";
 import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay, withoutOwnNotifications } from "./screenpipe";
@@ -99,6 +101,41 @@ function helpNotification(episode: string, s: Solution) {
   };
 }
 
+// Fiche client (code de Minguk) : la réponse à « client introuvable » quand un client Crisp est en cours.
+// On connaît son nom par Crisp, la fiche HubSpot se retrouve par le nom (son adresse Crisp diffère de
+// celle du contrat). Clé HubSpot : HUBSPOT_SEED_TOKEN (~/.config/friction/env), en lecture seule si
+// possible. Sans clé, la notification habituelle part. Le nom ne va qu'à HubSpot, jamais au modèle.
+function cardNotification(episode: string, s: Solution, card: CustomerCard) {
+  const n = helpNotification(episode, s) as { title: string; body: string; actions: Record<string, unknown>[] };
+  const who = [card.name, card.company?.name, card.company?.plan].filter(Boolean).join(" · ");
+  return {
+    ...n,
+    title: `${LABEL}Client : ${who}`,
+    body: `Fiche HubSpot retrouvée par son nom : il écrit avec une autre adresse que celle du contrat.${card.deal ? `\nVente : ${card.deal.name}.` : ""}`,
+    // 3 boutons au plus dans le panneau : [Y aller] (ouvre la fiche dans le navigateur), puis les retours.
+    actions: [{ id: "open", label: "Y aller", type: "link", url: card.contactUrl, primary: true },
+      ...n.actions.filter((a) => a.id !== "copy").map((a) => ({ ...a, primary: false }))],
+  };
+}
+const hubspotToken = process.env.HUBSPOT_SEED_TOKEN;
+let hubspot: Promise<HubSpotLookup | null> | null = null;
+const cards = new Map<string, CustomerCard | null>();
+async function customerCard(name: string): Promise<CustomerCard | null> {
+  if (!hubspotToken) return null;
+  if (cards.has(name)) return cards.get(name)!;
+  hubspot ??= (async () => {
+    const api = new HubSpot(hubspotToken);
+    const account = await api.accountDetails();
+    return new HubSpotLookup(api, { portalId: account.portalId, uiDomain: account.uiDomain });
+  })().catch((e) => { log("HubSpot :", (e as Error).message); return null; });
+  const lookup = await hubspot;
+  if (!lookup) return null;
+  const found = await lookup.byName(name).catch(() => []);
+  const card = found.length === 1 ? found[0]! : null; // deux homonymes : pas de fiche plutôt qu'une fausse
+  cards.set(name, card);
+  return card;
+}
+
 // ---- traitement d'un épisode (direct ou injecté en simulation)
 const solutions = loadSolutions();
 const lastShown = new Map<string, number>();
@@ -114,6 +151,7 @@ const crisp = CRISP && !SIM
       if (e.kind !== "message" || !e.preview) return;
       dossier = { name: e.name, text: e.preview, at: e.detectedAt };
       log(`Crisp : nouveau message client (contexte ${DOSSIER_MS / 60_000} min)`);
+      void customerCard(e.name); // fiche prête avant que Léa cherche dans HubSpot
     } })
   : null;
 const dossierText = () => (dossier && Date.now() - dossier.at < DOSSIER_MS ? dossier.text : undefined);
@@ -139,7 +177,9 @@ async function handleEpisode(ep: Episode) {
   if (v.solution_id) {
     if (Date.now() - (lastShown.get(v.solution_id) ?? 0) < SOLUTION_COOLDOWN_MS) return { verdict: v, cooldown: true };
     const s = solutions.find((x) => x.id === v.solution_id)!;
-    const message = await notify(helpNotification(ep.id, s));
+    const card = s.id === "client-introuvable" && dossier && dossierText() ? await customerCard(dossier.name) : null;
+    const message = await notify(card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s));
+    if (card) log("notification : fiche client au lieu de la solution générique");
     lastShown.set(s.id, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
     log(`notification « ${s.title} » : ${message}`);
