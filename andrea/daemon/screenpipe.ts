@@ -4,8 +4,17 @@ import { API, KEY, MODEL, NOTIFY, RELAY } from "./config";
 const auth = { Authorization: `Bearer ${KEY}` };
 export type Item = Record<string, any>;
 
-/** Screenpipe fermé : le moteur ne sert plus que l'historique (409 "search_only", mesuré). */
+/** Screenpipe fermé (409 "search_only", mesuré) ou injoignable (processus absent). */
 export class ScreenpipeClosed extends Error {}
+
+/** fetch qui transforme « connexion refusée » en ScreenpipeClosed : le daemon se met en veille. */
+async function sp(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch {
+    throw new ScreenpipeClosed("Screenpipe injoignable : est-il lancé ?");
+  }
+}
 async function fail(route: string, r: Response): Promise<never> {
   const body = await r.text().catch(() => "");
   if (r.status === 409 && body.includes("search_only")) throw new ScreenpipeClosed("Screenpipe est fermé : rouvrir l'app");
@@ -16,7 +25,7 @@ export async function search(params: Record<string, string>, max = 1000): Promis
   const out: Item[] = [];
   for (let offset = 0; offset < max; offset += 200) {
     const q = new URLSearchParams({ limit: "200", offset: String(offset), order: "ascending", ...params });
-    const r = await fetch(`${API}/search?${q}`, { headers: auth });
+    const r = await sp(`${API}/search?${q}`, { headers: auth });
     if (!r.ok) await fail("/search", r);
     const page = ((await r.json()).data ?? []) as { content: Item }[];
     if (!page.length) break; // une page courte n'est pas la fin : /search déduplique (mesuré)
@@ -27,7 +36,7 @@ export async function search(params: Record<string, string>, max = 1000): Promis
 
 /** Renvoie le `message` de /notify : « sent successfully », « paused », « duplicate … ». */
 export async function notify(payload: Item): Promise<string> {
-  const r = await fetch(`${NOTIFY}/notify`, {
+  const r = await sp(`${NOTIFY}/notify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -38,7 +47,7 @@ export async function notify(payload: Item): Promise<string> {
 
 export async function feedbackSince(since: string): Promise<Item[]> {
   const q = new URLSearchParams({ kind: "notification", since, order: "asc", limit: "100" });
-  const r = await fetch(`${API}/feedback?${q}`, { headers: auth });
+  const r = await sp(`${API}/feedback?${q}`, { headers: auth });
   if (!r.ok) await fail("/feedback", r);
   return ((await r.json()).data ?? []) as Item[];
 }
@@ -47,7 +56,7 @@ export async function feedbackSince(since: string): Promise<Item[]> {
 export async function chat(system: string, user: string, maxTokens = 400): Promise<string> {
   let max = maxTokens;
   for (let attempt = 0; attempt < 3; attempt++, max *= 2) {
-    const r = await fetch(`${API}/v1/chat/completions`, {
+    const r = await sp(`${API}/v1/chat/completions`, {
       method: "POST",
       headers: { ...auth, "Content-Type": "application/json" },
       body: JSON.stringify({

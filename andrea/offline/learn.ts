@@ -14,10 +14,12 @@ import { APPROVED, CANDIDATE, compileDetector, type Detector, type DetectorInput
 
 const LABELS = ["blocage", "demande_aide", "recherche", "tatonnement", "parcours", "ressaisie", "contournement", "attente_relance", "aucun"];
 const MODEL_LABELS = `${STATE_DIR}labels.model.json`; // cache des étiquettes du modèle
-const HUMAN_LABELS = `${STATE_DIR}labels.human.json`; // { "<id épisode>": "<étiquette>" }, prioritaire
+export const HUMAN_LABELS = `${STATE_DIR}labels.human.json`; // { "<id épisode>": "<étiquette>" }, prioritaire
+const EVENTS = `${STATE_DIR}events.jsonl`; // journal du daemon (métadonnées)
 export const REPORT = `${STATE_DIR}report.json`;
 
-type Example = DetectorInput & { id: string; label: string; source: "synthetique" | "reel" };
+type Example = DetectorInput & { id: string; label: string; source: "synthetique" | "reel"; human?: boolean };
+const MIN_HUMAN_REFERENCE = 20; // à partir de là, on juge sur la vérité humaine, plus sur le modèle
 
 const readJson = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {});
 const hash = (s: string) => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
@@ -40,10 +42,33 @@ async function labelEpisodes(eps: Episode[]): Promise<Record<string, string>> {
   return cache;
 }
 
+/** Étiquettes confirmées par l'usage, sans effort humain : « Ça m'a aidé » sur une aide,
+ *  ou une demande à laquelle un collègue a répondu en partageant. « Pas ça » est ambigu : ignoré. */
+export function implicitLabels(eventsFile = EVENTS): Record<string, string> {
+  if (!existsSync(eventsFile)) return {};
+  const ev = readFileSync(eventsFile, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const shown = new Map(ev.filter((e) => e.kind === "shown" && e.detour).map((e) => [e.episode, e.detour]));
+  const asked = new Map(ev.filter((e) => e.kind === "asked" && e.requestId).map((e) => [e.requestId, { episode: e.episode, detour: e.detour }]));
+  const out: Record<string, string> = {};
+  for (const e of ev) {
+    if (e.kind === "feedback" && e.rating === "up") {
+      if (shown.has(e.episode)) out[e.episode] = shown.get(e.episode);
+      const a = String(e.episode).startsWith("team-") ? asked.get(String(e.episode).slice(5)) : undefined;
+      if (a?.episode && a.detour) out[a.episode] = a.detour;
+    }
+    if (e.kind === "solved") {
+      const a = asked.get(e.requestId);
+      if (a?.episode && a.detour) out[a.episode] = a.detour;
+    }
+  }
+  return out;
+}
+
 function examples(eps: Episode[], modelLabels: Record<string, string>): Example[] {
   const human = readJson(HUMAN_LABELS) as Record<string, string>;
+  const usage = implicitLabels();
   const real = eps
-    .map((e) => ({ id: e.id, app: e.app, window: e.window, titles: e.titles, text: e.text, label: human[e.id] ?? modelLabels[e.id], source: "reel" as const }))
+    .map((e) => ({ id: e.id, app: e.app, window: e.window, titles: e.titles, text: e.text, label: human[e.id] ?? usage[e.id] ?? modelLabels[e.id], source: "reel" as const, human: e.id in human }))
     .filter((e) => LABELS.includes(e.label));
   const synth = (CASES as [string, string, string[], string][]).map(([label, app, titles, text], i) => ({
     id: `synth${i}`, app, window: titles.at(-1) ?? "", titles, text, label, source: "synthetique" as const,
@@ -97,8 +122,11 @@ export async function learn() {
   const eps = loadEpisodes();
   const modelLabels = await labelEpisodes(eps);
   const all = examples(eps, modelLabels);
-  const train = all.filter((e) => !isTest(e.id));
-  const test = all.filter((e) => isTest(e.id));
+  // Référence : les épisodes étiquetés à la main dès qu'il y en a assez (juger contre le modèle est circulaire).
+  const humanRef = all.filter((e) => e.human);
+  const useHuman = humanRef.length >= MIN_HUMAN_REFERENCE;
+  const test = useHuman ? humanRef : all.filter((e) => isTest(e.id));
+  const train = all.filter((e) => !test.includes(e));
   const { code, fn } = await generate(train);
   writeFileSync(CANDIDATE, code);
 
@@ -110,7 +138,12 @@ export async function learn() {
   const better = floorOk && (!approved || (candidate.frictionsKept >= approved.frictionsKept && candidate.normalSkipped > approved.normalSkipped));
   const report = {
     at: new Date().toISOString(),
-    data: { episodes: eps.length, labelled: all.length, train: train.length, test: test.length, real: all.filter((e) => e.source === "reel").length },
+    data: {
+      episodes: eps.length, labelled: all.length, train: train.length, test: test.length,
+      real: all.filter((e) => e.source === "reel").length,
+      human: humanRef.length, usage: Object.keys(implicitLabels()).filter((id) => eps.some((e) => e.id === id)).length,
+      reference: useHuman ? "humaine" : `modèle (moins de ${MIN_HUMAN_REFERENCE} étiquettes humaines : à prendre avec prudence)`,
+    },
     candidate, approved, better,
     note: better ? "candidat meilleur : à relire puis `approuver`"
       : !floorOk ? `rejeté : seulement ${(candidate.frictionsKept * 100).toFixed(0)} % des frictions conservées (plancher ${MIN_FRICTIONS_KEPT * 100} %)`

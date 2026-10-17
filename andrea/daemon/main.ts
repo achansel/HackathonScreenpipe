@@ -124,7 +124,7 @@ async function handleEpisode(ep: Episode) {
   }
   if (team) {
     const requestId = await team.ask(v);
-    if (requestId) { record({ kind: "asked", step: v.step }); log(`aucune solution locale : demande anonyme publiée (« ${v.step} »)`); }
+    if (requestId) { record({ kind: "asked", episode: ep.id, requestId, detour: v.detour, step: v.step }); log(`aucune solution locale : demande anonyme (« ${v.step} »)`); }
     return { verdict: v, asked: Boolean(requestId) };
   }
   return { verdict: v };

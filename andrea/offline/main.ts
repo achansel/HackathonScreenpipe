@@ -4,14 +4,16 @@
 //   bun andrea/offline/main.ts apprendre        étiquette, génère, valide → candidat + rapport
 //   bun andrea/offline/main.ts rapport
 //   bun andrea/offline/main.ts approuver        humain : le candidat devient le détecteur du daemon
+//   bun andrea/offline/main.ts etiqueter [--n 40] référence humaine, une touche par épisode (~20 min)
 //   bun andrea/offline/main.ts installer-pipes  pipes Screenpipe de nuit (collecte → apprentissage)
 //   bun andrea/offline/main.ts desinstaller-pipes
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { API, KEY, PORT } from "../daemon/config";
-import { collect } from "./collect";
 import { APPROVED, CANDIDATE } from "./detector";
-import { learn, REPORT } from "./learn";
+import { HUMAN_LABELS, learn, REPORT } from "./learn";
+import { STATE_DIR } from "../daemon/config";
+import { collect, loadEpisodes } from "./collect";
 import { offlineToken } from "./token";
 
 const cmd = process.argv[2] ?? "rapport";
@@ -62,6 +64,31 @@ switch (cmd) {
     }
     copyFileSync(CANDIDATE, APPROVED);
     console.log(`Approuvé : le daemon l'utilise dès sa prochaine boucle. Frictions conservées ${(report.candidate.frictionsKept * 100).toFixed(0)} %, travail normal écarté ${(report.candidate.normalSkipped * 100).toFixed(0)} %.`);
+    break;
+  }
+  case "etiqueter": {
+    // Référence humaine : sert à JUGER le détecteur (juger contre le modèle est circulaire).
+    // L'étiquette du modèle n'est pas affichée, pour ne pas influencer.
+    const KEYS: Record<string, string> = { "1": "blocage", "2": "demande_aide", "3": "recherche", "4": "tatonnement", "5": "parcours", "6": "ressaisie", "7": "contournement", "8": "attente_relance", "0": "aucun" };
+    const human: Record<string, string> = existsSync(HUMAN_LABELS) ? JSON.parse(readFileSync(HUMAN_LABELS, "utf8")) : {};
+    const model: Record<string, string> = existsSync(`${STATE_DIR}labels.model.json`) ? JSON.parse(readFileSync(`${STATE_DIR}labels.model.json`, "utf8")) : {};
+    const todo = loadEpisodes().filter((e) => !human[e.id]);
+    const h = (id: string) => [...id].reduce((a, c) => (Math.imul(a ^ c.charCodeAt(0), 16777619) >>> 0), 2166136261);
+    const n = Number(arg("n") ?? 40);
+    const frictions = todo.filter((e) => model[e.id] && model[e.id] !== "aucun").sort((a, b) => h(a.id) - h(b.id));
+    const normal = todo.filter((e) => !(model[e.id] && model[e.id] !== "aucun")).sort((a, b) => h(a.id) - h(b.id));
+    const pick = [...frictions.slice(0, n / 2), ...normal.slice(0, n - Math.min(frictions.length, n / 2))].sort((a, b) => h(a.id) - h(b.id));
+    console.log(`${pick.length} épisodes. Touches : ${Object.entries(KEYS).map(([k, v]) => `${k}=${v}`).join("  ")}  s=passer  q=quitter\n`);
+    let done = 0;
+    for (const e of pick) {
+      console.log(`\n── ${++done}/${pick.length} · ${e.app} · ${new Date(e.at).toLocaleString("fr-FR")}`);
+      console.log(`fenêtres : ${e.titles.slice(-3).join(" → ") || e.window}`);
+      console.log(`texte    : ${e.text.slice(0, 500)}`);
+      const k = (prompt("étiquette >") ?? "").trim();
+      if (k === "q") break;
+      if (KEYS[k]) { human[e.id] = KEYS[k]; writeFileSync(HUMAN_LABELS, JSON.stringify(human, null, 2)); }
+    }
+    console.log(`\n${Object.keys(human).length} étiquettes humaines au total (${HUMAN_LABELS}). Il en faut au moins 20 pour juger sur la vérité humaine. Puis : apprendre.`);
     break;
   }
   case "installer-pipes":

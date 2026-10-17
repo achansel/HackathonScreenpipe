@@ -1,12 +1,54 @@
 [
   {
+    "id": "client-introuvable",
+    "step": "HubSpot : retrouver le client d'un chat Crisp",
+    "type": "unclear", "control": "direct", "detour": "recherche",
+    "title": "Client introuvable : chercher par domaine",
+    "body": "L'e-mail du chat diffère souvent de celui de HubSpot. Chercher par **domaine** (`restaurant-lebistro.fr`) ou par **téléphone**.",
+    "owner": "support-ops", "reviewed": "2026-10-17", "uses": 6
+  },
+  {
+    "id": "offre-du-client",
+    "step": "HubSpot : retrouver l'offre souscrite par un client",
+    "type": "switching", "control": "influence", "detour": "parcours",
+    "title": "Offre du client : onglet Transactions, puis Produits",
+    "body": "Fiche contact → **Entreprise** → **Transactions** → contrat signé → **Produits**. Demande en cours : un champ « Offre » sur la fiche contact.",
+    "owner": "revops", "reviewed": "2026-10-17", "uses": 4
+  },
+  {
+    "id": "signaler-bug",
+    "step": "Signaler un bug client à l'équipe tech",
+    "type": "handoff", "control": "direct", "detour": "demande_aide",
+    "title": "Bug client : #bugs avec le modèle, ticket « Support »",
+    "body": "Poster dans `#bugs` avec le modèle, puis créer le ticket HubSpot dans le pipeline **Support** (pas « Support OLD »), lié au client.",
+    "copy": "Bug : [symptôme] | Client : [entreprise] | Offre : [offre] | Depuis : [heure] | Lien Crisp : [lien]",
+    "owner": "support-ops", "reviewed": "2026-10-17", "uses": 5
+  },
+  {
     "id": "geste-commercial",
-    "step": "Crisp : un client demande un dédommagement ou un remboursement",
+    "step": "Crisp : un client demande un dédommagement",
     "type": "unclear", "control": "required", "detour": "demande_aide",
-    "title": "Geste commercial : 1 mois offert max",
-    "body": "**Premium seulement.** Ajouter la note `geste commercial` dans HubSpot.",
+    "title": "Geste commercial : 1 mois offert maximum",
+    "body": "**Clients premium seulement.** Ajouter la note `geste commercial` sur la fiche HubSpot. Au-delà : validation de la responsable support.",
     "copy": "Geste commercial : 1 mois offert (client premium).",
     "owner": "support-ops", "reviewed": "2026-10-17", "uses": 3
+  },
+  {
+    "id": "promesse-commercial",
+    "step": "HubSpot : vérifier une promesse faite par un commercial",
+    "type": "unclear", "control": "influence", "detour": "recherche",
+    "title": "Promesse d'un commercial : champ « Conditions particulières »",
+    "body": "Les promesses sont notées dans **Conditions particulières** de la vente. Si le champ est vide, demander au commercial dans `#ventes`, pas en message privé.",
+    "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 2
+  },
+  {
+    "id": "prospect-chat",
+    "step": "HubSpot : créer un prospect venu du chat",
+    "type": "handoff", "control": "influence", "detour": "demande_aide",
+    "title": "Prospect : stage « Lead », puis #new-leads",
+    "body": "Créer le contact en `Lead`. Belgique : responsable **Sarah**. Prévenir dans `#new-leads`.",
+    "copy": "Nouveau lead : [entreprise], [pays], [besoin], arrivé par le chat.",
+    "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 2
   },
   {
     "id": "pipeline-support",
@@ -22,25 +64,8 @@
     "step": "HubSpot : remise supérieure à 15 % bloquée",
     "type": "waiting", "control": "required", "detour": "blocage",
     "title": "Remise > 15 % : validation dans #deal-desk",
-    "body": "Poster la demande dans `#deal-desk` avec le montant et la durée. Réponse sous 24 h.",
+    "body": "Poster la demande dans `#deal-desk` avec le montant et la durée. Réponse sous 24 h. C'est une validation voulue, pas un bug.",
     "copy": "Demande de remise : [client], [montant], [durée], merci de valider.",
     "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 4
-  },
-  {
-    "id": "client-introuvable",
-    "step": "HubSpot : client introuvable depuis un chat Crisp",
-    "type": "unclear", "control": "direct", "detour": "recherche",
-    "title": "Client introuvable : chercher par domaine",
-    "body": "L'e-mail du chat diffère souvent de celui de HubSpot. Chercher par **domaine** ou par **téléphone**.",
-    "owner": "support-ops", "reviewed": "2026-10-17", "uses": 6
-  },
-  {
-    "id": "prospect-belge",
-    "step": "HubSpot : créer un prospect venu du chat",
-    "type": "handoff", "control": "influence", "detour": "demande_aide",
-    "title": "Prospect : stage « Lead », puis #new-leads",
-    "body": "Créer le contact en `Lead`. Belgique : responsable Sarah. Prévenir dans `#new-leads`.",
-    "copy": "Nouveau lead : [entreprise], [pays], [besoin].",
-    "owner": "sales-ops", "reviewed": "2026-10-17", "uses": 2
   }
 ]

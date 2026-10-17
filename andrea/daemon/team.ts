@@ -5,7 +5,7 @@
 // Karim ne sait pas qui a demandé ; Léa ne sait pas qui a répondu, sauf le rôle `owner` de la solution.
 import { randomBytes } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { LABEL, PIPE_NAME, REQUEST_COOLDOWN_MS, STATE_DIR } from "./config";
+import { LABEL, MAX_SHARE_PROMPTS_PER_DAY, PIPE_NAME, REQUEST_COOLDOWN_MS, REQUEST_JITTER_MS, STATE_DIR } from "./config";
 import { matchStep, type Verdict } from "./qualify";
 import { notify, relayUrl } from "./screenpipe";
 import { saveSolutions, type Solution } from "./solutions";
@@ -20,7 +20,7 @@ type Hooks = {
 
 // Curseurs et ids de MES demandes en cours (aléatoires, sans contenu d'écran).
 const STATE = `${STATE_DIR}team-state.json`;
-type State = { request: number; solution: number; mine: Record<string, { step: string; at: number }> };
+type State = { request: number; solution: number; mine: Record<string, { step: string; at: number }>; prompts?: { day: string; n: number } };
 
 export class TeamSync {
   private st: State;
@@ -40,9 +40,14 @@ export class TeamSync {
     if (Date.now() - (this.askedAt.get(key) ?? 0) < REQUEST_COOLDOWN_MS) return null;
     this.askedAt.set(key, Date.now());
     const requestId = randomBytes(8).toString("hex");
-    await this.store.put("request", { requestId, step: v.step, type: v.type, control: v.control, detour: v.detour });
     this.st.mine[requestId] = { step: v.step, at: Date.now() };
     this.save();
+    // Délai aléatoire avant publication : l'heure de la demande ne désigne pas la personne.
+    const delay = REQUEST_JITTER_MS.min + Math.random() * (REQUEST_JITTER_MS.max - REQUEST_JITTER_MS.min);
+    setTimeout(() => {
+      this.store.put("request", { requestId, step: v.step, type: v.type, control: v.control, detour: v.detour })
+        .catch((e) => this.hooks.log("demande non publiée :", (e as Error).message));
+    }, delay);
     return requestId;
   }
 
@@ -58,8 +63,12 @@ export class TeamSync {
       const req = r.payload;
       if (!req?.requestId || this.st.mine[req.requestId]) continue; // illisible, ou ma propre demande
       const mine = this.solutions.filter((s) => !s.shared);
+      const today = new Date().toISOString().slice(0, 10);
+      if (this.st.prompts?.day !== today) this.st.prompts = { day: today, n: 0 };
+      if (this.st.prompts.n >= MAX_SHARE_PROMPTS_PER_DAY) continue; // plafond quotidien : pas de sollicitation de plus
       const solutionId = await matchStep(req.step, mine);
       if (!solutionId) continue;
+      this.st.prompts.n++;
       const s = mine.find((x) => x.id === solutionId)!;
       const episode = `share-${req.requestId}`;
       const handler = async (action: string) => {
@@ -104,6 +113,7 @@ export class TeamSync {
         const s = this.solutions.find((x) => x.id === solution.id)!;
         const episode = `team-${requestId}`;
         const message = await notify(this.hooks.helpNotification(episode, s));
+        this.hooks.record({ kind: "solved", requestId }); // un collègue a confirmé la friction en partageant
         this.hooks.record({ kind: "shown", episode, solution: s.id, from: "team", message });
         this.hooks.log(`un collègue a partagé une solution à ma demande : « ${s.title} » (${message})`);
       }

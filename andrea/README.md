@@ -7,6 +7,8 @@ Rien ici ne remplace les documents de l'équipe à la racine : ce sont des propo
 | [ETAT.md](ETAT.md) | **état complet** : ce qui tourne, comment lancer, limites, ce qu'il reste à faire à la main |
 | [PROPOSITION.md](PROPOSITION.md) | architecture technique proposée (daemon, IA via Screenpipe, stockage d'équipe temporaire, vocabulaire des frictions, mesures) |
 | [VISION.md](VISION.md) | VISION.md de l'équipe + définition de la friction, type « parcours », traitement hors ligne verrouillé (à fusionner après validation) |
+| [docs/demo.md](docs/demo.md) | déroulé de la démo finale (3 min), vérifications avant scène, replis, questions du jury |
+| [docs/discord.md](docs/discord.md) | questions et bugs pour Louis / Ezra, prêts à coller |
 | [docs/test-mac.md](docs/test-mac.md) | test à faire sur Mac : boutons de notification, relais webhook, `/feedback` |
 | [docs/crisp.md](docs/crisp.md) | docs/crisp.md + le client fictif Julien Moreau |
 | `bench/` | banc d'essai de détection (`dataset.mjs` synthétique, `run.mjs`) ; `bench/real/` = données réelles, **ignoré par git** |

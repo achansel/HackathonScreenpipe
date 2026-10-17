@@ -12,7 +12,10 @@ export const PORT = Number(process.env.FRICTION_PORT ?? 8787);
 // "" = le daemon du poste. Mode simulation : aucun écran lu, épisodes injectés via /sim/episode.
 export const INSTANCE = process.env.FRICTION_INSTANCE ?? "";
 export const SIM = process.env.FRICTION_SIM === "1";
-export const SEED = process.env.FRICTION_SEED === "1" || !INSTANCE; // solutions de démo au démarrage
+// Solutions de démo au démarrage : par défaut sur le poste, pas sur une instance simulée.
+// FRICTION_SEED=0/1 force ; FRICTION_SEED_IDS=id1,id2 n'en charge qu'une partie (scénario de démo).
+export const SEED = process.env.FRICTION_SEED !== undefined ? process.env.FRICTION_SEED === "1" : !INSTANCE;
+export const SEED_IDS = (process.env.FRICTION_SEED_IDS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 export const LABEL = INSTANCE ? `[${INSTANCE}] ` : ""; // préfixe des notifications en simulation
 
 // Stockage d'équipe (temporaire) : URL de la base et clé d'équipe, hors du dépôt.
@@ -21,6 +24,11 @@ export const TEAM_DIR = `${homedir()}/.config/friction-assist/`;
 export const TEAM_KEY_FILE = `${TEAM_DIR}team.key`;
 export const TEAM_POLL_MS = 5000;
 export const REQUEST_COOLDOWN_MS = 30 * 60_000; // une même étape ne redemande pas d'aide avant 30 min
+// Anonymat : délai aléatoire avant de publier une demande, pour que l'heure ne désigne pas qui bloque
+// (petite équipe). En secondes, « min-max » ; 0 en simulation pour garder la démo rapide.
+const [jMin, jMax] = (process.env.FRICTION_REQUEST_JITTER ?? (process.env.FRICTION_SIM === "1" ? "0-0" : "30-180")).split("-").map(Number);
+export const REQUEST_JITTER_MS = { min: (jMin || 0) * 1000, max: (jMax || jMin || 0) * 1000 };
+export const MAX_SHARE_PROMPTS_PER_DAY = Number(process.env.FRICTION_MAX_SHARE_PROMPTS ?? 5); // contre la fatigue de celui qui sait
 export const MODEL = process.env.FRICTION_MODEL ?? "claude-haiku-4-5";
 
 export const PIPE_NAME = "friction-assist"; // donne les 👍/👎 natifs de Screenpipe

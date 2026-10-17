@@ -1,4 +1,4 @@
-# ÉTAT — friction-assist (17/10, fin de matinée)
+# ÉTAT — friction-assist (17/10, après-midi)
 
 > Ce qui tourne, comment le lancer, ce qui coince, ce qu'il reste à faire **à la main**.
 > Détails techniques : [PROPOSITION.md](PROPOSITION.md). Niveau de preuve : **[mesuré]** sur le poste Windows d'Andrea, **[code]** lu dans le code Screenpipe, **[non testé]**.
@@ -15,6 +15,11 @@ Un daemon local par poste repère une friction de process, apporte la solution q
 | 2. Partage d'équipe | `daemon/team.ts`, `daemon/teamstore.ts` | **[mesuré]** 2 daemons (Léa, Karim) : demande anonyme → « Un collègue bloque » chez Karim en 7 s → Partager → aide chez Léa 4 s après → solution gardée en cache. Supabase ne voit que des blocs chiffrés, sans identité, RLS active |
 | 3. Apprentissage hors ligne | `offline/`, `pipes/` | **[mesuré]** rejeu de l'historique (210 épisodes en 4 s) ; détecteur généré : 97 % des frictions conservées, 15 % du travail normal écarté ; porte de validation + approbation humaine. Pipes installables ; **leur exécution échoue sur ce poste** (agent Screenpipe en panne) → repli à 3 h dans le daemon |
 | 4. Carte d'équipe | `daemon/map.ts`, `daemon/steps.ts` | **[mesuré]** Live View « Carte des frictions » (5 blocs) remplie par l'API sans pipe ; libellés d'étape regroupés par le modèle (3 libellés « pipeline » → 1 étape). **Pas encore vue à l'écran** |
+| Préparation démo | `daemon/solutions.seed.json`, `docs/demo.md` | 8 solutions tirées de la journée de Léa ; clients Crisp Jean Dupont et Lucas Peeters ; `FRICTION_SEED_IDS` pour choisir les solutions de départ d'un poste ; déroulé de 3 min avec replis |
+| Retours et étiquettes | `daemon/main.ts`, `offline/learn.ts`, `offline/main.ts` | boutons **[Ça m'a aidé] [Pas ça]** visibles d'emblée **[mesuré]** ; clics et demandes résolues deviennent des étiquettes pour l'apprentissage (« Pas ça » ignoré : ambigu) ; `etiqueter` pour la référence humaine ; dès 20 étiquettes humaines, le détecteur est jugé sur elles |
+| Anonymat et fatigue | `daemon/team.ts` | délai aléatoire 30 s – 3 min avant de publier une demande (0 en simulation / démo) ; 5 sollicitations « Partager ? » max par jour et par personne |
+| Robustesse | `daemon/screenpipe.ts` | Screenpipe fermé ou injoignable → veille, nouvel essai toutes les 30 s |
+| Tests | `daemon/*.test.ts`, `offline/*.test.ts` | `bun test andrea/` : **15 tests** (chiffrement, découpage, périmètre, Firefox, masquage, bac à sable, étiquettes d'usage) |
 | Correctif Mac | `screenpipe-patch/` | **[non testé]** boutons `api` traités en Rust ; sur Mac non patché, le clic n'arrive pas **[mesuré]** |
 
 ## Lancer (racine du dépôt)
@@ -64,7 +69,8 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 
 ## À faire à la main
 
-**Avant la démo**
+**Avant la démo** (détail : [docs/demo.md](docs/demo.md))
+- [ ] `FRICTION_REQUEST_JITTER=0` sur les postes de démo, et le dire au jury.
 - [ ] Rouvrir Screenpipe, vérifier **à l'œil** qu'une notification de test s'affiche (panneau parfois vide).
 - [ ] Ouvrir la carte (`screenpipe://live-view/friction-map`) et vérifier son rendu.
 - [ ] Prévoir 90 s entre deux notifications identiques, ou varier le texte.
@@ -79,8 +85,8 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 - [ ] Compiler Screenpipe patché (`andrea/screenpipe-patch/README.md`), redonner les permissions, refaire `andrea/docs/test-mac.md`.
 
 **Qualité**
-- [ ] Étiqueter à la main des épisodes réels (`andrea/daemon/.state/labels.human.json`), puis `apprendre`, lire `rapport`, `approuver` si c'est mieux.
-- [ ] Remplacer les 5 solutions fictives (`solutions.seed.json`) par de vraies règles, ou laisser les partages s'accumuler ; tenir `owner` et `reviewed` à jour.
+- [ ] Étiqueter ~40 épisodes réels : `bun andrea/offline/main.ts etiqueter` (~20 min, une touche par épisode), puis `apprendre`, lire `rapport`, `approuver` si c'est mieux.
+- [ ] Les 8 solutions de `solutions.seed.json` sont fictives (scénario de démo) : les remplacer par de vraies règles pour un usage réel ; tenir `owner` et `reviewed` à jour.
 - [ ] Jouer les scénarios de UseCase.md en conditions réelles (`--debug`) et noter ce qui rate.
 
 **Documents d'équipe**
@@ -90,6 +96,8 @@ Secrets **hors dépôt**, droits 600 : `~/.config/screenpipe/env` (jeton), `~/.c
 - [ ] Régénérer le mot de passe Supabase après le hackathon (il a circulé en clair) et mettre à jour `team.env` sur chaque poste.
 
 ## Questions à poser à Louis / Ezra
+
+Message prêt à coller : [docs/discord.md](docs/discord.md).
 
 1. Appeler `/v1/chat/completions` depuis un programme externe : d'accord, et quel quota sur l'accès Business ?
 2. Écriture par les membres dans la mémoire d'équipe (pour remplacer Supabase) ?

@@ -25,14 +25,14 @@ export function teamKey(): Buffer {
   return key;
 }
 
-function seal(key: Buffer, payload: object) {
+export function seal(key: Buffer, payload: object) {
   const nonce = randomBytes(12);
   const c = createCipheriv("aes-256-gcm", key, nonce);
   const ciphertext = Buffer.concat([c.update(JSON.stringify(payload), "utf8"), c.final(), c.getAuthTag()]);
   return { nonce, ciphertext };
 }
 
-function unseal(key: Buffer, nonce: Buffer, ciphertext: Buffer): any {
+export function unseal(key: Buffer, nonce: Buffer, ciphertext: Buffer): any {
   const d = createDecipheriv("aes-256-gcm", key, nonce);
   d.setAuthTag(ciphertext.subarray(ciphertext.length - 16));
   return JSON.parse(Buffer.concat([d.update(ciphertext.subarray(0, ciphertext.length - 16)), d.final()]).toString("utf8"));
