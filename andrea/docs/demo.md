@@ -30,6 +30,8 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && 
 - [ ] Lancer le daemon : `bun andrea/daemon/main.ts` (Léa : `FRICTION_SEED_IDS=client-introuvable FRICTION_REQUEST_JITTER=0 bun andrea/daemon/main.ts`).
 - [ ] Carte : `bun andrea/daemon/main.ts carte` (données de démo déjà en base, **annoncées comme telles**).
 - [ ] Chrome (pas Firefox) pour Crisp et HubSpot. Ouvrir le lien Crisp de **Jean Dupont** ([crisp.md](crisp.md)) dans une fenêtre.
+- [ ] **Ouverture** : Crisp au premier plan (liste des conversations), HubSpot ouvert sur la **liste des contacts** (pas une fiche). **Aucune recherche HubSpot avant le message de Jean** (une aide générique « client introuvable » bloquerait la fiche 10 min). Fenêtres Claude/terminal hors de l'écran (l'OCR leur prend du texte).
+- [ ] Le message de Jean part du simulateur de Minguk lancé **avec `--sans-aide`** (sinon deux décideurs). Jean n'écrit qu'une fois avant la recherche : la lecture Crisp prend un 2e message du même client pour du déjà-vu, et ne garde qu'un client à la fois.
 - [ ] Ne pas répéter deux fois la même notification en moins de 90 s (filtre anti-doublon de Screenpipe).
 
 ## Déroulé
@@ -37,7 +39,7 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && 
 | Temps | Écran | Geste | Ce qu'on voit / dit |
 | --- | --- | --- | --- |
 | 0:00 | — | — | « Quand un process coince, on cherche, on demande sur Slack, on attend. Et le suivant recommence. » |
-| 0:20 | Léa | Jean Dupont écrit dans Crisp : « Ma page de réservation est en panne ». Léa cherche `jd.resto75@resa-paris.test` dans HubSpot : 0 résultat | Notification **« Client introuvable : chercher par domaine »** (solution partagée hier). Léa clique **Ça m'a aidé** |
+| 0:20 | Léa | Jean Dupont écrit dans Crisp (simulateur `--sans-aide`) : « Ma page de réservation est en panne ». Léa ouvre sa conversation, **copie** son adresse, la **colle** dans la recherche des contacts HubSpot : « 0 contacts » (rester 5 s) | ~10 s après la recherche : notification **« Client : Jean Dupont · Le Bistro · Premium »** avec [Y aller] → sa fiche HubSpot. « Il écrit avec une autre adresse que celle du contrat ; l'agent l'a retrouvé par son nom. » Léa clique **Ça m'a aidé**. Répété le 17/10 à 19:14 : réussi de bout en bout |
 | 0:50 | Léa | Jean : « Je veux un dédommagement ». Léa écrit dans Slack `#support` : « On peut offrir quelque chose à un client premium ? » | Aucune solution chez Léa → **demande anonyme** à l'équipe |
 | 1:05 | Karim | — | Notification **« Un collègue bloque : … dédommagement »** → **Partager**. « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | ~4 s après : **« Geste commercial : 1 mois offert maximum »** avec **Copier**. Léa répond à Jean |
