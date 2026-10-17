@@ -28,9 +28,9 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
     for (const r of await t.pull(0, "candidate")) {
       const key = `${t.id}:${r.seq}`;
       if (seen[key] || !r.data || sent >= MAX_PER_POLL) continue;
-      seen[key] = true;
-      writeFileSync(SEEN, JSON.stringify(seen));
       sent++;
+      // Marquée « vue » seulement si la notification est vraiment partie (sinon, nouvel essai au tour suivant).
+      const done = (message: string) => { if (!message.startsWith("NON AFFICHÉE")) { seen[key] = true; writeFileSync(SEEN, JSON.stringify(seen)); } };
       const d = r.data;
       const edit = { id: "edit", label: "Rédiger", type: "link", url: PAGE_URL };
       if (d.type === "proposition") {
@@ -53,6 +53,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           timeout: 0,
           actions: [{ id: "certify", label: "Certifier", type: "api", url: relayUrl, method: "POST", primary: true, body: { action: "certify", episode, nonce } }, edit],
         });
+        done(message);
         hooks.log(`proposition de la nuit à certifier : « ${d.title} » (${message})`);
       } else if (d.type === "attente") {
         const message = await notify({
@@ -64,6 +65,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           timeout: 0,
           actions: [{ ...edit, primary: true }],
         });
+        done(message);
         hooks.log(`étape à documenter : « ${d.step} » (${message})`);
       }
     }
