@@ -20,7 +20,7 @@ Les paramètres sont reliés par `&`. **Chaque valeur est encodée** : espace �
 ## Règles pour un client fictif
 
 - **E-mail en `@example.com` uniquement** (domaine réservé, n'existe pas) : aucun e-mail ne peut partir vers une vraie personne.
-  - **Exception (17/10)** : Jean Dupont écrit avec `jd.resto75@resa-paris.test` (`.test` est aussi un domaine réservé). La recherche de l'interface HubSpot découpe l'adresse, et le morceau « example » ramène tous les contacts fictifs : avec une adresse en `@example.com`, le « 0 résultat » du cas d'ouverture est impossible (mesuré). Ne pas l'utiliser pour d'autres clients.
+  - **Exception (17/10)** : Jean Dupont écrit avec `jd.resto75@resa-paris.test` (`.test` est aussi un domaine réservé). La recherche de l'interface HubSpot découpe l'adresse, et le morceau « example » ramène tous les contacts fictifs : avec une adresse en `@example.com`, le « 0 résultat » du cas d'ouverture est impossible (mesuré). Même règle pour les adresses de répétition de ce cas (`km.0412@zvk.test` pour Kenji Mori, `em.2207@qmx.test` pour Élodie Marchand, `lf.1903@wpx.test` pour Luc Fabre) : aucun morceau ne correspond à un nom, une entreprise ou une ville. Pas d'autre exception.
 - **Jamais le nom ou l'adresse d'une vraie personne.** Un nom plausible, français, sans « test » ni « azerty ».
 - **`locale=fr`** toujours.
 - **Un client par scénario**, pour que l'historique de la boîte de réception reste cohérent. Si un client doit revenir, réutiliser exactement le même lien.
