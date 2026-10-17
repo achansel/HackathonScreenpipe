@@ -35,6 +35,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
       // Marquée « vue » seulement si la notification est vraiment partie (sinon, nouvel essai au tour suivant).
       const done = (message: string) => {
         if (message.startsWith("NON AFFICHÉE")) { retryAt = Date.now() + 60_000; return false; }
+        if (/already sent/i.test(message)) return true; // déjà affichée : ne pas la marquer en échec
         seen[key] = true;
         writeFileSync(SEEN, JSON.stringify(seen));
         return true;
@@ -53,7 +54,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           hooks.log(`règle certifiée : « ${d.title} » (aide de toute l'équipe)`);
         });
         const message = await notify({
-          id: `fa-${episode}`,
+          id: `fa-${episode}-${Date.now().toString(36)}`, // identifiant unique : Screenpipe refuse un id déjà envoyé (mesuré)
           title: `${LABEL}Règle trouvée cette nuit : ${d.title}`,
           body: `${d.body ?? ""}\nÉtape : ${d.step}. Certifiée, elle devient l'aide de toute l'équipe.`,
           pipe_name: PIPE_NAME,
@@ -65,7 +66,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
         if (!done(message)) return;
       } else if (d.type === "attente") {
         const message = await notify({
-          id: `fa-doc-${r.seq}`,
+          id: `fa-doc-${r.seq}-${Date.now().toString(36)}`,
           title: `${LABEL}Étape à documenter : ${d.step}`,
           body: "Personne n'a trouvé comment faire. Écris la règle : elle aidera toute l'équipe.",
           pipe_name: PIPE_NAME,
