@@ -16,7 +16,7 @@ export type Verdict = {
 
 const SYSTEM = `Tu repères les frictions de PROCESS d'un employé à partir d'un extrait de son écran.
 Friction = détour sur une étape de process que des collègues connaissent (règle non écrite, champ obligatoire, validation, outil à trouver).
-Pas une friction : travail normal, réponse courtoise à un client, discussion sociale, message de succès, panne technique (404, timeout).
+Pas une friction : travail normal, réponse courtoise à un client, discussion sociale, message de succès, panne technique (404, timeout), écran de connexion ou de mot de passe.
 detour : blocage | demande_aide | recherche | tatonnement | parcours | ressaisie | contournement | attente_relance | aucun.
 type (Screenpipe) : waiting | switching | rework | handoff | unclear. control : direct | influence | external | required.
 step : l'étape du process en 4 à 8 mots, sans nom de personne, e-mail, numéro ni identifiant client.
@@ -50,6 +50,7 @@ export async function qualify(ep: Episode, solutions: Solution[]): Promise<Verdi
   try {
     const v = JSON.parse(out.match(/\{[\s\S]*\}/)?.[0] ?? "") as Verdict;
     if (v.solution_id && !solutions.some((s) => s.id === v.solution_id)) v.solution_id = null;
+    if (v.detour === "aucun") v.friction = false; // verdict incohérent mesuré : friction:true avec detour "aucun"
     return v;
   } catch {
     return null;

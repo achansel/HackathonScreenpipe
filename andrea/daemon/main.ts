@@ -27,7 +27,7 @@ import {
 } from "./config";
 import { EpisodeBuilder, type Episode } from "./episodes";
 import { qualify } from "./qualify";
-import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay } from "./screenpipe";
+import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay, withoutOwnNotifications } from "./screenpipe";
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
 import { publishMap, MAP_DEEPLINK } from "./map";
 import { TeamSync } from "./team";
@@ -106,6 +106,10 @@ let team: TeamSync | null = null;
 let teamStore: TeamStore | null = null;
 
 async function handleEpisode(ep: Episode) {
+  // Notre propre notification relue par l'OCR : retirée du texte, épisode ignoré si c'était l'essentiel.
+  const own = withoutOwnNotifications(ep.text);
+  if (own.echo) { log(`épisode ${ep.app} ignoré : surtout le texte de notre notification`); return { echo: true }; }
+  ep = { ...ep, text: own.text };
   // Filtre appris hors ligne : écarte le travail normal sans appel au modèle.
   const detector = approvedDetector();
   if (detector) {

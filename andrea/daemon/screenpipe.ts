@@ -1,5 +1,5 @@
 // Client minimal de l'API locale de Screenpipe.
-import { API, KEY, MODEL, NOTIFY, RELAY } from "./config";
+import { API, KEY, LOOKBACK_MS, MODEL, NOTIFY, RELAY } from "./config";
 
 const auth = { Authorization: `Bearer ${KEY}` };
 export type Item = Record<string, any>;
@@ -34,8 +34,29 @@ export async function search(params: Record<string, string>, max = 1000): Promis
   return out;
 }
 
+// Nos notifications s'affichent par-dessus la fenêtre lue : l'OCR les capture (mesuré : texte de
+// « Geste commercial » relu dans une frame de Crisp, puis qualifié en friction). On garde leurs mots
+// pendant LOOKBACK_MS pour les retirer des épisodes.
+const norm = (w: string) => w.normalize("NFD").replace(/[^a-z0-9]/gi, "").toLowerCase();
+const shown: { at: number; words: Set<string> }[] = [];
+
+/** Retire d'un texte les mots d'une de nos notifications récentes qui y apparaît (≥ 40 % de ses mots).
+ *  `echo` : le texte était surtout notre notification (≥ 50 % des mots retirés) → épisode à ignorer. */
+export function withoutOwnNotifications(text: string, now = Date.now()): { text: string; echo: boolean } {
+  while (shown.length && now - shown[0].at > LOOKBACK_MS) shown.shift();
+  let words = text.split(/\s+/).filter(Boolean);
+  const total = words.length;
+  for (const n of shown) {
+    const present = new Set(words.map(norm).filter((w) => n.words.has(w)));
+    if (present.size >= 0.4 * n.words.size) words = words.filter((w) => !n.words.has(norm(w)));
+  }
+  return { text: words.join(" "), echo: total > 0 && total - words.length >= 0.5 * total };
+}
+
 /** Renvoie le `message` de /notify : « sent successfully », « paused », « duplicate … ». */
 export async function notify(payload: Item): Promise<string> {
+  const visible = [payload.title, payload.body, ...((payload.actions ?? []) as Item[]).map((a) => a.label)].join(" ");
+  shown.push({ at: Date.now(), words: new Set(visible.split(/\s+/).map(norm).filter((w) => w.length >= 3)) });
   const r = await sp(`${NOTIFY}/notify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
