@@ -14,6 +14,7 @@ export interface TeamStore {
   init(): Promise<void>;
   put(kind: Kind, payload: object): Promise<number>;
   list(kind: Kind, afterId: number): Promise<Row[]>;
+  remove(ids: number[]): Promise<number>;
   close(): Promise<void>;
 }
 
@@ -74,6 +75,12 @@ export class PostgresTeamStore implements TeamStore {
       }
     }
     return out;
+  }
+
+  async remove(ids: number[]): Promise<number> {
+    if (!ids.length) return 0;
+    const r = await this.sql`delete from friction_blobs where id in ${this.sql(ids)}`;
+    return r.count ?? ids.length;
   }
 
   async close() {

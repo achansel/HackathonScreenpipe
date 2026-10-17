@@ -3,6 +3,7 @@
 // On compte des DÉTOURS par étape, jamais des personnes : les signatures n'ont aucune identité.
 // Fourchettes plutôt que chiffres exacts (VISION.md) ; une étape apparaît dès le premier détour.
 import { API, KEY } from "./config";
+import { canonicalSteps } from "./steps";
 import type { TeamStore } from "./teamstore";
 
 export const MAP_PIPE = "friction-map"; // pipe auquel les blocs sont liés (rempli ici, via source_pipe)
@@ -22,16 +23,20 @@ export async function buildMap(store: TeamStore) {
   const requests = fresh<{ requestId: string; step: string }>(await listAll(store, "request"));
   const solutions = fresh<{ requestId?: string; step: string }>(await listAll(store, "solution"));
 
+  // Libellés regroupés en étapes canoniques (modèle + cache), pour compter une étape une seule fois.
+  const canon = await canonicalSteps([...signatures, ...requests, ...solutions].map((x) => x.step).filter(Boolean));
+  const step = (label: string) => canon.get(label) ?? label;
+
   // Étape « résolue » si une solution a été partagée pour une demande sur cette étape.
   const solvedRequests = new Set(solutions.map((s) => s.requestId).filter(Boolean));
-  const solvedSteps = new Set(requests.filter((r) => solvedRequests.has(r.requestId)).map((r) => norm(r.step)));
-  for (const s of solutions) solvedSteps.add(norm(s.step));
+  const solvedSteps = new Set(requests.filter((r) => solvedRequests.has(r.requestId)).map((r) => norm(step(r.step))));
+  for (const s of solutions) solvedSteps.add(norm(step(s.step)));
 
   const bySteps = new Map<string, { step: string; n: number; types: Map<string, number>; controls: Map<string, number> }>();
   const byType = new Map<string, number>();
   for (const s of signatures) {
-    const k = norm(s.step);
-    const e = bySteps.get(k) ?? { step: s.step, n: 0, types: new Map(), controls: new Map() };
+    const k = norm(step(s.step));
+    const e = bySteps.get(k) ?? { step: step(s.step), n: 0, types: new Map(), controls: new Map() };
     e.n++;
     e.types.set(s.type, (e.types.get(s.type) ?? 0) + 1);
     e.controls.set(s.control, (e.controls.get(s.control) ?? 0) + 1);

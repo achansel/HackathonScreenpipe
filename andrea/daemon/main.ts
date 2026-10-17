@@ -8,7 +8,7 @@
 //   bun andrea/daemon/main.ts                lance le daemon (refuse sans consentement)
 //   bun andrea/daemon/main.ts simuler        plusieurs daemons (Léa, Karim…) sur cette machine, sans lire l'écran
 //   bun andrea/daemon/main.ts injecter lea "texte de l'épisode"
-//   bun andrea/daemon/main.ts carte-installer | carte | peupler-demo   carte d'équipe (Live View)
+//   bun andrea/daemon/main.ts carte-installer | carte | peupler-demo | nettoyer-demo   carte d'équipe (Live View)
 //   bun andrea/daemon/main.ts pause | reprendre | statut | test-notif | desactiver | retirer-relais
 // Options : --debug affiche le texte des épisodes (sinon seules les métadonnées sont journalisées).
 //
@@ -338,6 +338,21 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     }
     await store.close();
     console.log(`Données de démonstration ajoutées (${demo.reduce((a, d) => a + d[4], 0)} signatures). Puis : bun andrea/daemon/main.ts carte`);
+    break;
+  }
+  case "nettoyer-demo": {
+    // Retire les données de démonstration (synthetic:true) : à faire avant tout usage réel.
+    const store = new PostgresTeamStore(teamKey());
+    const ids: number[] = [];
+    for (const kind of ["signature", "solution"] as const)
+      for (let after = 0; ; ) {
+        const page = await store.list(kind, after);
+        if (!page.length) break;
+        ids.push(...page.filter((r) => r.payload?.synthetic).map((r) => r.id));
+        after = page.at(-1)!.id;
+      }
+    console.log(`Données de démonstration retirées : ${await store.remove(ids)} lignes.`);
+    await store.close();
     break;
   }
   case "simuler":
