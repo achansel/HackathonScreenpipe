@@ -8,10 +8,12 @@ import { join } from "node:path";
 export interface PageOptions {
   port: number;
   store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number; crisp?: boolean; liveView?: boolean; alerteSeconds?: number };
+  storeMoi?: { url: string; anonKey: string; restPath: string; label: string }; // « Mon poste » : le stockage de l'équipe, même en mode démo
   operator?: () => unknown;       // vue opérateur (base locale de cette machine)
   reset?: () => void;             // remise à zéro (base locale non partagée seulement)
   notifyUrl?: string;
   live?: (blocks: Record<string, unknown>) => Promise<{ ok: boolean; blocks?: string[]; error?: string }>; // Live View Screenpipe
+  regie?: (since: number, publish: boolean) => Promise<unknown>; // régie de répétition : vraies réactions
   match?: (step: string, catalogue: { id: string; step: string }[]) => Promise<string | null>; // quelle solution répond à cette étape
 }
 
@@ -27,6 +29,7 @@ export async function startPage(o: PageOptions) {
   };
   const appJs = await bundle("app.ts");
   const parcoursJs = await bundle("parcours.ts");
+  const regieJs = await bundle("regie-page.ts");
   // Événements poussés vers les pages ouvertes (détection Crisp de Minguk) : Server-Sent Events.
   const listeners = new Set<ReadableStreamDefaultController>();
   const broadcast = (event: unknown) => {
@@ -48,6 +51,12 @@ export async function startPage(o: PageOptions) {
         if (path === "/equipe" || path === "/index.html") return file("index.html", "text/html; charset=utf-8");
         if (path === "/moi") return file("moi.html", "text/html; charset=utf-8");
         if (path === "/parcours") return file("parcours.html", "text/html; charset=utf-8");
+        if (path === "/repetition") return file("regie.html", "text/html; charset=utf-8");
+        if (path === "/regie.js") return new Response(regieJs, { headers: { "Content-Type": "text/javascript; charset=utf-8" } });
+        if (path === "/api/regie" && o.regie) {
+          const q = new URL(req.url).searchParams;
+          return Response.json(await o.regie(Number(q.get("since") ?? Date.now()), q.get("live") === "1"));
+        }
         if (path === "/parcours.js") return new Response(parcoursJs, { headers: { "Content-Type": "text/javascript; charset=utf-8" } });
         if (path === "/api/events") {
           let ctl: ReadableStreamDefaultController;
@@ -62,7 +71,7 @@ export async function startPage(o: PageOptions) {
         }
         if (path === "/style.css") return file("style.css", "text/css; charset=utf-8");
         if (path === "/app.js") return new Response(appJs, { headers: { "Content-Type": "text/javascript; charset=utf-8" } });
-        if (path === "/api/config") return Response.json(o.store);
+        if (path === "/api/config") return Response.json(new URL(req.url).searchParams.get("page") === "moi" && o.storeMoi ? { ...o.store, ...o.storeMoi } : o.store);
         if (path === "/api/seed") return new Response(readFileSync(SEED), { headers: { "Content-Type": "application/json" } });
         if (path === "/api/operator") return Response.json(o.operator ? o.operator() : NO_OPERATOR);
         if (path === "/api/notify" && req.method === "POST" && sameOrigin(req)) {

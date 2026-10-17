@@ -18,6 +18,7 @@ import { homedir, networkInterfaces, platform } from "node:os";
 import { join } from "node:path";
 import { startPage } from "./demo/server";
 import { LocalTeamServer } from "./local-server";
+import { snapshot } from "./regie";
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, SupabaseStore, Team, type Membership } from "./client";
 import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
 
@@ -248,8 +249,12 @@ try {
     store,
     operator: local ? () => local!.operatorView() : undefined,
     reset: local && !shared ? () => local!.reset() : undefined,
+    // En mode démo (stockage local), « Mon poste » reste sur le stockage de l'équipe s'il est configuré.
+    storeMoi: !remote && envUrl && !flag("--heberger") && !flag("--local") ? { url: envUrl, anonKey, restPath, label: envUrl.includes("supabase.co") ? `Supabase (${new URL(envUrl).host})` : envUrl } : undefined,
     match: matchSolution,
     live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined,
+    // Régie de répétition : toujours sur le stockage de l'équipe configuré (team.env), comme le démon.
+    regie: (since, publish) => snapshot({ since, storeUrl: envUrl, anonKey, crisp: flag("--crisp"), live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined, publish }),
   });
 } catch {
   console.error(`Le port ${PAGE_PORT} est déjà pris : friction-assist est sans doute déjà lancé. Ouvrir http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"} ou fermer l'autre fenêtre.`);

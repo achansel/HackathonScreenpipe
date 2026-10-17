@@ -41,7 +41,8 @@ La page d'accueil s'ouvre toute seule dans le navigateur. Elle propose trois ent
 | --- | --- |
 | **Parcours guidé** (`/parcours`) | **Comprendre en 5 minutes.** La journée de Léa en 7 chapitres : on voit son écran (Crisp, HubSpot, Slack, Notion), ce que fait l'agent à chaque étape, ce que reçoivent ses collègues, et ce que voit le serveur. On clique soi-même, ou « Mode présentation » pour que ça défile seul. Les équipes et les blocs chiffrés sont réels. |
 | **Équipe simulée** (`/equipe`) | Les 5 collègues côte à côte, le scénario en 10 étapes et les attaques : pour montrer au jury. |
-| **Mon poste** (`/moi`) | L'usage réel, chacun sur sa machine (voir plus bas). |
+| **Mon poste** (`/moi`) | L'usage réel, chacun sur sa machine (voir plus bas). Toujours sur le stockage de l'équipe (`team.env`) s'il est configuré, pour voir les demandes des démons. |
+| **Répétition** (`/repetition`) | **Répéter la démo avec les vrais outils** : le déroulé d'Andrea, pas à pas. Tu joues les gestes dans Crisp, HubSpot et Slack ; le démon et Screenpipe réagissent ; la page coche chaque étape quand la vraie notification arrive, avec le délai. Détail : [DEMO.md](DEMO.md). |
 
 **Ctrl+C** dans le terminal arrête tout.
 
@@ -145,7 +146,7 @@ C'est la page qu'on utilise pour de vrai, une par personne (`start.sh moi`).
 2. **Rejoindre.** Chaque collègue colle le lien dans « Rejoindre une équipe », puis clique « Rejoindre ». Le **périmètre** ne sert qu'à qui est dans **plusieurs** équipes, comme Antoine (Support + Ventes) : il décide où part chaque demande. Sinon, laisser « Tout ».
 3. **Choisir son profil.** « Je joue : » propose les collègues de PipingTable (Léa, Claire Morin, Karim Bensaïd, Antoine Rey, Sarah Lambert). On connaît alors les règles que ce profil donne dans le Slack de Minguk. Pour la démo à plusieurs : la personne qui présente joue **Léa**, les autres Claire, Karim, Antoine, Sarah.
 4. **Bloquer.** Trois façons :
-   - **un vrai message Crisp** : lancer `./teamstore/start.sh moi --crisp` et ouvrir Crisp dans Chrome. La détection de Minguk lit les messages clients à l'écran via Screenpipe, reconnaît le besoin (panne, dédommagement, promesse, prix) et déclenche la friction toute seule ;
+   - **un vrai message Crisp** : lancer `./teamstore/start.sh moi --crisp` et ouvrir Crisp dans Chrome. La détection de Minguk lit les messages clients à l'écran via Screenpipe, reconnaît le besoin (panne, dédommagement, promesse, prix) et déclenche la friction toute seule. **Variante sans le démon d'Andrea seulement** : si le démon tourne sur le poste, ne pas utiliser `--crisp`, car le démon lit déjà Crisp et doit rester le seul décideur (`andrea/docs/demo.md`) ;
    - **un message Crisp simulé** : le bloc « Crisp » de la page envoie un des messages des clients de la démo (Jean Dupont, Élodie Marchand, Pieter Janssens…) ;
    - **à la main** : « Je bloque sur… » propose des frictions préparées, ou « Autre… » pour décrire une étape, **sans nom ni donnée client**.
 5. **Aider.** Une demande arrive dans « Demandes de l'équipe » :

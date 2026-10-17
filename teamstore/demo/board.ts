@@ -47,8 +47,9 @@ export class Board {
     }
   }
 
-  state(now = Date.now()): BoardState {
-    const evs = [...this.events.values()];
+  /** `since` : ne compter que ce qui s'est passé depuis (une répétition) ; les solutions restent pour les états. */
+  state(now = Date.now(), since = 0): BoardState {
+    const evs = [...this.events.values()].filter((e) => e.kind === "solution" || e.seenAt >= since);
     const day = new Date(now).toISOString().slice(0, 10);
     const answered = new Map<string, Ev>();
     for (const e of evs) if (e.kind === "solution" && e.data.requestId && !answered.has(e.data.requestId)) answered.set(e.data.requestId, e);
@@ -70,7 +71,7 @@ export class Board {
     }));
     const timeline = [
       ...requests.map((r) => ({ at: r.seenAt, title: `Demande anonyme · ${r.data.step}`, subtitle: `${r.team} · ${answered.has(r.data.requestId) ? `réponse en ${fmt(answered.get(r.data.requestId)!.seenAt - r.seenAt)}` : "en attente"}` })),
-      ...sols.map((s) => ({ at: s.seenAt, title: `${s.data.certified ? "Règle certifiée" : s.data.requestId ? "Solution partagée" : "Solution ajoutée"} · ${s.data.title ?? s.data.step}`, subtitle: `${s.team}${s.data.certified ? " · signée par la responsable" : ""}` })),
+      ...sols.filter((s) => s.seenAt >= since).map((s) => ({ at: s.seenAt, title: `${s.data.certified ? "Règle certifiée" : s.data.requestId ? "Solution partagée" : "Solution ajoutée"} · ${s.data.title ?? s.data.step}`, subtitle: `${s.team}${s.data.certified ? " · signée par la responsable" : ""}` })),
       ...this.extra,
     ].sort((a, b) => b.at - a.at).slice(0, 20);
     return { pending, today: sigs.length, resolved, certified: certifiedIds.size, steps, timeline };

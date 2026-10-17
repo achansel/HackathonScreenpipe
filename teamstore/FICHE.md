@@ -88,7 +88,15 @@ Tout reste cliquable à la main : « Je bloque sur… », « Inviter », « Reti
 - **Correctif trouvé grâce au parcours** : la rotation de clé effaçait aussi les **signatures**, donc la carte repartait de zéro après un départ. Elles sont maintenant republiées avec les solutions.
 - **Tableau « Frictions en direct »** (`demo/board.ts`) : en attente, frictions du jour, résolues (délai médian), règles certifiées, étapes et leur état, fil en direct. Il est calculé sur le poste et publié dans une **Live View Screenpipe** `friction-live` (8 blocs : metric, list, timeline, table, markdown ; formats lus dans `/outputs/targets`). **Alerte à la responsable** (notification Screenpipe avec un bouton `deeplink` vers la Live View) au-delà de `--alerte` secondes. Mesuré : demande en attente affichée en direct, alerte à Claire envoyée, Live View installée et ses 8 blocs acceptés (HTTP 200). Le rendu dans l'app reste à vérifier à l'œil : l'API ne permet pas de relire le contenu.
 - **Rotation** : les demandes **encore en attente** sont aussi republiées (39/39) ; le tableau garde leur heure de départ.
-- Déroulé : [DEMO.md](DEMO.md).
+- **Régie de répétition** (`/repetition`, `regie.ts`) : elle suit le déroulé d'Andrea pour le rôle Léa ou Karim, avec les vrais liens (Crisp du client de répétition, contacts et recherche HubSpot, Slack #support). Elle coche chaque étape à partir des **vraies réactions** :
+  - l'historique des notifications de Screenpipe ;
+  - les clics relevés dans le journal de l'app ;
+  - les événements du démon ;
+  - les blocs de l'équipe.
+
+  Elle mesure les délais et vérifie la préparation (démon, clé HubSpot, simulateur, carte, un seul décideur). Elle peut publier « Frictions en direct ». Mesuré sur la chaîne réelle (démon en simulation avec la vraie IA, page, Supabase) : fiche 3 s, demande 3 s, réponse de l'équipe 7 s.
+- **« Mon poste » sur le stockage de l'équipe** même en mode démo (`/api/config?page=moi`) : sinon, il ne voyait jamais les demandes des démons.
+- Déroulé : [DEMO.md](DEMO.md), aligné sur `andrea/docs/demo.md`, qui fait référence.
 
 ## Les options tranchées, et pourquoi
 

@@ -30,7 +30,8 @@ interface State {
   log: string[];
 }
 
-const cfg = await (await fetch("/api/config")).json();
+// « Mon poste » est toujours sur le stockage de l'équipe (team.env) s'il existe : c'est là que publient les démons.
+const cfg = await (await fetch(document.body.dataset.mode === "moi" ? "/api/config?page=moi" : "/api/config")).json();
 const store = new SupabaseStore(cfg.url, cfg.anonKey, cfg.restPath);
 const seed: Sol[] = await (await fetch("/api/seed")).json();
 const H = { "Content-Type": "application/json", "X-FA-Demo": "1" };
