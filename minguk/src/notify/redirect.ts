@@ -57,7 +57,7 @@ export function startRedirectServer(options: { port: number; store: Store; book:
 			},
 		});
 	} catch (error) {
-		throw new Error(`Port ${options.port} indisponible pour la redirection : changer FRICTION_PORT`, { cause: error });
+		throw new Error(`Port ${options.port} indisponible pour la redirection : changer FRICTION_REDIRECT_PORT`, { cause: error });
 	}
 	const port = server.port ?? options.port;
 	return {

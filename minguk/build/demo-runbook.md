@@ -47,7 +47,7 @@ Le terminal affiche chaque statut (`shown`, `clicked`, `helpful`, `unhelpful`…
 | `suppressed (paused)` et ⚠ dans le terminal | notifications Screenpipe en pause ou en heures silencieuses | les réactiver, relancer `bun run demo --manual` |
 | `suppressed (duplicate)` | deux lancements dans la même seconde | attendre 2 secondes, relancer |
 | `suppressed (unreachable)` | Screenpipe fermé | le relancer, puis `bun run demo:check` |
-| `Port 4517 indisponible` | une démo précédente tourne encore | la fermer (`q` ou Ctrl+C) ; sinon `FRICTION_PORT=4518 bun run demo --manual` |
+| `Port 4517 indisponible` | une démo précédente tourne encore | la fermer (`q` ou Ctrl+C) ; sinon `FRICTION_REDIRECT_PORT=4518 bun run demo --manual` |
 | [Y aller] ouvre une page « aide expirée » | la démo a été relancée : les anciens liens ne valent plus | utiliser la nouvelle notification |
 | Les 👍/👎 n'ont pas d'effet | jeton absent (avertissement au lancement) | `source ~/.config/screenpipe/env`, relancer |
 

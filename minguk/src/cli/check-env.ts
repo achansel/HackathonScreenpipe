@@ -52,7 +52,7 @@ function checks(config: Config, withNotify: boolean): Check[] {
 					const server = Bun.serve({ hostname: "127.0.0.1", port: config.port, fetch: () => new Response("ok") });
 					server.stop(true);
 				} catch {
-					throw new Error("déjà utilisé : changer FRICTION_PORT");
+					throw new Error("déjà utilisé : changer FRICTION_REDIRECT_PORT");
 				}
 				return "127.0.0.1";
 			},

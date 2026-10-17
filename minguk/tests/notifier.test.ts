@@ -55,7 +55,7 @@ describe("Notifier (étapes 3 à 5 ensemble)", () => {
 		await t.notifier.trackNow();
 		await Bun.sleep(10);
 		expect(t.fake.notified.map((n) => n.id)).toEqual([ep.id, escalationId(ep.id)]);
-		expect(t.fake.notified[1]!.title).toBe("💬 Demander à l'équipe → #support");
+		expect(t.fake.notified[1]!.title).toBe("Demander à l'équipe → #support");
 
 		// Changer d'avis puis revenir au 👎 ne relance pas une 2e escalade.
 		t.fake.feedback.push({ target: { kind: "notification", id: ep.id }, rating: "up", updated_at: "2" });

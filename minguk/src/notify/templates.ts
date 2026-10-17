@@ -56,7 +56,8 @@ function pathPayload(episode: Episode, help: PathHelp, link: Required<BuildOptio
 		: { id: "go", label: "Ouvrir la fiche", type: "link", url: link(episode, help.fallbackUrl), primary: true };
 	return {
 		id: episode.id,
-		title: `🧭 ${help.destination}`,
+		// Règle de design Screenpipe : ni emoji ni « ! » dans les textes de l'outil.
+		title: help.destination,
 		body: [
 			`**1 clic au lieu de ${levels}.** ${help.why ?? `Chemin pris par l'équipe ${help.teamCount} fois.`}`,
 			`\`${help.breadcrumb.join(" › ")}\``,
@@ -72,7 +73,7 @@ function pathPayload(episode: Episode, help: PathHelp, link: Required<BuildOptio
 function slackPayload(episode: Episode, help: SlackHelp, link: Required<BuildOptions>["link"]): NotifyPayload {
 	return {
 		id: episode.id,
-		title: `💬 ${help.reason} → ${help.channel}`,
+		title: `${help.reason} → ${help.channel}`,
 		body: [
 			"Modèle de l'équipe, prêt à coller :",
 			`\`${preview(help.message)}\``,
@@ -100,7 +101,7 @@ function rulePayload(
 		: `**${help.condition}**`;
 	return {
 		id: episode.id,
-		title: `📘 ${help.title}`,
+		title: help.title,
 		body: [
 			condition,
 			help.action,

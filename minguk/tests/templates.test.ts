@@ -19,9 +19,9 @@ describe("buildPayload", () => {
 		expect(buildPayload(ep).id).toBe(ep.id);
 	});
 
-	test("🧭 : toast seul, 30 s, [Y aller] et le fil d'Ariane", () => {
+	test(": toast seul, 30 s, [Y aller] et le fil d'Ariane", () => {
 		const payload = buildPayload(episode(pathHelp));
-		expect(payload.title).toBe("🧭 Produits du contrat signé");
+		expect(payload.title).toBe("Produits du contrat signé");
 		expect(payload.priority).toBe("low");
 		expect(payload.timeout).toBe(30_000);
 		expect(payload.body).toContain("1 clic au lieu de 4");
@@ -31,21 +31,21 @@ describe("buildPayload", () => {
 		]);
 	});
 
-	test("🧭 : sans URL résolue, [Ouvrir la fiche] vers la fiche de départ", () => {
+	test(": sans URL résolue, [Ouvrir la fiche] vers la fiche de départ", () => {
 		const payload = buildPayload(episode({ ...pathHelp, url: null }));
 		expect(payload.actions[0]).toMatchObject({ label: "Ouvrir la fiche", url: "https://app.hubspot.com/contacts/1/record/0-1/3" });
 	});
 
-	test("💬 : copier puis ouvrir, aperçu de la première ligne", () => {
+	test(": copier puis ouvrir, aperçu de la première ligne", () => {
 		const payload = buildPayload(episode(slackHelp));
-		expect(payload.title).toBe("💬 Bug client → #bugs");
+		expect(payload.title).toBe("Bug client → #bugs");
 		expect(payload.priority).toBe("normal");
 		expect(payload.body).toContain("`[Bug] Le Bistro · page en panne`");
 		expect(payload.actions.map((action) => action.label)).toEqual(["1. Copier le message", "2. Ouvrir #bugs"]);
 		expect(payload.actions[0]).toMatchObject({ type: "copy", value: slackHelp.message });
 	});
 
-	test("📘 : client en attente → high, reste affichée, trois boutons", () => {
+	test(": client en attente → high, reste affichée, trois boutons", () => {
 		const payload = buildPayload(episode(ruleHelp, { customerWaiting: true }), { now: () => NOW });
 		expect(payload.priority).toBe("high");
 		expect(payload.timeout).toBe(0);
@@ -57,7 +57,7 @@ describe("buildPayload", () => {
 		expect(payload.actions.map((action) => action.type)).toEqual(["link", "copy", "copy"]);
 	});
 
-	test("📘 : sans client en attente → normal", () => {
+	test(": sans client en attente → normal", () => {
 		expect(buildPayload(episode(ruleHelp)).priority).toBe("normal");
 	});
 
@@ -80,7 +80,7 @@ describe("lintPayload", () => {
 	});
 
 	test("un émoji compte pour un caractère", () => {
-		const payload = { ...valid(), title: `📘 ${"x".repeat(LIMITS.titleChars - 2)}` };
+		const payload = { ...valid(), title: `${"x".repeat(LIMITS.titleChars - 2)}` };
 		expect(lintPayload(payload)).toEqual([]);
 	});
 

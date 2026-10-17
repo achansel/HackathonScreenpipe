@@ -43,7 +43,7 @@ describe("Les aides", () => {
 		const helps = helpsFor({ name: "Jean Dupont", text: "je veux un dédommagement" }, jean, context);
 		expect(helps.map((help) => help.stage)).toEqual(["qui-est-le-client", "geste-commercial"]);
 		const [card, rule] = all(helps);
-		expect(card!.title).toBe("🧭 Jean Dupont · Le Bistro");
+		expect(card!.title).toBe("Jean Dupont · Le Bistro");
 		expect(card!.body).toContain("Offre Premium · retrouvé par son nom.");
 		expect(rule!.body).toContain("Premium : 1 mois offert possible.");
 		expect(rule!.actions.find((action) => action.id === "reply")).toMatchObject({ value: expect.stringContaining("un mois d'abonnement") });
@@ -64,7 +64,7 @@ describe("Les aides", () => {
 	test("prospect belge, absent de HubSpot : pas de fiche, le canal #new-leads pour Sarah", () => {
 		const helps = helpsFor({ name: "Pieter Janssens", text: "combien pour 3 restaurants ? Nous sommes à Bruxelles." }, undefined, context);
 		expect(helps.map((help) => help.stage)).toEqual(["nouveau-prospect"]);
-		expect(all(helps)[0]!.title).toBe("💬 Prospect belge → Sarah → #new-leads");
+		expect(all(helps)[0]!.title).toBe("Prospect belge → Sarah → #new-leads");
 	});
 
 	test("toutes les aides de la démo passent le contrôle d'affichage", () => {

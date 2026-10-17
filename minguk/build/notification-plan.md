@@ -102,7 +102,7 @@ tests/
 | `SCREENPIPE_URL` | `http://127.0.0.1:3030` | API (`/feedback`) |
 | `SCREENPIPE_NOTIFY_URL` | `http://127.0.0.1:11435` | `/notify`, `/notifications` |
 | `SCREENPIPE_API_KEY` | — (obligatoire) | jeton pour `/feedback`, **jamais affiché** |
-| `FRICTION_PORT` | `4517` | notre serveur de redirection (éviter 3030 et 11435) |
+| `FRICTION_REDIRECT_PORT` | `4517` | notre serveur de redirection (éviter 3030 et 11435) |
 | `FRICTION_DB` | `~/.local/share/friction/notify.sqlite` | l'état local |
 | `FRICTION_DAILY_CAP` | `8` | le plafond d'aides par jour |
 
@@ -174,7 +174,7 @@ Les estimations tiennent compte du test sur les deux systèmes.
   - `/health` ;
   - `/search?limit=1` répond 200 avec le jeton ;
   - `POST /notify` répond ;
-  - le port `FRICTION_PORT` est libre.
+  - le port `FRICTION_REDIRECT_PORT` est libre.
 
 **Terminé quand :** `bun run check-env` passe au vert sur Mac **et** sous WSL.
 
@@ -211,7 +211,7 @@ Les estimations tiennent compte du test sur les deux systèmes.
   - `GET /go/:episodeId` → note l'événement `clicked`, puis redirige (`302`) vers l'URL **enregistrée** pour cet épisode ;
   - un épisode inconnu → une petite page « aide expirée », **jamais** une redirection vers une adresse passée en paramètre (pas de redirection ouverte) ;
   - `GET /health` pour `check-env`.
-- Les modèles utilisent `http://127.0.0.1:{FRICTION_PORT}/go/{id}` comme URL de [Y aller] et d'[Ouvrir la fiche].
+- Les modèles utilisent `http://127.0.0.1:{FRICTION_REDIRECT_PORT}/go/{id}` comme URL de [Y aller] et d'[Ouvrir la fiche].
 
 **Terminé quand :** un clic sur [Y aller] ouvre HubSpot et l'épisode passe en `clicked`, sur Mac et sous Windows (navigateur Windows → serveur dans WSL, en réseau `mirrored`).
 

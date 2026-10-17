@@ -45,7 +45,7 @@ export function loadConfig(env: Env = process.env, { requireApiKey = true } = {}
 		screenpipeUrl: trimSlash(env.SCREENPIPE_URL || "http://127.0.0.1:3030"),
 		notifyUrl: trimSlash(env.SCREENPIPE_NOTIFY_URL || "http://127.0.0.1:11435"),
 		apiKey,
-		port: positiveInt(env, "FRICTION_PORT", 4517),
+		port: positiveInt(env, "FRICTION_REDIRECT_PORT", 4517),
 		dbPath: env.FRICTION_DB || join(homedir(), ".local", "share", "friction", "notify.sqlite"),
 		dailyCap: positiveInt(env, "FRICTION_DAILY_CAP", 8),
 	};

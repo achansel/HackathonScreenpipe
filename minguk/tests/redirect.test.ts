@@ -81,6 +81,6 @@ describe("serveur de redirection", () => {
 
 	test("port déjà pris : erreur claire", () => {
 		const t = setup();
-		expect(() => startRedirectServer({ port: t.server.port, store: t.store, book: t.book })).toThrow(/FRICTION_PORT/);
+		expect(() => startRedirectServer({ port: t.server.port, store: t.store, book: t.book })).toThrow(/FRICTION_REDIRECT_PORT/);
 	});
 });
