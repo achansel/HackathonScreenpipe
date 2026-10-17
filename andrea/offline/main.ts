@@ -81,10 +81,21 @@ switch (cmd) {
     const normal = todo.filter((e) => !(model[e.id] && model[e.id] !== "aucun")).sort((a, b) => h(a.id) - h(b.id));
     const pick = [...frictions.slice(0, n / 2), ...normal.slice(0, n - Math.min(frictions.length, n / 2))].sort((a, b) => h(a.id) - h(b.id));
     console.log(`${pick.length} épisodes. Touches : ${Object.entries(KEYS).map(([k, v]) => `${k}=${v}`).join("  ")}  s=passer  q=quitter\n`);
+    // Session de scénarios : ordre chronologique, et le scénario en cours à côté de chaque épisode
+    // (andrea/docs/scenarios-data.md + .state/scenarios.jsonl écrit par le script des clients Crisp).
+    if (since) pick.sort((a, b) => a.at - b.at);
+    const sheet = new Map<number, string>();
+    if (existsSync("andrea/docs/scenarios-data.md"))
+      for (const m of readFileSync("andrea/docs/scenarios-data.md", "utf8").matchAll(/^\| (\d+) \| (.+?) \| (.+?) \|$/gm)) sheet.set(Number(m[1]), `${m[2]} (visé : ${m[3]})`);
+    const runs: { n: number; start: number; end: number }[] = existsSync(`${STATE_DIR}scenarios.jsonl`)
+      ? readFileSync(`${STATE_DIR}scenarios.jsonl`, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
     let done = 0;
     for (const e of pick) {
       console.log(`\n── ${++done}/${pick.length} · ${e.app} · ${new Date(e.at).toLocaleString("fr-FR")}`);
-      console.log(`fenêtres : ${e.titles.slice(-3).join(" → ") || e.window}`);
+      const sc = runs.find((r) => e.at >= r.start - 5000 && e.at <= r.end + 5000);
+      if (sc) console.log(`scénario : ${sc.n} · ${sheet.get(sc.n) ?? ""}`);
+      console.log(`fenêtre  : ${e.window}`);
+      console.log(`avant    : ${e.titles.slice(-3).join(" → ")}`);
       console.log(`texte    : ${e.text.slice(0, 500)}`);
       const k = (prompt("étiquette >") ?? "").trim();
       if (k === "q") break;
