@@ -160,7 +160,8 @@ Modèle de [notification.md](../notification.md) §4.1 (titre = la réponse, 2 b
 - [x] Bouton `api` sur Mac : **ne passe pas** (17/10). Confirme le choix : `link` = voie principale, relais = bonus Windows.
 - [ ] `link` / `copy` / 👍👎 sur Mac ; commentaire avec 👎 ; `link` et `copy` sous Windows.
 - [ ] Panneau Windows qui reste vide après une relance de l'enregistrement : reproduire, puis le signaler à Ezra.
-- [ ] Live View (`GET /live-views/schema`, test 6).
+- [x] Live View (test 6, 17/10) : gabarit `live-view-template.v1` (blocs `metric`, `list`, `bar-chart`, `line-chart`, `table`, `timeline`, `markdown`), créé par `PUT /live-views/:id`. Chaque bloc est lié à un pipe ; un client local remplit la cible en passant `source_pipe` (`POST /outputs/targets/:id/submit`), **sans faire tourner de pipe** (`structured_outputs.rs`). Carte des frictions publiée : 5 blocs. Ouverture : `screenpipe://live-view/friction-map` (bouton `deeplink`).
+- [ ] Regrouper les libellés d'étape proches (« … d'un ticket client » / « … du ticket support » comptent séparément) : à faire dans le traitement de nuit.
 - [ ] CPU du daemon (< 20 %, règle Screenpipe) et quota IA du compte Business.
 - [ ] Offre gratuite Supabase (limites, mise en pause).
 

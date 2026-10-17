@@ -8,6 +8,7 @@
 //   bun andrea/daemon/main.ts                lance le daemon (refuse sans consentement)
 //   bun andrea/daemon/main.ts simuler        plusieurs daemons (Léa, Karim…) sur cette machine, sans lire l'écran
 //   bun andrea/daemon/main.ts injecter lea "texte de l'épisode"
+//   bun andrea/daemon/main.ts carte-installer | carte | peupler-demo   carte d'équipe (Live View)
 //   bun andrea/daemon/main.ts pause | reprendre | statut | test-notif | desactiver | retirer-relais
 // Options : --debug affiche le texte des épisodes (sinon seules les métadonnées sont journalisées).
 //
@@ -24,6 +25,7 @@ import { EpisodeBuilder, type Episode } from "./episodes";
 import { qualify } from "./qualify";
 import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay } from "./screenpipe";
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
+import { publishMap, MAP_DEEPLINK } from "./map";
 import { TeamSync } from "./team";
 import { PostgresTeamStore, teamKey } from "./teamstore";
 import { collect } from "../offline/collect";
@@ -85,6 +87,7 @@ const solutions = loadSolutions();
 const lastShown = new Map<string, number>();
 const stats = { skipped: 0, qualified: 0 };
 let team: TeamSync | null = null;
+let teamStore: PostgresTeamStore | null = null;
 
 async function handleEpisode(ep: Episode) {
   // Filtre appris hors ligne : écarte le travail normal sans appel au modèle.
@@ -187,7 +190,8 @@ function startTeam() {
     log("pas de base d'équipe (equipe-init) : aide locale seulement");
     return;
   }
-  team = new TeamSync(new PostgresTeamStore(teamKey()), solutions, { register, helpNotification, record, log });
+  teamStore = new PostgresTeamStore(teamKey());
+  team = new TeamSync(teamStore, solutions, { register, helpNotification, record, log });
   log("équipe connectée (blocs chiffrés, sans identité)");
 }
 
@@ -222,6 +226,7 @@ async function run() {
       if (tick % 10 === 0) await pollFeedback();
       if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
       if (tick % 60 === 0) await nightlyFallback();
+      if (teamStore && !INSTANCE && tick % 600 === 0) log(`carte d'équipe rafraîchie : ${(await publishMap(teamStore)).length} blocs`);
     } catch (e) {
       if (e instanceof ScreenpipeClosed) {
         log(`${e.message}. Nouvel essai dans 30 s.`);
@@ -293,6 +298,46 @@ switch (cmd) {
     console.log(`Équipe prête : table friction_blobs (RLS active), clé d'équipe dans ${TEAM_KEY_FILE}.
 Pour un collègue : lui transmettre EN PRIVÉ la clé, puis il lance : bun andrea/daemon/main.ts equipe-init --cle <clé>
 ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE, "utf8").trim()}` : "(--afficher-cle pour l'afficher)"}`);
+    break;
+  }
+  case "carte-installer": {
+    // Crée ou met à jour la Live View « Carte des frictions » dans l'app Screenpipe de ce poste.
+    const now = new Date().toISOString();
+    const tpl = { ...JSON.parse(readFileSync(new URL("./friction-map.liveview.json", import.meta.url), "utf8")), createdAt: now, updatedAt: now };
+    const r = await fetch(`${process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030"}/live-views/${tpl.id}`, {
+      method: "PUT", headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(tpl) });
+    console.log(`Live View ${tpl.id} : HTTP ${r.status}. Ouvrir : ${MAP_DEEPLINK}`);
+    break;
+  }
+  case "carte": {
+    const store = new PostgresTeamStore(teamKey());
+    const blocks = await publishMap(store);
+    await store.close();
+    console.log(`Carte publiée (${blocks.join(", ")}). Ouvrir : ${MAP_DEEPLINK}`);
+    await notify({ id: `fa-map-${Date.now()}`, title: "Carte des frictions à jour", body: "Les détours de la semaine, par étape. Jamais par personne.", pipe_name: PIPE_NAME, timeout: 30_000,
+      actions: [{ id: "open", label: "Ouvrir la carte", type: "deeplink", url: MAP_DEEPLINK, primary: true }] });
+    break;
+  }
+  case "peupler-demo": {
+    // Population synthétique pour la démo (autorisé par les organisateurs), marquée synthetic:true
+    // et signalée sur la carte. Étapes tirées de UseCase.md.
+    const store = new PostgresTeamStore(teamKey());
+    const demo: [string, string, string, string, number, boolean][] = [
+      ["Crisp : un client demande un dédommagement", "unclear", "required", "demande_aide", 14, true],
+      ["HubSpot : client introuvable depuis un chat Crisp", "unclear", "direct", "recherche", 11, true],
+      ["Recopier une conversation Crisp dans HubSpot", "rework", "influence", "ressaisie", 9, false],
+      ["HubSpot : choisir le pipeline d'un ticket support", "unclear", "direct", "demande_aide", 8, true],
+      ["HubSpot : remise supérieure à 15 % bloquée", "waiting", "required", "attente_relance", 6, false],
+      ["HubSpot : retrouver l'offre d'un client (4 clics)", "switching", "direct", "parcours", 5, false],
+      ["HubSpot : créer un prospect venu du chat", "handoff", "influence", "demande_aide", 3, true],
+    ];
+    const day = (i: number) => new Date(Date.now() - (i % 6) * 24 * 3600_000).toISOString().slice(0, 10);
+    for (const [step, type, control, detour, n, solved] of demo) {
+      for (let i = 0; i < n; i++) await store.put("signature", { step, type, control, detour, day: day(i), synthetic: true });
+      if (solved) await store.put("solution", { id: `demo-${step.length}`, step, type, control, detour, title: step, body: "(démo)", owner: "demo", reviewed: day(0), uses: n, synthetic: true });
+    }
+    await store.close();
+    console.log(`Données de démonstration ajoutées (${demo.reduce((a, d) => a + d[4], 0)} signatures). Puis : bun andrea/daemon/main.ts carte`);
     break;
   }
   case "simuler":

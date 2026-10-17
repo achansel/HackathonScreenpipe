@@ -93,7 +93,7 @@ export class TeamSync {
     for (const r of await this.store.list("solution", this.st.solution)) {
       this.st.solution = r.id;
       const sol = r.payload as (Solution & { requestId?: string; sharedAt?: string }) | null;
-      if (!sol?.id) continue;
+      if (!sol?.id || (sol as any).synthetic) continue; // données de démo : pour la carte seulement, jamais proposées comme aide
       const { requestId, sharedAt, ...solution } = sol;
       const existing = this.solutions.find((x) => x.id === solution.id);
       if (existing) existing.uses = Math.max(existing.uses, solution.uses);

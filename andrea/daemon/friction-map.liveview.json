@@ -1,0 +1,73 @@
+{
+  "schema": "live-view-template.v1",
+  "id": "friction-map",
+  "title": "Carte des frictions",
+  "revision": 1,
+  "timeRange": "7d",
+  "periodPolicy": {
+    "type": "fixed.v1",
+    "value": "7d"
+  },
+  "blocks": [
+    {
+      "id": "total",
+      "title": "Détours cette semaine",
+      "kind": "metric.v1",
+      "width": 3,
+      "order": 0,
+      "intent": "Nombre de détours sur des étapes de process, toute l'équipe. Jamais par personne.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-map"
+      }
+    },
+    {
+      "id": "sans-solution",
+      "title": "Étapes sans solution partagée",
+      "kind": "metric.v1",
+      "width": 3,
+      "order": 1,
+      "intent": "Étapes où quelqu'un a bloqué et où personne n'a encore partagé de solution.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-map"
+      }
+    },
+    {
+      "id": "par-type",
+      "title": "Détours par type",
+      "kind": "bar-chart.v1",
+      "width": 6,
+      "order": 2,
+      "intent": "Vocabulaire Screenpipe : waiting, switching, rework, handoff, unclear.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-map"
+      }
+    },
+    {
+      "id": "etapes",
+      "title": "Frictions par étape",
+      "kind": "table.v1",
+      "width": 12,
+      "order": 3,
+      "intent": "Étapes du process qui coûtent des détours, en fourchettes, avec la solution partagée et le niveau de contrôle.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-map"
+      }
+    },
+    {
+      "id": "regles",
+      "title": "Ce que mesure cette carte",
+      "kind": "markdown.v1",
+      "width": 12,
+      "order": 4,
+      "intent": "Règles de confidentialité de la carte.",
+      "source": {
+        "type": "pipe.v1",
+        "pipeName": "friction-map"
+      }
+    }
+  ]
+}
