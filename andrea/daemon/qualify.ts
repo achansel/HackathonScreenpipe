@@ -28,6 +28,21 @@ Réponds uniquement par un JSON : {"friction":bool,"detour":"","type":"","contro
 
 const DETOURS = ["blocage", "demande_aide", "recherche", "tatonnement", "parcours", "ressaisie", "contournement", "attente_relance"];
 
+const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+/**
+ * Une demande anonyme part vers toute l'équipe : on exige que l'étape s'appuie sur le texte de l'épisode
+ * (un mot de l'étape d'au moins 5 lettres retrouvé par ses 5 premières lettres) et un texte d'au moins
+ * 12 mots. Mesuré le 17/10 : bloque « Retrouver la clé API HubSpot » (étape inventée), « Attendre la
+ * réponse d'une collègue » (texte de la fenêtre Claude), « Renseigner l'information dans le bon stage »
+ * (7 mots pris pendant la frappe) ; laisse passer factures, heure des SMS, réglage Réserver avec Google.
+ */
+export function groundedRequest(step: string, text: string): boolean {
+  const words = fold(text).split(/[^a-z0-9]+/).filter(Boolean);
+  if (words.length < 12) return false;
+  const stems = new Set(words.filter((w) => w.length >= 5).map((w) => w.slice(0, 5)));
+  return fold(step).split(/[^a-z0-9]+/).some((w) => w.length >= 5 && stems.has(w.slice(0, 5)));
+}
+
 export function redact(s: string): string {
   return s
     .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "[EMAIL]")

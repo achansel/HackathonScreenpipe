@@ -29,7 +29,7 @@ import { type CustomerCard, HubSpotLookup } from "../../minguk/src/assist/hubspo
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
 import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
-import { qualify } from "./qualify";
+import { groundedRequest, qualify } from "./qualify";
 import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay, withoutOwnNotifications } from "./screenpipe";
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
 import { publishMap, MAP_DEEPLINK } from "./map";
@@ -186,6 +186,7 @@ async function handleEpisode(ep: Episode) {
     return { verdict: v, notified: s.id };
   }
   if (team) {
+    if (!groundedRequest(v.step, ep.text)) { log(`demande anonyme retenue : « ${v.step} » ne s'appuie pas sur le texte de l'épisode`); return { verdict: v, held: true }; }
     const requestId = await team.ask(v);
     if (requestId) { record({ kind: "asked", episode: ep.id, requestId, detour: v.detour, step: v.step }); log(`aucune solution locale : demande anonyme (« ${v.step} »)`); }
     return { verdict: v, asked: Boolean(requestId) };
