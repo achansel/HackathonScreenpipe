@@ -19,6 +19,10 @@
 
 Le démon et la page **parlent la même langue** : mêmes demandes, mêmes solutions, même chiffrement. Une demande de Léa (démon) arrive chez Karim (page), et la solution de Karim revient chez Léa (démon).
 
+## Avant de commencer : faire comprendre en 1 minute
+
+Si le jury (ou un coéquipier) ne connaît pas le produit, ouvrir **`/parcours`** (page d'accueil → Parcours guidé) et cocher « Mode présentation ». La journée de Léa défile en 7 chapitres, avec l'écran, l'agent, l'équipe et le serveur côte à côte.
+
 ## La veille (20 min)
 
 Sur **chaque** machine, depuis la racine du dépôt (`git pull` sur `main`) :
@@ -31,6 +35,7 @@ Ensuite :
 
 4. **Claire** : `./teamstore/start.sh moi`, puis « Je joue : Claire Morin », puis « Créer une équipe » `Support` (périmètre « Tout »). Copier le lien et l'envoyer **en privé** à Léa et Karim.
 5. **Karim** : `./teamstore/start.sh moi --escalade 60`, puis « Je joue : Karim Bensaïd », puis coller le lien dans « Rejoindre ».
+   - Variante sans le démon d'Andrea : Léa lance `./teamstore/start.sh moi --crisp`, et la détection Crisp de Minguk déclenche les frictions depuis les vrais messages Crisp.
 6. **Léa** (démon d'Andrea) :
    ```bash
    source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env

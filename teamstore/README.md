@@ -35,13 +35,23 @@ Depuis la racine du dépôt :
 
 La première fois, si **Bun** n'est pas installé, le script propose de l'installer (depuis bun.sh). Il n'y a **rien d'autre à installer** : pas de Docker, pas de compte, pas de dépendance npm.
 
-La page s'ouvre toute seule dans le navigateur. **Ctrl+C** dans le terminal arrête tout.
+La page d'accueil s'ouvre toute seule dans le navigateur. Elle propose trois entrées :
+
+| Page | Pour quoi |
+| --- | --- |
+| **Parcours guidé** (`/parcours`) | **Comprendre en 5 minutes.** La journée de Léa en 7 chapitres : on voit son écran (Crisp, HubSpot, Slack, Notion), ce que fait l'agent à chaque étape, ce que reçoivent ses collègues, et ce que voit le serveur. On clique soi-même, ou « Mode présentation » pour que ça défile seul. Les équipes et les blocs chiffrés sont réels. |
+| **Équipe simulée** (`/equipe`) | Les 5 collègues côte à côte, le scénario en 10 étapes et les attaques : pour montrer au jury. |
+| **Mon poste** (`/moi`) | L'usage réel, chacun sur sa machine (voir plus bas). |
+
+**Ctrl+C** dans le terminal arrête tout.
 
 > Pour les notifications Screenpipe réelles, l'app Screenpipe doit être ouverte. Sinon, les notifications s'affichent seulement dans la page.
 
 ## Trois façons de l'utiliser
 
-### 1. Seul, pour comprendre ou présenter : la démo PipingTable
+### 1. Seul, pour comprendre ou présenter : le parcours guidé, puis la démo PipingTable
+
+Commencer par **Parcours guidé** sur la page d'accueil. Ensuite, la page **Équipe simulée** :
 
 ```bash
 ./teamstore/start.sh                 # Windows : teamstore\start.cmd
@@ -134,7 +144,10 @@ C'est la page qu'on utilise pour de vrai, une par personne (`start.sh moi`).
    > Le lien **contient la clé de l'équipe** : ne jamais le poster dans un canal public.
 2. **Rejoindre.** Chaque collègue colle le lien dans « Rejoindre une équipe », puis clique « Rejoindre ». Le **périmètre** ne sert qu'à qui est dans **plusieurs** équipes, comme Antoine (Support + Ventes) : il décide où part chaque demande. Sinon, laisser « Tout ».
 3. **Choisir son profil.** « Je joue : » propose les collègues de PipingTable (Léa, Claire Morin, Karim Bensaïd, Antoine Rey, Sarah Lambert). On connaît alors les règles que ce profil donne dans le Slack de Minguk. Pour la démo à plusieurs : la personne qui présente joue **Léa**, les autres Claire, Karim, Antoine, Sarah.
-4. **Bloquer.** « Je bloque sur… » propose des frictions préparées, ou « Autre… » pour décrire une étape. La décrire **sans nom ni donnée client**.
+4. **Bloquer.** Trois façons :
+   - **un vrai message Crisp** : lancer `./teamstore/start.sh moi --crisp` et ouvrir Crisp dans Chrome. La détection de Minguk lit les messages clients à l'écran via Screenpipe, reconnaît le besoin (panne, dédommagement, promesse, prix) et déclenche la friction toute seule ;
+   - **un message Crisp simulé** : le bloc « Crisp » de la page envoie un des messages des clients de la démo (Jean Dupont, Élodie Marchand, Pieter Janssens…) ;
+   - **à la main** : « Je bloque sur… » propose des frictions préparées, ou « Autre… » pour décrire une étape, **sans nom ni donnée client**.
 5. **Aider.** Une demande arrive dans « Demandes de l'équipe » :
    - si j'ai déjà la solution : **Partager** ;
    - sinon : **Je sais : répondre**, et je l'écris.

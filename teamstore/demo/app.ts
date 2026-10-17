@@ -6,6 +6,9 @@
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team, type Membership, type Received } from "../client";
 import { b64u, deriveTeamKeys, open, randomId } from "../crypto";
 import { escalationPayload } from "./escalade";
+// Détection Crisp de Minguk : les messages des clients de la démo et la lecture du besoin (importés tels quels).
+import { classify, type Need } from "../../minguk/src/assist/crisp-assist.ts";
+import { CRISP_CUSTOMERS } from "../../minguk/src/seed/crisp-story.ts";
 
 type Sol = { id: string; step: string; title: string; body: string; owner?: string; uses?: number; copy?: string; requestId?: string; certified?: boolean; cert?: string; team?: string; shared?: boolean; type?: string; control?: string; detour?: string; reviewed?: string };
 type Req = { requestId: string; step: string; type?: string; team: string; seq: number };
@@ -67,7 +70,9 @@ const scopeSelect = (k: string, preset = "") => `<select data-k="${k}">${SCOPE_C
 const today = () => new Date().toISOString().slice(0, 10);
 // Sans réponse après ce délai, une demande devient l'aide « Slack + message » de Minguk (?escalade=30 pour la démo).
 const ESCALATE_MS = Number(new URLSearchParams(location.search).get("escalade") ?? cfg.escaladeSeconds ?? 120) * 1000;
-const PAGE = SOLO ? "/moi" : "/";
+const PAGE = SOLO ? "/moi" : "/equipe";
+// Besoin lu par Minguk dans le message Crisp → étape de process (solutions.seed.json d'Andrea).
+const NEED_FRICTION: Record<Need, string> = { bug: "bug", geste: "geste", promesse: "promesse", prospect: "prospect" };
 const notifyOn = () => (document.getElementById("notify") as HTMLInputElement).checked;
 const machines: Machine[] = [];
 const byId = (id: string) => machines.find((m) => m.id === id)!;
@@ -101,7 +106,7 @@ class Machine {
   // Notification : toujours dans le panneau, et dans Screenpipe si la case est cochée.
   // Les boutons sont des liens : ils marchent aussi sur Mac, où les boutons `api` de Screenpipe ne font rien.
   async notify(title: string, body: string, actions?: object[]) {
-    const open = { id: "open", label: SOLO ? "Ouvrir" : "Voir dans la démo", type: "link", url: SOLO ? `${location.origin}/moi` : `${location.origin}/#${this.id}`, primary: !actions };
+    const open = { id: "open", label: SOLO ? "Ouvrir" : "Voir dans la démo", type: "link", url: SOLO ? `${location.origin}/moi` : `${location.origin}/equipe#${this.id}`, primary: !actions };
     await this.notifyRaw({ id: `fa-demo-${this.id}-${randomId(4)}`, title, body, priority: "normal", timeout: 20000, actions: [...(actions ?? []), open] });
   }
   async notifyRaw(p: { title: string; body: string; [k: string]: unknown }) {
@@ -177,6 +182,20 @@ class Machine {
     this.st.mine[requestId] = f.step;
     this.st.mineAt = { ...this.st.mineAt, [requestId]: Date.now() };
     this.log(`demande anonyme publiée → ${targets.map((t) => t.name).join(", ")}`);
+  }
+  // Un message client lu dans Crisp (détection de Minguk) : le besoin devient une friction, sans nom de client
+  // dans ce qui part à l'équipe (le libellé avec le nom reste sur le poste).
+  private crispSeen = new Set<string>();
+  async onCrisp(name: string, text: string, simulated = false) {
+    const k = `${name}|${text}`;
+    if (this.crispSeen.has(k)) return;
+    this.crispSeen.add(k);
+    const needs = classify(text);
+    this.log(`Crisp${simulated ? " (simulé)" : ""} : ${name} écrit « ${text.slice(0, 50)}${text.length > 50 ? "…" : ""} » → besoin : ${needs.join(", ") || "aucun reconnu"}`);
+    for (const need of needs) {
+      const f = F[NEED_FRICTION[need]];
+      await this.friction({ ...f, label: `Crisp · ${name} : ${f.label.replace(/^[^·]*· /, "")}` });
+    }
   }
   // Répondre à une demande sans avoir la solution en stock : on l'écrit (elle reste aussi chez soi).
   async answer(req: Req, title: string, body: string) {
@@ -313,6 +332,10 @@ class Machine {
       ${profilePick}
       ${this.toast ? `<div class="toast">${this.toast}</div>` : ""}
       <section><h3>Équipes</h3>${teams}${canCreate && !this.teams.some((t) => t.isAdmin) ? canCreate : ""}${inbox}${soloForms}</section>
+      ${SOLO ? `<section class="crisp"><h3>Crisp ${cfg.crisp ? '<span class="badge green">détection en direct</span>' : '<span class="badge">simulé</span>'}</h3>
+        <div class="row"><select data-k="crisp-msg">${CRISP_CUSTOMERS.flatMap((c) => c.messages.map((m, i) => `<option value="${esc(c.key)}|${i}">${esc(m.when)} · ${esc(c.nickname)} : ${esc(m.text.slice(0, 48))}…</option>`)).join("")}</select>
+        <button data-a="crisp-sim">Simuler ce message</button></div>
+        <p class="muted">${cfg.crisp ? "Les vrais messages Crisp lus à l'écran (détection de Minguk) déclenchent l'aide tout seuls. Ce menu sert de secours." : "Lancer avec <code>--crisp</code> pour lire les vrais messages Crisp à l'écran (détection de Minguk)."}</p></section>` : ""}
       <section><h3>Je bloque sur…</h3><div class="frictions">${FRICTIONS.map((f, i) => `<button data-a="friction" data-f="${i}">${esc(f.label)}</button>`).join("")}<button data-a="friction-custom">Autre…</button></div>
         ${Object.keys(this.st.mine).length ? `<p class="muted">${Object.keys(this.st.mine).length} demande(s) anonyme(s) en attente</p>` : ""}</section>
       ${reqs ? `<section><h3>Demandes de l'équipe</h3><ul>${reqs}</ul></section>` : ""}
@@ -357,6 +380,12 @@ class Machine {
     }
     if (a === "copy-last" && this.st.lastInvite) { await navigator.clipboard.writeText(this.st.lastInvite.link); this.log("lien copié : à coller dans un message privé"); }
     if (a === "hide-last") this.st.lastInvite = undefined;
+    if (a === "crisp-sim") {
+      const [key, i] = val("crisp-msg").split("|");
+      const c = CRISP_CUSTOMERS.find((x) => x.key === key)!;
+      await fetch("/api/crisp/inject", { method: "POST", headers: H, body: JSON.stringify({ name: c.nickname, text: c.messages[Number(i)].text }) });
+      return;
+    }
     if (a === "profile") {
       this.st.profile = val("profile") || undefined;
       this.applyProfile();
@@ -510,6 +539,20 @@ document.getElementById("reset")!.addEventListener("click", async () => {
 document.getElementById("store")!.textContent = cfg.label ?? cfg.url;
 if (location.hash) document.getElementById(location.hash.slice(1))?.classList.add("focus");
 window.addEventListener("hashchange", () => { document.querySelectorAll(".machine.focus").forEach((x) => x.classList.remove("focus")); document.getElementById(location.hash.slice(1))?.classList.add("focus"); });
+// ---- détection Crisp de Minguk : les messages arrivent par le serveur de la page (Server-Sent Events)
+function listenCrisp() {
+  const es = new EventSource("/api/events");
+  es.onmessage = async (e) => {
+    const ev = JSON.parse(e.data);
+    if (ev.type !== "crisp" || ev.event?.kind !== "message") return;
+    const target = SOLO ? machines[0] : machines.find((m) => m.id === "lea");
+    if (!target) return;
+    await target.onCrisp(ev.event.name, ev.event.preview, ev.simulated);
+    target.save();
+    await tick();
+  };
+}
+
 // ---- un seul onglet actif par page (sinon deux onglets notifieraient deux fois), et le clic « Partager »
 // d'une notification, qui ouvre un nouvel onglet : l'onglet déjà ouvert s'en charge, le nouveau s'efface.
 const params = new URLSearchParams(location.search);
@@ -543,6 +586,7 @@ if (otherTab) {
     if (e.data?.type === "share") { await shareFromNotification(e.data.poste, e.data.requestId); await tick(); }
   };
   if (pendingShare) await shareFromNotification(pendingPoste, pendingShare);
+  listenCrisp();
   await tick();
   setInterval(tick, 2000);
 }

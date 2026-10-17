@@ -7,7 +7,7 @@ import { join } from "node:path";
 
 export interface PageOptions {
   port: number;
-  store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number };
+  store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number; crisp?: boolean };
   operator?: () => unknown;       // vue opérateur (base locale de cette machine)
   reset?: () => void;             // remise à zéro (base locale non partagée seulement)
   notifyUrl?: string;
@@ -19,21 +19,46 @@ const SEED = join(DIR, "..", "..", "andrea", "daemon", "solutions.seed.json");
 const NO_OPERATOR = { teams: [], blobs: [], note: "Vue opérateur indisponible ici : le stockage est sur une autre machine (Supabase : ouvrir le Table Editor)." };
 
 export async function startPage(o: PageOptions) {
-  const build = await Bun.build({ entrypoints: [join(DIR, "app.ts")], target: "browser" });
-  if (!build.success) throw new AggregateError(build.logs, "compilation de la page");
-  const appJs = await build.outputs[0].text();
+  const bundle = async (entry: string) => {
+    const b = await Bun.build({ entrypoints: [join(DIR, entry)], target: "browser" });
+    if (!b.success) throw new AggregateError(b.logs, `compilation de ${entry}`);
+    return b.outputs[0].text();
+  };
+  const appJs = await bundle("app.ts");
+  const parcoursJs = await bundle("parcours.ts");
+  // Événements poussés vers les pages ouvertes (détection Crisp de Minguk) : Server-Sent Events.
+  const listeners = new Set<ReadableStreamDefaultController>();
+  const broadcast = (event: unknown) => {
+    const chunk = new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`);
+    for (const c of listeners) { try { c.enqueue(chunk); } catch { listeners.delete(c); } }
+  };
   const notifyUrl = o.notifyUrl ?? Bun.env.SCREENPIPE_NOTIFY_URL ?? "http://127.0.0.1:11435";
   const file = (name: string, type: string) => new Response(readFileSync(join(DIR, name)), { headers: { "Content-Type": type } });
   const sameOrigin = (req: Request) => req.headers.get("x-fa-demo") === "1"; // bloque les requêtes d'autres sites
 
-  return Bun.serve({
+  const server = Bun.serve({
+    idleTimeout: 0, // flux d'événements ouvert en continu
     hostname: "127.0.0.1", // la page n'est jamais exposée sur le réseau
     port: o.port,
     async fetch(req) {
       const path = new URL(req.url).pathname;
       try {
-        if (path === "/" || path === "/index.html") return file("index.html", "text/html; charset=utf-8");
+        if (path === "/" || path === "/accueil") return file("accueil.html", "text/html; charset=utf-8");
+        if (path === "/equipe" || path === "/index.html") return file("index.html", "text/html; charset=utf-8");
         if (path === "/moi") return file("moi.html", "text/html; charset=utf-8");
+        if (path === "/parcours") return file("parcours.html", "text/html; charset=utf-8");
+        if (path === "/parcours.js") return new Response(parcoursJs, { headers: { "Content-Type": "text/javascript; charset=utf-8" } });
+        if (path === "/api/events") {
+          let ctl: ReadableStreamDefaultController;
+          const stream = new ReadableStream({ start(c) { ctl = c; listeners.add(c); c.enqueue(new TextEncoder().encode(": ok\n\n")); }, cancel() { listeners.delete(ctl); } });
+          return new Response(stream, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } });
+        }
+        // Secours et tests : simuler un message Crisp (même format que la détection de Minguk).
+        if (path === "/api/crisp/inject" && req.method === "POST" && sameOrigin(req)) {
+          const { name, text } = (await req.json()) as { name: string; text: string };
+          broadcast({ type: "crisp", simulated: true, event: { kind: "message", name, preview: text, frameAt: Date.now(), detectedAt: Date.now() } });
+          return Response.json({ ok: true });
+        }
         if (path === "/style.css") return file("style.css", "text/css; charset=utf-8");
         if (path === "/app.js") return new Response(appJs, { headers: { "Content-Type": "text/javascript; charset=utf-8" } });
         if (path === "/api/config") return Response.json(o.store);
@@ -59,4 +84,5 @@ export async function startPage(o: PageOptions) {
       }
     },
   });
+  return { server, broadcast };
 }

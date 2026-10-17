@@ -83,6 +83,9 @@ Tout reste cliquable à la main : « Je bloque sur… », « Inviter », « Reti
 - **Escalade Slack** (`--escalade`) : la notification « 💬 Slack + message » de Minguk (`buildPayload` importé), avec le canal choisi d'après l'étape. Mesuré : affichée dans Screenpipe en priorité haute.
 - **Carte d'Andrea** : `start.sh carte` passe par `publishMap`, avec un lecteur `TeamStore` sur nos équipes ; la page publie une signature à chaque friction. Mesuré : 5 blocs remplis.
 - **Simulation d'Andrea** : `start.sh equipe-demo` écrit `teams-lea.json` et `teams-karim.json`.
+- **Détection Crisp de Minguk** (`start.sh moi --crisp`) : son `CrispWatcher` (importé) lit les messages clients via Screenpipe, son `classify` lit le besoin, et la page en fait une friction. Repli : un message simulé depuis la page (même format). Mesuré : message de Jean (dédommagement) → besoin « geste » → demande anonyme publiée.
+- **Parcours guidé** (`/parcours`) : 7 chapitres (aide immédiate, demande anonyme, certification avec falsification, escalade, mémoire d'équipe le lendemain, départ, carte), sur de vraies équipes chiffrées. Accueil (`/`) avec 3 entrées.
+- **Correctif trouvé grâce au parcours** : la rotation de clé effaçait aussi les **signatures**, donc la carte repartait de zéro après un départ. Elles sont maintenant republiées avec les solutions.
 - Déroulé : [DEMO.md](DEMO.md).
 
 ## Les options tranchées, et pourquoi

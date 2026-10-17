@@ -7,6 +7,7 @@
 //   bun teamstore/start.ts verifier           vérifie le stockage configuré (Supabase ou autre)
 //   bun teamstore/start.ts carte [--lien "<lien>"]   carte d'équipe d'Andrea dans Screenpipe (Live View)
 //   bun teamstore/start.ts equipe-demo        prépare les postes simulés du démon d'Andrea (Léa, Karim) sur ce stockage
+//   options : --crisp (« moi » : la détection Crisp de Minguk déclenche les frictions)
 //   options : --supabase (démo sur le Supabase configuré), --local, --port 4323, --sans-navigateur
 //
 // Stockage, par ordre de priorité : --serveur, puis FRICTION_TEAMSTORE_URL (environnement ou
@@ -28,7 +29,7 @@ const PAGE_PORT = Number(opt("--port") ?? Bun.env.DEMO_PORT ?? 4322);
 const LOCAL_PORT = Number(Bun.env.TEAMSTORE_LOCAL_PORT ?? 3001);
 
 if (!["demo", "moi", "verifier", "carte", "equipe-demo", "aide"].includes(mode) || flag("--help") || flag("-h") || mode === "aide") {
-  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 13).map((l) => l.slice(3)).join("\n"));
+  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 14).map((l) => l.slice(3)).join("\n"));
   process.exit(mode === "aide" || flag("--help") || flag("-h") ? 0 : 1);
 }
 
@@ -207,10 +208,12 @@ Object.assign(store, {
     newLeads: Bun.env.DEMO_SLACK_NEWLEADS_URL ?? WORKSPACE,
   },
   escaladeSeconds: Number(opt("--escalade") ?? 120),
+  crisp: flag("--crisp"),
 });
 const shared = Boolean(remote) || flag("--heberger");
+let page: Awaited<ReturnType<typeof startPage>>;
 try {
-  await startPage({
+  page = await startPage({
     port: PAGE_PORT,
     store,
     operator: local ? () => local!.operatorView() : undefined,
@@ -222,9 +225,22 @@ try {
   process.exit(1);
 }
 
-const page = `http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"}`;
-console.log(`\nfriction-assist : ${mode === "moi" ? "mon poste" : "démo PipingTable (5 collègues simulés)"}`);
-console.log(`  page     : ${page}`);
+// Détection Crisp de Minguk (minguk/src/detect/crisp-watcher.ts, importée telle quelle) : chaque nouveau message
+// client lu à l'écran via Screenpipe est poussé aux pages ouvertes, qui en font une friction.
+if (flag("--crisp")) {
+  if (!process.env.SCREENPIPE_API_KEY) { console.error("--crisp : jeton Screenpipe absent (scripts/screenpipe-env.sh)"); process.exit(1); }
+  const { CrispWatcher } = await import("../minguk/src/detect/crisp-watcher.ts");
+  const watcher = new CrispWatcher({
+    screenpipeUrl: process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030",
+    apiKey: process.env.SCREENPIPE_API_KEY,
+    onEvent: (event) => { page.broadcast({ type: "crisp", event }); if (event.kind === "message") console.log(`Crisp : message de ${event.name}`); },
+  });
+  setInterval(() => watcher.tick().catch((e) => console.error("Crisp :", (e as Error).message)), 1000);
+}
+
+const pageUrl = `http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"}`;
+console.log(`\nfriction-assist : ${mode === "moi" ? "mon poste" : "accueil (parcours guidé, équipe simulée, mon poste)"}`);
+console.log(`  page     : ${pageUrl}`);
 console.log(`  stockage : ${store.label}`);
 if (flag("--heberger")) {
   const ips = lanAddresses();
@@ -234,4 +250,5 @@ if (flag("--heberger")) {
   console.log("  Si le système demande d'autoriser les connexions entrantes pour « bun », accepter.");
 }
 console.log("\nCtrl+C pour arrêter.");
-if (!flag("--sans-navigateur")) openBrowser(page);
+if (flag("--crisp")) console.log("  Crisp    : détection de Minguk active (ouvrir Crisp dans Chrome)");
+if (!flag("--sans-navigateur")) openBrowser(pageUrl);

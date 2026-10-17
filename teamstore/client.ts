@@ -123,14 +123,15 @@ export class Team {
    *  époque. Renvoie le nouveau lien, à transmettre en privé aux membres restants seulement. */
   async rotate(): Promise<{ invite: string; republished: number }> {
     if (!this.m.admin) throw new Error("seul le responsable de l'équipe fait tourner la clé");
-    const keep = (await this.pull(0, "solution")).map((r) => r.data);
+    // Solutions ET signatures (la carte d'équipe en dépend) : relues avant, republiées après. Les demandes du jour non.
+    const keep = (await this.pull(0)).filter((r) => r.kind === "solution" || r.kind === "signature");
     const master = randomKey();
     const keys = await deriveTeamKeys(master);
     const epoch = await this.store.rotate(this.id, await deriveAdminToken(b64u.dec(this.m.admin.key)), await sha256hex(keys.accessToken));
     this.m = { ...this.m, epoch, key: b64u.enc(master) };
     this.keys = keys;
-    for (const s of keep) { const { certified, ...raw } = s; await this.publish("solution", raw); }
-    return { invite: this.invite(), republished: keep.length };
+    for (const r of keep) { const { certified, ...raw } = r.data; await this.publish(r.kind, raw); }
+    return { invite: this.invite(), republished: keep.filter((r) => r.kind === "solution").length };
   }
 
   /** Responsable : supprime l'équipe et tous ses blobs. */
