@@ -21,7 +21,7 @@
 | --- | --- | --- | --- |
 | Détours HubSpot | `src/detect/hubspot-detours.ts`, `bun run watch:hubspot` | recherche sans résultat, recherches successives, allers-retours → épisodes au format du démon | **prêt, à brancher** (section 3.B) |
 | Lecture de Crisp | `src/detect/crisp-inbox.ts`, `crisp-watcher.ts` | nouveau message client (nom, texte complet), non-lus, conversation ouverte | **à brancher** : alimente le contexte du dossier |
-| Écoute d'un appel | `src/detect/call-listener.ts` | transcription en direct d'une réunion Screenpipe (`/ws/meeting-overlay`), 3–5 s | **en attente** de la décision d'équipe sur la voix du client |
+| Écoute d'un appel | `src/detect/call-listener.ts`, `call-episodes.ts` | transcription en direct d'une réunion Screenpipe (`/ws/meeting-overlay`), 3–5 s | **branché au démon** (section 3.D) |
 | Fiche client | `src/assist/hubspot-lookup.ts` | nom → contact, entreprise, offre, vente, URL des fiches | **à brancher** : solution « dynamique » de `client-introuvable` |
 | Notifieur | `src/notify/` | gabarits vérifiés pour le panneau Mac, file (une à la fois), plafond, anti-doublon 90 s, clics par redirection `link`, 👍/👎 lus dans `/feedback` | **garder pour la fiche client seulement** |
 | Mots-clés | `src/assist/crisp-assist.ts` (`classify`, `helpsFor`) | besoin lu par mots | **rétrograder** : secours si le modèle ne répond pas, jamais l'autorité |
@@ -107,9 +107,25 @@ if (v.solution_id === "client-introuvable" && dossier) {
 
 `montrerFiche` peut être mon notifieur (`createNotifier(...).requestHelp(épisode de type "path")`) ou ton `notify` avec un bouton `link` : à toi de choisir, un seul des deux.
 
-### D. L'appel (si l'équipe garde la voix)
+### D. L'appel : branché (18/10, dans la démo)
 
-`listenToMeeting()` (`src/detect/call-listener.ts`) donne chaque phrase finale. Même usage que Crisp : la phrase du **client** alimente le dossier ; une phrase de **Léa** qui est une question peut devenir un épisode (`detour: demande_aide`). Rien à faire tant que la question de la voix n'est pas tranchée.
+Fait dans `andrea/daemon/main.ts` (`listenToCalls()`, lancé par `run()` ; `FRICTION_CALL=0` le coupe) avec `minguk/src/detect/call-episodes.ts` :
+
+- `bun run call --client "Jean Dupont" --sans-aide` démarre une réunion Screenpipe « Appel Jean Dupont » (seules les réunions manuelles ont la transcription en direct), sans aucune aide de mon côté ;
+- le démon écoute `/ws/meeting-overlay`, lit le titre par `GET /meetings/:id` → **fiche du client dès le décroché** (« En ligne : Jean Dupont, Le Bistro », [Ouvrir sa fiche]) ;
+- phrase du **client** (son de l'appel) → texte du dossier, contexte seulement ;
+- phrase de **l'employé** (micro, ≥ 4 mots) → épisode `app: "Appel"`, fenêtre « Appel téléphonique », texte = les phrases des 90 dernières secondes. Le nom du client n'est pas dans l'épisode. `handleEpisode` le qualifie comme les autres (même anti-répétition, mêmes notifications).
+
+Mesuré sur le modèle du démon (claude-opus-5), épisodes d'appel scénarisés :
+
+| Scénario (client, puis employé) | Verdict | Durée |
+| --- | --- | --- |
+| panne + « je veux un dédommagement » / « je ne sais pas ce qu'on peut vous offrir, je vérifie » | blocage → `geste-commercial` 0,80 | 3,4 s |
+| erreur de paiement / « je ne sais pas trop où le signaler » | blocage → `signaler-bug` 0,90 | 2,4 s |
+| « Thomas m'avait promis l'installation » / « je ne sais pas où c'est noté » | recherche → `promesse-commercial` 0,85 | 3,1 s |
+| « tout fonctionne » / « bonne journée » | pas de friction 0,95 | 3,1 s |
+
+De la phrase dite à la notification : transcription 3–5 s + modèle ~3 s, soit **6 à 9 s**. Pour la démo, l'employé doit **dire son hésitation à voix haute** : la phrase du client seule ne déclenche rien (c'est voulu).
 
 ## 4. Qui envoie quelle notification
 

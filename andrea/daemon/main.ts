@@ -22,10 +22,12 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import {
-  API, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
+  API, CALL, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
   SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR, TEAM_DIR, TEAM_KEY_FILE, TEAM_POLL_MS,
 } from "./config";
 import { type CustomerCard, HubSpotLookup } from "../../minguk/src/assist/hubspot-lookup";
+import { CallEpisodes } from "../../minguk/src/detect/call-episodes";
+import { listenToMeeting } from "../../minguk/src/detect/call-listener";
 import { CrispWatcher } from "../../minguk/src/detect/crisp-watcher";
 import { HubSpot } from "../../minguk/src/seed/hubspot";
 import { EpisodeBuilder, type Episode } from "./episodes";
@@ -156,6 +158,55 @@ const crisp = CRISP && !SIM
     } })
   : null;
 const dossierText = () => (dossier && Date.now() - dossier.at < DOSSIER_MS ? dossier.text : undefined);
+
+// Appel client (code de Minguk, ses « oreilles ») : la transcription en direct d'une réunion Screenpipe.
+// Le client est nommé par le titre (« Appel Jean Dupont ») : sa fiche part dès le décroché. Ses phrases
+// sont le contexte du dossier ; une phrase de l'employé fait un épisode, qualifié comme les autres.
+function callCardNotification(meetingId: number, card: CustomerCard) {
+  const plan = card.company?.plan ? `Client **${card.company.plan}**` : "Client";
+  return {
+    id: `fa-call-${meetingId}-${card.contactId}`,
+    title: `${LABEL}En ligne : ${[card.name, card.company?.name].filter(Boolean).join(", ")}`,
+    body: `${plan}${card.deal ? ` · vente « ${card.deal.name} »` : ""}.\nFiche HubSpot retrouvée par le titre de l'appel.`,
+    pipe_name: PIPE_NAME,
+    priority: "normal",
+    timeout: 60_000,
+    actions: [{ id: "open", label: "Ouvrir sa fiche", type: "link", url: card.contactUrl, primary: true }],
+  };
+}
+const calls = CALL && !SIM
+  ? new CallEpisodes({
+      onCallStart: ({ meetingId, customer }) => {
+        log(`appel en cours (réunion ${meetingId})${customer ? " : client nommé par le titre" : ""}`);
+        if (!customer) return;
+        dossier = { name: customer, text: "(appel téléphonique en cours)", at: Date.now() };
+        void (async () => {
+          const card = await customerCard(customer);
+          if (!card) { log("appel : pas de fiche HubSpot unique pour ce client"); return; }
+          const n = callCardNotification(meetingId, card);
+          log(`notification « ${n.title.replace(LABEL, "")} » (fiche client, appel) : ${await notify(n)}`);
+        })().catch((e) => log("appel :", (e as Error).message));
+      },
+      onCustomerSentence: (text) => { if (dossier) dossier = { ...dossier, text, at: Date.now() }; },
+      onCallEnd: () => log("appel terminé"),
+      onEpisode: (ep) => void handleEpisode(ep).catch((e) => log("appel :", (e as Error).message)),
+    })
+  : null;
+function listenToCalls() {
+  if (!calls) return;
+  const listener = listenToMeeting({
+    screenpipeUrl: API, apiKey: KEY,
+    onStatus: async ({ active, activeMeetingId }) => {
+      if (!active || activeMeetingId === null || activeMeetingId === calls.activeMeetingId) return calls.status(active, activeMeetingId);
+      const meeting = await fetch(`${API}/meetings/${activeMeetingId}`, { headers: { Authorization: `Bearer ${KEY}` } })
+        .then((r) => (r.ok ? (r.json() as Promise<{ title?: string | null }>) : {})).catch(() => ({}));
+      calls.status(true, activeMeetingId, (meeting as { title?: string | null }).title);
+    },
+    onSentence: (item) => calls.sentence(item),
+    onClose: () => setTimeout(listenToCalls, 5000), // Screenpipe redémarré : on se reconnecte
+  });
+  listener.opened.catch(() => {});
+}
 
 async function handleEpisode(ep: Episode) {
   // Notre propre notification relue par l'OCR : retirée du texte, épisode ignoré si c'était l'essentiel.
@@ -299,6 +350,7 @@ async function run() {
   }
   startServer();
   await startTeam();
+  listenToCalls();
   const builder = new EpisodeBuilder();
   const queue: Episode[] = [];
   let inFlight = 0;
