@@ -14,6 +14,8 @@
 export interface FrameElement {
 	source: string;
 	text: string | null;
+	/** Rôle d'accessibilité (« Hyperlink », « Text »…), absent sur l'OCR. */
+	role?: string | null;
 	bounds?: { left: number; top: number; width: number; height: number } | null;
 }
 
@@ -186,4 +188,22 @@ export function openConversation(windowName: string | null | undefined): string 
 export function unreadCount(title: string | null | undefined): number {
 	const match = (title ?? "").match(/💬\s*(\d+)/u);
 	return match ? Number(match[1]) : 0;
+}
+
+/**
+ * La liste des conversations lue sur une capture par accessibilité (Windows, mesuré le 17/10 : Screenpipe
+ * ne prend parfois que l'accessibilité pour Chrome). Chaque ligne est un lien dont le texte est
+ * « JD Jean Dupont maintenant Re-bonjour, toujours… » : initiales, nom, ancienneté, message complet.
+ */
+export function accessibilityRows(elements: FrameElement[]): InboxRow[] {
+	const rows: InboxRow[] = [];
+	for (const element of elements) {
+		if (element.source !== "accessibility" || element.role !== "Hyperlink") continue;
+		const words = (element.text ?? "").trim().split(/\s+/);
+		if (words.length < 3 || !/^\p{Lu}{1,3}$/u.test(words[0]!)) continue;
+		const at = words.findIndex((word, index) => index >= 2 && ageMinutes(word) !== undefined);
+		if (at < 2) continue;
+		rows.push({ name: words.slice(1, at).join(" "), ago: words[at]!, ageMinutes: ageMinutes(words[at]!), preview: words.slice(at + 1).join(" ") });
+	}
+	return rows;
 }

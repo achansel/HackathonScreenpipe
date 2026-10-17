@@ -8,7 +8,7 @@
  *   avec son compteur « 💬N ». C'est ce qui révèle un message quand l'agent est sur HubSpot.
  */
 import { defined } from "../notify/defined.ts";
-import { conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
+import { accessibilityRows, conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
 
 export type CrispEvent =
 	| { kind: "message"; name: string; preview: string; frameAt: number; detectedAt: number }
@@ -51,6 +51,8 @@ export class CrispWatcher {
 	private readonly seenTabStrips = new Set<number>();
 	/** Par client : le dernier texte connu, et si sa ligne était récente (« now », « 1m »). */
 	private readonly rows = new Map<string, { text: string; fresh: boolean }>();
+	/** Messages déjà signalés (client + texte), pour ne pas les redonner quand une autre lecture les retrouve. */
+	private readonly emitted = new Map<string, number>();
 	private unread = 0;
 	private opened: string | undefined;
 	private ticking: Promise<void> | undefined;
@@ -141,27 +143,34 @@ export class CrispWatcher {
 		if (!response.ok) return;
 		const elements = ((await response.json()) as { data?: FrameElement[] }).data ?? [];
 		// Un même client peut avoir deux lignes (une ancienne conversation « Élodie › Andrea ») : on garde la plus récente.
-		const byName = new Map<string, { row: ReturnType<typeof inboxRows>[number]; fresh: boolean }>();
-		for (const row of inboxRows(elements)) {
+		const byName = new Map<string, { row: ReturnType<typeof inboxRows>[number]; fresh: boolean; name: string }>();
+		// OCR (positions des mots) ou accessibilité (une ligne = un lien) : Screenpipe donne l'un ou l'autre.
+		for (const row of [...inboxRows(elements), ...accessibilityRows(elements)]) {
 			// « Jean > Andrea » : la conversation de Jean, assignée à Andrea. La liste n'affiche que le
 			// prénom ; le titre de l'onglet donne le nom complet quand la conversation est ouverte.
 			const first = customerName(row.name);
 			const name = opened && fold(opened).startsWith(fold(first)) ? opened : first;
 			const fresh = row.ageMinutes !== undefined && row.ageMinutes <= this.options.freshMinutes;
-			const kept = byName.get(name);
-			if (!kept || (fresh && !kept.fresh)) byName.set(name, { row, fresh });
+			// Clé sans accents : l'OCR lit « Elodie », l'accessibilité « Élodie » (mesuré).
+			const kept = byName.get(fold(name));
+			if (!kept || (fresh && !kept.fresh)) byName.set(fold(name), { row, fresh, name });
 		}
-		for (const [name, { row, fresh }] of byName) {
+		for (const [key, { row, fresh, name }] of byName) {
 			const isOpen = opened === name;
 			// Le texte complet se lit dans la conversation ouverte ; sinon, l'aperçu de la liste.
 			const text = (isOpen && (row.preview ? fullMessage(elements, row.preview) : conversationText(elements))) || row.preview;
-			const known = this.rows.get(name);
-			this.rows.set(name, { text: text || known?.text || "", fresh });
+			const known = this.rows.get(key);
+			this.rows.set(key, { text: text || known?.text || "", fresh });
 			if (this.baseline || !fresh) continue;
 			// Nouveau message : la ligne vient de devenir récente, ou son aperçu a vraiment changé
 			// (pas seulement tronqué autrement par l'OCR).
 			const changed = Boolean(row.preview && known?.text && !sameText(known.text, row.preview));
 			if (known?.fresh && !changed) continue;
+			// Un client avec plusieurs conversations : une ancienne ligne peut remplacer la récente le temps
+			// d'une capture ; le même message ne se signale qu'une fois en 30 min.
+			const said = [...this.emitted].find(([k, at]) => k.startsWith(`${key}|`) && sameText(k.slice(key.length + 1), text) && frameAt - at < 30 * 60_000);
+			if (said) continue;
+			this.emitted.set(`${key}|${text}`, frameAt);
 			this.emit({ kind: "message", name, preview: text, frameAt });
 		}
 	}
@@ -193,9 +202,17 @@ function latest(items: SearchItem[], cursor: number): number {
 	return Math.max(cursor, ...items.map((item) => Date.parse(item.content.timestamp)));
 }
 
-/** Deux lectures du même message : l'une commence comme l'autre, aux points de suspension près. */
+/**
+ * Deux lectures du même message : l'une commence comme l'autre, aux points de suspension près et aux
+ * erreurs d'OCR près (mesuré : OCR « Ies clients ne recoivent » contre accessibilité « les clients ne reçoivent »).
+ */
 function sameText(a: string, b: string): boolean {
-	const [x, y] = [a.replace(/…$/, ""), b.replace(/…$/, "")];
+	const norm = (text: string) =>
+		fold(text.replace(/[….„]+$/u, ""))
+			.replace(/[il1|]/g, "l")
+			.replace(/[^a-z0-9]/g, "");
+	const [x, y] = [norm(a), norm(b)];
+	if (!x || !y) return x === y;
 	return x.startsWith(y) || y.startsWith(x);
 }
 

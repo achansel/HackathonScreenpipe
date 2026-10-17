@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { ageMinutes, conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
+import { accessibilityRows, ageMinutes, conversationText, customerName, type FrameElement, fullMessage, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
 import { type CrispEvent, CrispWatcher } from "../src/detect/crisp-watcher.ts";
 
 // Deux vraies captures de la boîte Crisp (16 octobre), e-mails et nom de l'agent masqués.
@@ -12,6 +12,8 @@ const frame9786: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-978
 const frame9859: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-9859.json", import.meta.url)).json();
 // Vraie capture OCR sous Windows (poste d'Andrea, 17/10 18:19) : pas de browser_url, Chrome = « chrome.exe ».
 const frameWin8683: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-win-8683.json", import.meta.url)).json();
+// Vraie capture par accessibilité sous Windows (17/10 18:50:40) : la liste n'existe qu'en liens, pas en OCR.
+const frameWinA11y: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-win-a11y-8984.json", import.meta.url)).json();
 
 describe("Lecture de la boîte Crisp", () => {
 	test("la liste des conversations : nom, horodatage, aperçu", () => {
@@ -99,6 +101,13 @@ function setup(options: { busy?: (filter: string) => boolean } = {}) {
 }
 
 const INBOX = "https://app.crisp.chat/website/x/inbox/";
+
+test("liste Crisp lue sur une capture par accessibilité : une ligne = un lien « initiales nom ancienneté message »", () => {
+	const rows = accessibilityRows(frameWinA11y);
+	expect(rows[0]).toMatchObject({ name: "Jean Dupont", ago: "maintenant", ageMinutes: 0 });
+	expect(rows[0]!.preview).toStartWith("Re-bonjour, toujours impossible de réserver");
+	expect(rows.length).toBeGreaterThan(3);
+});
 
 describe("Surveillance de Crisp", () => {
 	test("ce qui est déjà là au démarrage ne déclenche rien ; un nouveau message, si", async () => {
