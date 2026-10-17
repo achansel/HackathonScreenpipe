@@ -14,6 +14,7 @@
 		"simulate": "bun run src/cli/simulate.ts",
 		"listen:call": "bun run src/cli/listen-call.ts",
 		"call": "bun run src/cli/call.ts",
+		"preview:notifs": "bun run src/cli/preview-notifs.ts",
 		"test": "bun test",
 		"typecheck": "tsc --noEmit"
 	},

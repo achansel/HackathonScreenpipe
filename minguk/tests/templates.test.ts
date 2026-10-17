@@ -124,3 +124,16 @@ describe("helpers", () => {
 		expect(preview("x".repeat(80)).endsWith("…")).toBe(true);
 	});
 });
+
+describe("Propositions de réécriture (bun run preview:notifs)", () => {
+	test("chaque « après » respecte les quatre règles", async () => {
+		const { proposals } = await import("../src/notify/proposals.ts");
+		for (const proposal of proposals({ jeanContact: "https://h/1", bugsChannel: "https://s/b" })) {
+			const { title, body, buttons } = proposal.after;
+			expect({ key: proposal.key, title: [...title].length <= 40 }).toEqual({ key: proposal.key, title: true });
+			expect(body.split("\n").length).toBeLessThanOrEqual(2);
+			expect(buttons.length).toBeLessThanOrEqual(3);
+			expect(`${title} ${body}`).not.toMatch(/!|\p{Extended_Pictographic}/u);
+		}
+	});
+});
