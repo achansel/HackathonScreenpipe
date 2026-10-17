@@ -96,7 +96,7 @@ switch (cmd) {
       if (sc) console.log(`scénario : ${sc.n} · ${sheet.get(sc.n) ?? ""}`);
       console.log(`fenêtre  : ${e.window}`);
       console.log(`avant    : ${e.titles.slice(-3).join(" → ")}`);
-      console.log(`texte    : ${e.text.slice(0, 500)}`);
+      console.log(`texte    : ${e.text}`); // jusqu'à 1 500 caractères : couper empêche de juger
       const k = (prompt("étiquette >") ?? "").trim();
       if (k === "q") break;
       if (KEYS[k]) { human[e.id] = KEYS[k]; writeFileSync(HUMAN_LABELS, JSON.stringify(human, null, 2)); }
