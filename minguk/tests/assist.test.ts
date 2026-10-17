@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { CrispAssistant } from "../src/assist/assistant.ts";
+import { CallAssistant } from "../src/assist/call-assistant.ts";
 import { classify, helpsFor } from "../src/assist/crisp-assist.ts";
 import type { CustomerCard } from "../src/assist/hubspot-lookup.ts";
 import { buildPayload, lintPayload } from "../src/notify/templates.ts";
@@ -116,5 +117,38 @@ describe("L'assistant", () => {
 		await t.assistant.onEvent({ kind: "message", name: "Jean Dupont", preview: "ma page est en panne", frameAt: NOW, detectedAt: NOW });
 		expect(t.requested.map((episode) => episode.stage)).toEqual(["signaler-un-bug"]);
 		expect(t.logs[0]).toContain("2 contacts");
+	});
+});
+
+describe("L'assistant d'appel", () => {
+	// null = client inconnu (undefined déclencherait la valeur par défaut).
+	function setup(known: CustomerCard | null = jean) {
+		const card = known ?? undefined;
+		const requested: Episode[] = [];
+		const assistant = new CallAssistant({
+			customer: { name: card?.name ?? "Client inconnu", card },
+			requestHelp: async (episode) => {
+				requested.push(episode);
+			},
+			context: () => context,
+			log: () => {},
+		});
+		return { assistant, stages: () => requested.map((episode) => episode.stage) };
+	}
+
+	test("la fiche dès le début de l'appel, puis une aide par besoin, une seule fois", async () => {
+		const t = setup();
+		await t.assistant.onSentence("");
+		await t.assistant.onSentence("Bonjour ma page de réservation est en panne.");
+		await t.assistant.onSentence("Je vous rends un dédommagement s'il vous plaît.");
+		await t.assistant.onSentence("Oui, vraiment, un dédommagement !");
+		expect(t.stages()).toEqual(["qui-est-le-client", "signaler-un-bug", "geste-commercial"]);
+	});
+
+	test("client inconnu : pas de fiche, mais les règles et les canaux", async () => {
+		const t = setup(null);
+		await t.assistant.onSentence("");
+		await t.assistant.onSentence("Bonjour, combien pour trois restaurants ? On est à Bruxelles.");
+		expect(t.stages()).toEqual(["nouveau-prospect"]);
 	});
 });

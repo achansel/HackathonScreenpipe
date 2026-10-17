@@ -6,11 +6,9 @@
  *
  * `bun run simulate`   puis ouvrir http://127.0.0.1:4518 (FRICTION_SIM_PORT pour changer de port)
  */
-import { existsSync, readFileSync } from "node:fs";
-import { homedir } from "node:os";
-import { join } from "node:path";
 import { CrispAssistant } from "../assist/assistant.ts";
 import { HubSpotLookup } from "../assist/hubspot-lookup.ts";
+import { slackUrls } from "../assist/slack-urls.ts";
 import { loadConfig } from "../config.ts";
 import { CrispWatcher } from "../detect/crisp-watcher.ts";
 import { createNotifier } from "../notify/index.ts";
@@ -64,17 +62,6 @@ Bun.serve({
 console.log(`Simulateur : http://127.0.0.1:${port}`);
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-/** Les canaux Slack créés par `bun run seed:slack`, sinon les variables DEMO_SLACK_*. */
-function slackUrls(): { bugs: string; support: string; newLeads: string } {
-	const path = join(homedir(), ".local", "share", "friction", "slack-seed.json");
-	const manifest = existsSync(path) ? (JSON.parse(readFileSync(path, "utf8")) as { teamId: string; channels: Record<string, { id: string }> }) : undefined;
-	const url = (name: string, fallback: string | undefined) => {
-		const channel = manifest?.channels[name];
-		return channel ? `https://app.slack.com/client/${manifest!.teamId}/${channel.id}` : fallback || "https://app.slack.com/client";
-	};
-	return { bugs: url("bugs", process.env.DEMO_SLACK_CHANNEL_URL), support: url("support", process.env.DEMO_SLACK_SUPPORT_URL), newLeads: url("new-leads", undefined) };
-}
 
 async function startAssistant(): Promise<CrispAssistant | undefined> {
 	if (process.argv.includes("--sans-aide")) return undefined;

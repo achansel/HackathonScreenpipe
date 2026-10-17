@@ -12,6 +12,7 @@
 		"watch:crisp": "bun run src/cli/watch-crisp.ts",
 		"simulate": "bun run src/cli/simulate.ts",
 		"listen:call": "bun run src/cli/listen-call.ts",
+		"call": "bun run src/cli/call.ts",
 		"test": "bun test",
 		"typecheck": "tsc --noEmit"
 	},
