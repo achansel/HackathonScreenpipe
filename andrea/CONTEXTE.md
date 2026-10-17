@@ -11,7 +11,7 @@ Hackathon Screenpipe (42 Paris, 16–18/10, finale dimanche : 3 min de démo + 2
 - Code et docs d'Andrea dans `andrea/` ; les fichiers d'équipe à la racine ne sont pas modifiés (proposition de VISION dans `andrea/VISION.md`).
 - Détection agnostique (pas de règle propre à une appli pour classer) ; apprentissage **hors ligne**, détection rapide en direct.
 - IA via la passerelle de Screenpipe (`/v1/chat/completions`, `claude-haiku-4-5`), cloud « comme Screenpipe » ; messages clients lisibles ; debounce sur la frappe.
-- Boutons `api` relayés (connexion n8n, instance dédiée) = voie principale ; **pas de `link`**. Mac : correctif Screenpipe (`screenpipe-patch/`).
+- **Choix techniques pour la démo (boutons, Mac patché, autorité du démon sur le code de Minguk)** : fixés dans [docs/demo.md § Choix techniques](docs/demo.md#choix-techniques-pour-la-démo-fixés-le-1710-ne-pas-rouvrir). Ne pas rouvrir.
 - Retour par nos propres boutons [Ça m'a aidé] [Pas ça] (les 👍/👎 Screenpipe sont cachés sous Windows).
 - Partage entre collègues = cœur du produit. Stockage d'équipe **Supabase temporaire**, blocs chiffrés côté client, aucune identité ; cible : mémoire d'équipe Screenpipe.
 - Carte : on compte des détours, une seule personne peut faire apparaître une étape.

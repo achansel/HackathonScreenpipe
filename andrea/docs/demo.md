@@ -2,6 +2,17 @@
 
 > Basé sur ce qui tourne réellement (voir [../ETAT.md](../ETAT.md)). Deux postes : **Léa** (Windows, nouvelle, sans solution locale) et **Karim** (Mac patché ou second Windows, connaît les règles). Repli à une machine : `simuler`.
 
+## Choix techniques pour la démo (fixés le 17/10, ne pas rouvrir)
+
+Ce sont des choix **pour la démo de dimanche**, pas des décisions produit. Référence unique : en cas de doute, c'est cette section qui fait foi.
+
+| Sujet | Choix pour la démo | Pourquoi |
+| --- | --- | --- |
+| Qui décide d'une aide | **Le démon agnostique d'Andrea a l'autorité.** Le code de Minguk (`minguk/` : lecture de Crisp, fiche HubSpot, mots-clés, appel) est gardé pour la démo ; en cas de doublon ou de désaccord sur la même étape, le démon l'emporte. | Les mots-clés sont justes sur les phrases du script (4/4) mais faux hors script (3/4 sur des messages pièges) ; le démon juge le geste de l'employé, sans règle par appli. |
+| Boutons sous Windows | `api` relayé pour [Ça m'a aidé] [Pas ça] et [Partager] ; `link` seulement pour [Y aller]. | `api` relayé = API de Screenpipe, pas un fork, mesuré. Un `link` http ouvre toujours le navigateur (`actions.ts:346-358`, `open(url)`). |
+| Mac | **Screenpipe patché** ([screenpipe-patch/](../screenpipe-patch/)) pour que les boutons `api` marchent. Écart assumé avec « aucun fork », **pour la démo seulement**. PR vers Screenpipe plus tard. | Sans le correctif, un clic `api` n'arrive jamais sur Mac (mesuré). |
+| Pitch sur le correctif | « On a trouvé et corrigé un bug de Screenpipe sur Mac ; c'est une des 3 évolutions qu'on leur propose. » | Ne pas présenter le build patché comme du Screenpipe d'origine. |
+
 ## Avant de monter sur scène (15 min avant)
 
 Sur chaque poste, racine du dépôt :
