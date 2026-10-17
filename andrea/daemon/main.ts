@@ -15,7 +15,7 @@ import { randomBytes } from "node:crypto";
 import { KEY, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR } from "./config";
 import { EpisodeBuilder } from "./episodes";
 import { qualify } from "./qualify";
-import { feedbackSince, notify, relayUrl, removeRelay, search, setupRelay } from "./screenpipe";
+import { feedbackSince, notify, relayUrl, removeRelay, ScreenpipeClosed, search, setupRelay } from "./screenpipe";
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
 import { collect } from "../offline/collect";
 import { approvedDetector } from "../offline/detector";
@@ -174,7 +174,10 @@ async function run() {
       if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
       if (tick % 60 === 0) await nightlyFallback();
     } catch (e) {
-      log("erreur :", (e as Error).message);
+      if (e instanceof ScreenpipeClosed) {
+        log(`${e.message}. Nouvel essai dans 30 s.`);
+        await Bun.sleep(30_000);
+      } else log("erreur :", (e as Error).message);
     }
   }
 }
@@ -222,7 +225,14 @@ switch (cmd) {
     record({ kind: "shown", episode: ep, solution: s.id, test: true, message });
     log(`notification de test « ${s.title} » : ${message}. Clique « Ça m'a aidé » ou donne un 👍/👎 (5 min).`);
     const end = Date.now() + 300_000;
-    while (Date.now() < end) { await Bun.sleep(3000); await pollFeedback(solutions).catch((e) => log("erreur :", e.message)); }
+    let closedLogged = false;
+    while (Date.now() < end) {
+      await Bun.sleep(3000);
+      await pollFeedback(solutions).catch((e) => {
+        if (!(e instanceof ScreenpipeClosed)) log("erreur :", e.message);
+        else if (!closedLogged) { closedLogged = true; log(e.message); }
+      });
+    }
     process.exit(0);
   }
   case "run":

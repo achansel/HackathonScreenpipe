@@ -4,12 +4,20 @@ import { API, KEY, MODEL, NOTIFY, RELAY } from "./config";
 const auth = { Authorization: `Bearer ${KEY}` };
 export type Item = Record<string, any>;
 
+/** Screenpipe fermé : le moteur ne sert plus que l'historique (409 "search_only", mesuré). */
+export class ScreenpipeClosed extends Error {}
+async function fail(route: string, r: Response): Promise<never> {
+  const body = await r.text().catch(() => "");
+  if (r.status === 409 && body.includes("search_only")) throw new ScreenpipeClosed("Screenpipe est fermé : rouvrir l'app");
+  throw new Error(`${route} HTTP ${r.status}`);
+}
+
 export async function search(params: Record<string, string>, max = 1000): Promise<Item[]> {
   const out: Item[] = [];
   for (let offset = 0; offset < max; offset += 200) {
     const q = new URLSearchParams({ limit: "200", offset: String(offset), order: "ascending", ...params });
     const r = await fetch(`${API}/search?${q}`, { headers: auth });
-    if (!r.ok) throw new Error(`/search HTTP ${r.status}`);
+    if (!r.ok) await fail("/search", r);
     const page = ((await r.json()).data ?? []) as { content: Item }[];
     if (!page.length) break; // une page courte n'est pas la fin : /search déduplique (mesuré)
     out.push(...page.map((p) => p.content));
@@ -31,7 +39,7 @@ export async function notify(payload: Item): Promise<string> {
 export async function feedbackSince(since: string): Promise<Item[]> {
   const q = new URLSearchParams({ kind: "notification", since, order: "asc", limit: "100" });
   const r = await fetch(`${API}/feedback?${q}`, { headers: auth });
-  if (!r.ok) throw new Error(`/feedback HTTP ${r.status}`);
+  if (!r.ok) await fail("/feedback", r);
   return ((await r.json()).data ?? []) as Item[];
 }
 
@@ -47,7 +55,7 @@ export async function chat(system: string, user: string, maxTokens = 400): Promi
         messages: [{ role: "system", content: system }, { role: "user", content: user }],
       }),
     });
-    if (!r.ok) throw new Error(`/v1/chat/completions HTTP ${r.status}`);
+    if (!r.ok) await fail("/v1/chat/completions", r);
     const out = (await r.json()).choices?.[0]?.message?.content ?? "";
     if (out.trim()) return out;
   }
