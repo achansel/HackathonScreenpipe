@@ -10,6 +10,8 @@ const frame8486: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-848
 // Une réponse de l'agent (il y a 34 min), puis le deuxième message de Jean, le même jour.
 const frame9786: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-9786.json", import.meta.url)).json();
 const frame9859: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-9859.json", import.meta.url)).json();
+// Vraie capture OCR sous Windows (poste d'Andrea, 17/10 18:19) : pas de browser_url, Chrome = « chrome.exe ».
+const frameWin8683: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-win-8683.json", import.meta.url)).json();
 
 describe("Lecture de la boîte Crisp", () => {
 	test("la liste des conversations : nom, horodatage, aperçu", () => {
@@ -155,6 +157,16 @@ describe("Surveillance de Crisp", () => {
 		t.capture({ window: "Inbox | Crisp", url: INBOX, elements: row(0.25, "Crisp Team", "3h", "Enfin, nous avons créé...") });
 		await t.watcher.tick();
 		expect(t.events).toEqual([]);
+	});
+
+	test("Windows : capture OCR sans browser_url, reconnue au titre de la fenêtre ; le message de Jean est vu", async () => {
+		const t = setup();
+		await t.watcher.tick();
+		t.capture({ window: "💬1 - Pieter Janssens | Crisp - Google Chrome", elements: frameWin8683 });
+		await t.watcher.tick();
+		const message = t.events.find((event) => event.kind === "message");
+		expect(message).toMatchObject({ name: "Jean Dupont" });
+		expect(message && "preview" in message ? message.preview : "").toStartWith("Bonjour, ma page de réservation");
 	});
 
 	test("l'agent est sur HubSpot : le compteur de l'onglet Crisp suffit à signaler le message", async () => {

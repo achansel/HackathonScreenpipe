@@ -36,14 +36,19 @@ interface SearchItem {
 
 /** Une ligne de la barre d'onglets pour l'appli Crisp : « 💬1 - Inbox | Crisp - Memory usage - 192 MB ». */
 const TAB_TITLE = /^(?:💬\s*(\d+)\s*-\s*)?.+\|\s*Crisp(?:\s+-\s+Memory usage.*)?$/mu;
+/** Un titre de fenêtre Chrome sur l'onglet Crisp : « 💬1 - Jean Dupont | Crisp - Google Chrome ». */
+const CRISP_WINDOW = /\|\s*Crisp\b/u;
 
 export class CrispWatcher {
 	private readonly options: Required<CrispWatcherOptions>;
 	/** Un curseur par source : si l'une échoue (Screenpipe occupé), l'autre avance quand même. */
 	private crispCursor: number;
 	private chromeCursor: number;
+	private windowsCursor: number;
 	private baseline = true;
 	private readonly seenFrames = new Set<number>();
+	/** Les captures dont la barre d'onglets est déjà lue : deux recherches peuvent rendre la même. */
+	private readonly seenTabStrips = new Set<number>();
 	/** Par client : le dernier texte connu, et si sa ligne était récente (« now », « 1m »). */
 	private readonly rows = new Map<string, { text: string; fresh: boolean }>();
 	private unread = 0;
@@ -54,6 +59,7 @@ export class CrispWatcher {
 		this.options = { fetch: globalThis.fetch, now: Date.now, freshMinutes: 2, lookbackMs: 60_000, ...defined(options) };
 		this.crispCursor = this.options.now() - this.options.lookbackMs;
 		this.chromeCursor = this.crispCursor;
+		this.windowsCursor = this.crispCursor;
 	}
 
 	/** Un tour de surveillance ; deux appels simultanés partagent le même tour. */
@@ -84,7 +90,20 @@ export class CrispWatcher {
 		} catch (error) {
 			errors.push(error as Error);
 		}
-		if (errors.length === 2) throw errors[0];
+		// Windows (mesuré le 17/10 sur le poste d'Andrea) : Chrome s'appelle « chrome.exe », et `browser_url`
+		// n'est rempli que sur les captures par accessibilité, où la liste Crisp ne se lit pas. La liste se
+		// lit sur les captures OCR : on les reconnaît au titre de la fenêtre. Sur Mac, cette recherche est vide.
+		try {
+			const windowsFrames = await this.search({ content_type: "ocr", app_name: "chrome.exe" }, this.windowsCursor);
+			for (const item of windowsFrames) {
+				if (CRISP_WINDOW.test(item.content.window_name ?? "")) await this.readCrispFrame(item);
+				else this.readTabStrip(item);
+			}
+			this.windowsCursor = latest(windowsFrames, this.windowsCursor);
+		} catch (error) {
+			errors.push(error as Error);
+		}
+		if (errors.length === 3) throw errors[0];
 		this.baseline = false;
 	}
 
@@ -149,6 +168,11 @@ export class CrispWatcher {
 
 	private readTabStrip(item: SearchItem): void {
 		if (item.content.browser_url?.includes("app.crisp.chat")) return;
+		const frameId = item.content.frame_id;
+		if (frameId !== undefined) {
+			if (this.seenTabStrips.has(frameId)) return;
+			this.seenTabStrips.add(frameId);
+		}
 		const match = (item.content.text ?? "").match(TAB_TITLE);
 		// Pas d'onglet Crisp dans cette capture : on ne sait rien du compteur.
 		if (match) this.noteUnread(Number(match[1] ?? 0), "other-tab", Date.parse(item.content.timestamp));
