@@ -143,6 +143,18 @@ C'est la page qu'on utilise pour de vrai, une par personne (`start.sh moi`).
 
 Les clés restent **dans le navigateur** de chacun. « Oublier mes clés » les efface de ce navigateur.
 
+## Avec le travail d'Andrea et de Minguk (sans modifier leur code)
+
+| Commande / fonction | Ce que ça fait | Réutilise |
+| --- | --- | --- |
+| Bouton **Partager** dans la notification « Un collègue bloque » | Partage en un clic depuis Screenpipe, **même sur Mac**, car c'est un lien. L'onglet déjà ouvert s'en charge, et un deuxième onglet ne double pas les notifications. | — |
+| Reconnaissance des étapes | La page reconnaît une demande même formulée autrement (le démon écrit l'étape avec l'IA) : démon et page travaillent dans la même équipe. | `matchStep` d'Andrea |
+| `start.sh moi --escalade 60` | Une demande sans réponse après 60 s devient l'aide **« 💬 Slack + message »** : le bon canal PipingTable (#support, #bugs, #deal-desk, #new-leads) et un message prêt à coller. Par défaut : 120 s. | les notifications de Minguk |
+| `start.sh carte [--lien "<lien>"]` | Installe et remplit la **carte des frictions** dans Screenpipe (Live View), à partir des signatures chiffrées de l'équipe, y compris celles de la page. | la carte d'Andrea |
+| `start.sh equipe-demo` | Prépare les postes simulés du démon (Léa, Karim) sur le stockage chiffré, pour `bun andrea/daemon/main.ts simuler`. | la simulation d'Andrea |
+
+Le déroulé complet de la démo finale, avec le simulateur Crisp de Minguk et les replis, est dans **[DEMO.md](DEMO.md)**.
+
 ## Et le démon d'Andrea ?
 
 Le démon (`andrea/daemon/`) détecte les frictions à l'écran et fait tout ça automatiquement. Il utilise ce stockage dès que `team.env` est configuré (option 3) :

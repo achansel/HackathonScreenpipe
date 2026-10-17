@@ -56,3 +56,4 @@ select { font: inherit; font-size: 13px; padding: 3px; border-radius: 6px; borde
 textarea { width: 100%; font: 12px ui-monospace, Menlo, monospace; margin-top: 4px; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
 input { font: inherit; font-size: 13px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; }
 details { margin-top: 8px; } summary { cursor: pointer; color: var(--blue); }
+.machine.handoff { max-width: 520px; min-height: 0; }

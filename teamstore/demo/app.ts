@@ -5,6 +5,7 @@
 // les liens d'invitation, transmis « en privé » (ici : une boîte de réception qui simule un DM Slack).
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team, type Membership, type Received } from "../client";
 import { b64u, deriveTeamKeys, open, randomId } from "../crypto";
+import { escalationPayload } from "./escalade";
 
 type Sol = { id: string; step: string; title: string; body: string; owner?: string; uses?: number; copy?: string; requestId?: string; certified?: boolean; cert?: string; team?: string; shared?: boolean; type?: string; control?: string; detour?: string; reviewed?: string };
 type Req = { requestId: string; step: string; type?: string; team: string; seq: number };
@@ -14,6 +15,8 @@ interface State {
   cursors: Record<string, number>;
   solutions: Sol[];
   mine: Record<string, string>;            // mes demandes en cours : requestId → étape
+  mineAt?: Record<string, number>;          // … et quand elles sont parties (pour l'escalade)
+  escalated?: Record<string, boolean>;      // demandes déjà escaladées vers Slack
   requests: Req[];                          // demandes des collègues reçues
   inbox: { from: string; team: string; link: string }[];
   invited: Record<string, string[]>;        // responsable : à qui j'ai envoyé le lien (teamId → ids)
@@ -62,6 +65,9 @@ const SOLO = document.body.dataset.mode === "moi";
 const SCOPE_CHOICES: [string, string][] = [["Tout (je ne suis que dans cette équipe)", ""], ["Support : Crisp, bugs, offres, dédommagements", SCOPES.Support], ["Ventes : remises, prospects, promesses", SCOPES.Ventes]];
 const scopeSelect = (k: string, preset = "") => `<select data-k="${k}">${SCOPE_CHOICES.map(([l, v]) => `<option value="${esc(v)}"${v === preset ? " selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
 const today = () => new Date().toISOString().slice(0, 10);
+// Sans réponse après ce délai, une demande devient l'aide « Slack + message » de Minguk (?escalade=30 pour la démo).
+const ESCALATE_MS = Number(new URLSearchParams(location.search).get("escalade") ?? cfg.escaladeSeconds ?? 120) * 1000;
+const PAGE = SOLO ? "/moi" : "/";
 const notifyOn = () => (document.getElementById("notify") as HTMLInputElement).checked;
 const machines: Machine[] = [];
 const byId = (id: string) => machines.find((m) => m.id === id)!;
@@ -83,7 +89,7 @@ class Machine {
     this.role = p?.role ?? "mes clés restent dans ce navigateur";
   }
   private fresh(): State {
-    return { memberships: [], cursors: {}, solutions: structuredClone(this.initial), mine: {}, requests: [], inbox: [], invited: {}, status: {}, log: [] };
+    return { memberships: [], cursors: {}, solutions: structuredClone(this.initial), mine: {}, mineAt: {}, escalated: {}, requests: [], inbox: [], invited: {}, status: {}, log: [] };
   }
   load(): State { try { return { ...this.fresh(), ...JSON.parse(localStorage.getItem(`fa-demo:${this.id}`) ?? "{}") }; } catch { return this.fresh(); } }
   save() { this.st.memberships = this.teams.map((t) => t.m); localStorage.setItem(`fa-demo:${this.id}`, JSON.stringify(this.st)); }
@@ -93,14 +99,17 @@ class Machine {
   team(name: string) { return this.teams.find((t) => t.name === name); }
 
   // Notification : toujours dans le panneau, et dans Screenpipe si la case est cochée.
-  async notify(title: string, body: string) {
-    this.toast = `<b>${esc(title)}</b><br>${md(body)}`;
+  // Les boutons sont des liens : ils marchent aussi sur Mac, où les boutons `api` de Screenpipe ne font rien.
+  async notify(title: string, body: string, actions?: object[]) {
+    const open = { id: "open", label: SOLO ? "Ouvrir" : "Voir dans la démo", type: "link", url: SOLO ? `${location.origin}/moi` : `${location.origin}/#${this.id}`, primary: !actions };
+    await this.notifyRaw({ id: `fa-demo-${this.id}-${randomId(4)}`, title, body, priority: "normal", timeout: 20000, actions: [...(actions ?? []), open] });
+  }
+  async notifyRaw(p: { title: string; body: string; [k: string]: unknown }) {
+    this.toast = `<b>${esc(p.title)}</b><br>${md(p.body)}`;
     this.toastAt = Date.now();
     if (!notifyOn()) return;
-    const r = await fetch("/api/notify", { method: "POST", headers: H, body: JSON.stringify({
-      id: `fa-demo-${this.id}-${randomId(4)}`, title: SOLO ? title : `[${this.label}] ${title}`, body, priority: "normal", timeout: 20000,
-      actions: [{ id: "open", label: SOLO ? "Ouvrir" : "Voir dans la démo", type: "link", url: SOLO ? `${location.origin}/moi` : `${location.origin}/#${this.id}`, primary: true }],
-    }) }).then((x) => x.json()).catch(() => ({ message: "Screenpipe injoignable" }));
+    const r = await fetch("/api/notify", { method: "POST", headers: H, body: JSON.stringify({ ...p, title: SOLO ? p.title : `[${this.label}] ${p.title}` }) })
+      .then((x) => x.json()).catch(() => ({ message: "Screenpipe injoignable" }));
     this.log(`notification Screenpipe : ${r.message}`);
   }
 
@@ -166,6 +175,7 @@ class Machine {
     const at = new Date(Math.floor(Date.now() / 600_000) * 600_000).toISOString();
     for (const t of targets) await t.publish("request", { requestId, step: f.step, type: f.type, control: f.control, detour: f.detour, at });
     this.st.mine[requestId] = f.step;
+    this.st.mineAt = { ...this.st.mineAt, [requestId]: Date.now() };
     this.log(`demande anonyme publiée → ${targets.map((t) => t.name).join(", ")}`);
   }
   // Répondre à une demande sans avoir la solution en stock : on l'écrit (elle reste aussi chez soi).
@@ -176,8 +186,21 @@ class Machine {
     this.st.requests = this.st.requests.filter((r) => r !== req);
     this.log(`réponse « ${title} » envoyée dans « ${req.team} »`);
   }
+  // La solution qui répond à une étape, même formulée autrement (le démon d'Andrea écrit l'étape avec l'IA).
+  private matchCache = new Map<string, string | null>();
+  async solutionFor(stepText: string): Promise<Sol | undefined> {
+    const exact = this.st.solutions.find((x) => x.step === stepText);
+    if (exact) return exact;
+    const mine = this.st.solutions.filter((x) => !x.shared || x.certified);
+    if (!this.matchCache.has(stepText)) {
+      const r = await fetch("/api/match", { method: "POST", headers: H, body: JSON.stringify({ step: stepText, catalogue: mine.map((x) => ({ id: x.id, step: x.step })) }) })
+        .then((x) => x.json()).catch(() => ({ id: null }));
+      this.matchCache.set(stepText, r.id ?? null);
+    }
+    return mine.find((x) => x.id === this.matchCache.get(stepText));
+  }
   async share(req: Req) {
-    const s = this.st.solutions.find((x) => x.step === req.step)!;
+    const s = (await this.solutionFor(req.step))!;
     const { shared, team, certified, ...pub } = s;
     await this.team(req.team)!.publish("solution", { ...pub, requestId: req.requestId });
     this.st.requests = this.st.requests.filter((r) => r !== req);
@@ -204,14 +227,28 @@ class Machine {
         if (r.kind === "solution") await this.onSolution(t, r);
       }
     }
+    await this.escalate();
     this.save();
+  }
+  // Personne n'a répondu à temps : l'aide « 💬 Slack + message » de Minguk, vers le bon canal.
+  private async escalate() {
+    for (const [rid, stepText] of Object.entries(this.st.mine)) {
+      const at = this.st.mineAt?.[rid];
+      if (!at || this.st.escalated?.[rid] || Date.now() - at < ESCALATE_MS) continue;
+      this.st.escalated = { ...this.st.escalated, [rid]: true };
+      const { payload, channel } = escalationPayload(rid, stepText, cfg.slack);
+      this.log(`personne n'a répondu en ${Math.round(ESCALATE_MS / 1000)} s : proposer de demander dans ${channel}`);
+      await this.notifyRaw(payload);
+    }
   }
   private async onRequest(t: Team, r: Received) {
     const d = r.data;
     if (!d?.requestId || this.st.mine[d.requestId]) return;
     this.st.requests = [{ requestId: d.requestId, step: d.step, type: d.type, team: t.name, seq: r.seq }, ...this.st.requests].slice(0, 5);
-    const s = this.st.solutions.find((x) => x.step === d.step);
-    if (s) await this.notify(`Un collègue bloque : ${d.step}`, `Ta solution « ${s.title} » peut l'aider. Personne ne saura qui a demandé.`);
+    const s = await this.solutionFor(d.step);
+    if (s) await this.notify(`Un collègue bloque : ${d.step}`, `Ta solution « ${s.title} » peut l'aider. Personne ne saura qui a demandé.`, [
+      { id: "share", label: "Partager", type: "link", url: `${location.origin}${PAGE}?partager=${encodeURIComponent(d.requestId)}&poste=${this.id}`, primary: true },
+    ]);
   }
   private async onSolution(t: Team, r: Received) {
     const d = r.data as Sol;
@@ -262,7 +299,7 @@ class Machine {
     const inbox = this.st.inbox.map((i, n) => `<div class="inbox">DM de <b>${esc(i.from)}</b> : lien « ${esc(i.team)} »
       <code title="${esc(i.link)}">${esc(i.link.split("#")[0].slice(0, 38))}…#🔑</code> <button data-a="join" data-n="${n}">Rejoindre</button></div>`).join("");
     const reqs = this.st.requests.map((r) => {
-      const s = this.st.solutions.find((x) => x.step === r.step);
+      const s = this.st.solutions.find((x) => x.step === r.step) ?? this.st.solutions.find((x) => x.id === this.matchCache.get(r.step));
       return `<li><span class="tag">${esc(r.team)}</span> Quelqu'un bloque : <i>${esc(r.step)}</i>
         ${s ? `<button data-a="share" data-r="${r.requestId}" class="primary">Partager « ${esc(s.title)} »</button>` : `<button data-a="answer" data-r="${r.requestId}">Je sais : répondre</button>`}</li>`;
     }).join("");
@@ -473,5 +510,39 @@ document.getElementById("reset")!.addEventListener("click", async () => {
 document.getElementById("store")!.textContent = cfg.label ?? cfg.url;
 if (location.hash) document.getElementById(location.hash.slice(1))?.classList.add("focus");
 window.addEventListener("hashchange", () => { document.querySelectorAll(".machine.focus").forEach((x) => x.classList.remove("focus")); document.getElementById(location.hash.slice(1))?.classList.add("focus"); });
-await tick();
-setInterval(tick, 2000);
+// ---- un seul onglet actif par page (sinon deux onglets notifieraient deux fois), et le clic « Partager »
+// d'une notification, qui ouvre un nouvel onglet : l'onglet déjà ouvert s'en charge, le nouveau s'efface.
+const params = new URLSearchParams(location.search);
+const pendingShare = params.get("partager");
+const pendingPoste = params.get("poste") ?? (SOLO ? "moi" : "");
+if (pendingShare) history.replaceState(null, "", location.pathname + location.hash);
+const bc = new BroadcastChannel(`fa-${document.body.dataset.mode}`);
+async function shareFromNotification(poste: string, requestId: string) {
+  const m = machines.find((x) => x.id === poste);
+  if (!m) return false;
+  await m.poll();
+  const req = m.st.requests.find((r) => r.requestId === requestId);
+  if (!req) { m.log("cette demande a déjà reçu une réponse"); return true; }
+  await m.share(req);
+  m.save();
+  return true;
+}
+const otherTab = await new Promise<boolean>((resolve) => {
+  const t = setTimeout(() => resolve(false), 600);
+  bc.onmessage = (e) => { if (e.data?.type === "here") { clearTimeout(t); resolve(true); } };
+  bc.postMessage(pendingShare ? { type: "share", requestId: pendingShare, poste: pendingPoste } : { type: "hello" });
+});
+if (otherTab) {
+  document.querySelector("main")!.innerHTML = `<article class="machine handoff"><h2>${pendingShare ? "Partagé" : "Déjà ouvert"}</h2>
+    <p>${pendingShare ? "La solution est partie à l'équipe depuis l'onglet déjà ouvert." : "Cette page est déjà ouverte dans un autre onglet : utilise celui-là."} Tu peux fermer cet onglet.</p></article>`;
+  document.querySelector(".operator")?.remove();
+  document.getElementById("scenario")?.remove();
+} else {
+  bc.onmessage = async (e) => {
+    bc.postMessage({ type: "here" });
+    if (e.data?.type === "share") { await shareFromNotification(e.data.poste, e.data.requestId); await tick(); }
+  };
+  if (pendingShare) await shareFromNotification(pendingPoste, pendingShare);
+  await tick();
+  setInterval(tick, 2000);
+}

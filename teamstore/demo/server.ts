@@ -7,10 +7,11 @@ import { join } from "node:path";
 
 export interface PageOptions {
   port: number;
-  store: { url: string; anonKey: string; restPath: string; label: string };
+  store: { url: string; anonKey: string; restPath: string; label: string; slack?: object; escaladeSeconds?: number };
   operator?: () => unknown;       // vue opérateur (base locale de cette machine)
   reset?: () => void;             // remise à zéro (base locale non partagée seulement)
   notifyUrl?: string;
+  match?: (step: string, catalogue: { id: string; step: string }[]) => Promise<string | null>; // quelle solution répond à cette étape
 }
 
 const DIR = import.meta.dir;
@@ -42,6 +43,10 @@ export async function startPage(o: PageOptions) {
           const r = await fetch(`${notifyUrl}/notify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: await req.text(), signal: AbortSignal.timeout(5000) });
           const j = (await r.json().catch(() => ({}))) as { message?: string };
           return Response.json({ message: j.message ?? `HTTP ${r.status}` });
+        }
+        if (path === "/api/match" && req.method === "POST" && sameOrigin(req)) {
+          const { step, catalogue } = (await req.json()) as { step: string; catalogue: { id: string; step: string }[] };
+          return Response.json({ id: o.match ? await o.match(step, catalogue) : null });
         }
         if (path === "/api/reset" && req.method === "POST" && sameOrigin(req)) {
           if (!o.reset) return Response.json({ error: "Remise à zéro impossible : le stockage est partagé (collègues ou Supabase). « Oublier mes clés » sur /moi efface seulement ce navigateur." });

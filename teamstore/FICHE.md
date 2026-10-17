@@ -76,6 +76,15 @@ Tout reste cliquable à la main : « Je bloque sur… », « Inviter », « Reti
 
 **Astuce de scène :** ouvrir les outils de développement du navigateur, onglet Réseau, pour montrer que les requêtes vers la base ne contiennent que du chiffré. Le chiffrement se fait dans la page ; le serveur de démo ne voit jamais une clé.
 
+## Intégrations avec le travail de l'équipe (17/10, sans modifier `andrea/` ni `minguk/`)
+
+- **Démon d'Andrea ↔ page** : la page reconnaît les étapes formulées par l'IA du démon (`matchStep` importé, avec une comparaison par mots en repli). Mesuré : demande du démon → Karim (page) → Partager → aide affichée par le démon 8 s après.
+- **Partager depuis la notification, sur Mac** : bouton `link` vers `/moi?partager=…` ; l'onglet ouvert traite le clic (BroadcastChannel), et un seul onglet est actif.
+- **Escalade Slack** (`--escalade`) : la notification « 💬 Slack + message » de Minguk (`buildPayload` importé), avec le canal choisi d'après l'étape. Mesuré : affichée dans Screenpipe en priorité haute.
+- **Carte d'Andrea** : `start.sh carte` passe par `publishMap`, avec un lecteur `TeamStore` sur nos équipes ; la page publie une signature à chaque friction. Mesuré : 5 blocs remplis.
+- **Simulation d'Andrea** : `start.sh equipe-demo` écrit `teams-lea.json` et `teams-karim.json`.
+- Déroulé : [DEMO.md](DEMO.md).
+
 ## Les options tranchées, et pourquoi
 
 | Question ouverte | Choix | Pourquoi | Écarté |
