@@ -18,6 +18,7 @@
 | **« Frictions en direct »** (Live View Screenpipe) | en démo, à côté de la carte d'Andrea : ce qui est en attente, résolu ou certifié, maintenant | case cochée dans la régie : `screenpipe://live-view/friction-live` |
 | **Parcours guidé** (`/parcours`) | pour faire comprendre le produit en 1 minute (jury, nouveau coéquipier), avant ou après la démo | `./teamstore/start.sh`, puis « Parcours guidé » |
 | **Vue opérateur et attaques** (`/equipe`) | question du jury « vous surveillez ? » : ce que voit le serveur, et les 3 attaques qui échouent | `./teamstore/start.sh`, puis « Équipe simulée » |
+| **Boucle de nuit** | slide ou moment « Agents That Remember » : « cette nuit, 3 règles trouvées, 1 étape à documenter » ; Claire certifie le matin | `./teamstore/start.sh nuit --exemple` (exemple préparé, vraie IA), ou sans `--exemple` sur un poste consentant ; parcours guidé, chapitre 5 |
 | **Certification par la responsable** | phrase de pitch : la page Notion de PipingTable est périmée (« 2 mois »), la règle certifiée dit « 1 mois » | page « Mon poste » de la responsable, ou `bun andrea/daemon/main.ts equipe-certifier Support geste-commercial` |
 
 ## La régie de répétition, en pratique

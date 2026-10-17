@@ -22,7 +22,7 @@ create table if not exists public.teams (
 create table if not exists public.blobs (
   seq        bigint generated always as identity primary key,
   team_id    uuid not null references public.teams(id) on delete cascade,
-  kind       text not null check (kind in ('request', 'solution', 'signature', 'vote', 'certification')),
+  kind       text not null check (kind in ('request', 'solution', 'signature', 'vote', 'certification', 'candidate')),
   epoch      int  not null,
   ciphertext text not null check (length(ciphertext) <= 24000),  -- base64url ; ≈ 16 Ko chiffrés max
   day        date not null default current_date,
@@ -83,6 +83,7 @@ begin
     when 'request'   then interval '1 day'     -- une demande d'aide n'a de sens que le jour même
     when 'vote'      then interval '30 days'
     when 'signature' then interval '30 days'   -- puis seuls les agrégats de la carte restent (côté client)
+    when 'candidate' then interval '30 days'   -- propositions de la boucle de nuit, en attente de la responsable
     else interval '180 days' end;              -- solutions et certifications
   insert into public.blobs (team_id, kind, epoch, ciphertext, expires_at)
   values (p_team, p_kind, p_epoch, p_ciphertext, now() + v_ttl)

@@ -11,6 +11,7 @@ export interface BoardState {
   certified: number;
   steps: { step: string; n: number; status: string }[];
   timeline: { at: number; title: string; subtitle: string }[];
+  night: { id: string; type: string; step: string; title?: string; team: string }[]; // boucle de nuit, pas encore traitées
 }
 
 const DAY = 86_400_000;
@@ -76,7 +77,9 @@ export class Board {
       ...sols.filter((s) => s.seenAt >= since).map((s) => ({ at: s.seenAt, title: `${s.data.certified ? "Règle certifiée" : s.data.requestId ? "Solution partagée" : "Solution ajoutée"} · ${s.data.title ?? s.data.step}`, subtitle: `${s.team}${s.data.certified ? " · signée par la responsable" : ""}` })),
       ...this.extra,
     ].sort((a, b) => b.at - a.at).slice(0, 20);
-    return { pending, today: sigs.length, resolved, certified: certifiedIds.size, steps, timeline };
+    const certifiedById = new Set(sols.filter((s) => s.data.certified).map((s) => s.data.id));
+    const night = [...new Map(evs.filter((e) => e.kind === "candidate" && e.data.id && !certifiedById.has(e.data.id)).map((e) => [`${e.team}:${e.data.id}`, { id: e.data.id, type: e.data.type, step: e.data.step, title: e.data.title, team: e.team }])).values()];
+    return { pending, today: sigs.length, resolved, certified: certifiedIds.size, steps, timeline, night };
   }
 
   /** Les blocs de la Live View Screenpipe « friction-live » (formats lus dans /outputs/targets). */
@@ -89,6 +92,7 @@ export class Board {
       "regles": { value: s.certified, label: "règles certifiées par une responsable" },
       "attente": { items: s.pending.slice(0, 20).map((p) => ({ id: p.requestId, title: p.step, subtitle: `${p.team} · personne n'a encore répondu`, status: `en attente depuis ${fmt(now - p.since)}`, source: p.team })) },
       "fil": { items: s.timeline.map((t) => ({ title: t.title.slice(0, 200), timestamp: new Date(t.at).toISOString(), subtitle: t.subtitle.slice(0, 500) })) },
+      "nuit": { items: (s.night ?? []).slice(0, 20).map((n) => ({ id: n.id, title: n.type === "proposition" ? n.title ?? n.step : n.step, subtitle: n.type === "proposition" ? `${n.team} · règle trouvée cette nuit, étape : ${n.step}` : `${n.team} · personne n'a trouvé comment faire`, status: n.type === "proposition" ? "à certifier" : "à documenter", source: "boucle de nuit" })) },
       "etapes": { items: s.steps.slice(0, 50).map((x) => ({ label: x.step.slice(0, 200), value: x.n, status: x.status })) },
       "regles-lecture": { content: [
         "**On mesure le process, jamais la personne.** Les demandes sont anonymes, les blocs chiffrés sur les postes : ce tableau est calculé ici, à partir de ce que l'équipe partage.",
@@ -108,6 +112,7 @@ export class Board {
       ${tile(s.certified, "règles certifiées")}</div>
       <div class="bcols">
         <div><h4>En attente</h4>${s.pending.length ? s.pending.map((p) => `<div class="pend"><b>${esc(p.step)}</b><span>${esc(p.team)} · ${fmt(now - p.since)}</span></div>`).join("") : '<p class="muted">Aucune demande en attente.</p>'}
+          ${(s.night ?? []).length ? `<h4>🌙 Cette nuit</h4>${(s.night ?? []).map((n) => `<div class="pend ${n.type === "proposition" ? "nightp" : ""}"><b>${esc(n.type === "proposition" ? n.title : n.step)}</b><span>${n.type === "proposition" ? "à certifier" : "à documenter"}</span></div>`).join("")}` : ""}
           <h4>Étapes</h4><table>${s.steps.map((x) => `<tr><td>${esc(x.step)}</td><td>${x.n}</td><td class="st-${x.status.split(" ")[0]}">${esc(x.status)}</td></tr>`).join("") || '<tr><td class="muted">—</td></tr>'}</table></div>
         <div><h4>Fil en direct</h4>${s.timeline.map((t) => `<div class="ev"><span class="muted">${new Date(t.at).toLocaleTimeString("fr-FR")}</span> <b>${esc(t.title)}</b><br><span class="muted">${esc(t.subtitle)}</span></div>`).join("") || '<p class="muted">—</p>'}</div>
       </div>`;

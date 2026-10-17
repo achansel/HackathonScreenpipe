@@ -14,6 +14,7 @@ export interface PageOptions {
   notifyUrl?: string;
   live?: (blocks: Record<string, unknown>) => Promise<{ ok: boolean; blocks?: string[]; error?: string }>; // Live View Screenpipe
   regie?: (since: number, publish: boolean) => Promise<unknown>; // régie de répétition : vraies réactions
+  night?: (cases: { step: string; context: string; label?: string }[]) => Promise<unknown>; // boucle de nuit (vraie IA)
   match?: (step: string, catalogue: { id: string; step: string }[]) => Promise<string | null>; // quelle solution répond à cette étape
 }
 
@@ -82,6 +83,11 @@ export async function startPage(o: PageOptions) {
         if (path === "/api/live" && req.method === "POST" && sameOrigin(req)) {
           if (!o.live) return Response.json({ ok: false, error: "jeton Screenpipe absent" });
           return Response.json(await o.live(((await req.json()) as { blocks: Record<string, unknown> }).blocks));
+        }
+        if (path === "/api/nuit" && req.method === "POST" && sameOrigin(req)) {
+          if (!o.night) return Response.json({ error: "jeton Screenpipe absent" });
+          try { return Response.json({ findings: await o.night(((await req.json()) as { cases: any[] }).cases) }); }
+          catch (e) { return Response.json({ error: (e as Error).message }); }
         }
         if (path === "/api/match" && req.method === "POST" && sameOrigin(req)) {
           const { step, catalogue } = (await req.json()) as { step: string; catalogue: { id: string; step: string }[] };

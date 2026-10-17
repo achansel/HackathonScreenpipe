@@ -179,6 +179,29 @@ Pour voir les cas « en attente » en direct :
 - **Équipe simulée** : étape 3, puis attendre avant l'étape 4. Avec `/equipe?alerte=10`, Claire est alertée au bout de 10 s ;
 - **Mon poste** : « Je bloque sur… », ou un message Crisp que personne ne sait traiter.
 
+## La boucle de nuit : la mémoire qui se nourrit seule
+
+C'est l'idée de Minguk (`minguk/build/retour-andrea.md`, §4), implémentée dans `teamstore/nuit.ts`. Elle réutilise, sans les modifier, la recherche Screenpipe, l'IA et le masquage du démon d'Andrea.
+
+1. **La nuit, sur chaque poste** : `./teamstore/start.sh nuit`. Pour chaque friction de la journée restée **sans réponse** (les demandes anonymes du démon), elle relit dans Screenpipe les **15 minutes qui ont suivi**, dans les outils de travail seulement. L'IA dit si la personne s'en est sortie, et comment.
+2. **Résolue** : l'IA écrit la **règle générale**, sans nom de personne ni de client. Le poste la publie, chiffrée, comme **proposition à valider**. Les démons ne s'en servent **pas** tant qu'elle n'est pas certifiée.
+3. **Non résolue** : une **friction en attente** est publiée pour la responsable (l'étape, jamais la personne).
+4. **Le matin** :
+   - la responsable reçoit une notification Screenpipe (« 3 propositions de la nuit à valider ») ;
+   - dans « Mon poste », la section **🌙 Cette nuit** permet de **Certifier**, **Modifier puis certifier** ou **Rejeter** ;
+   - une fois certifiée, la règle devient l'aide de toute l'équipe, et celui qui avait bloqué la reçoit ;
+   - le tableau « Frictions en direct » et sa Live View ont une liste « Cette nuit ».
+
+Options : `--depuis 14:30` (une session de répétition seulement), `--lien "<lien>"` (une équipe précise), `--sans-publier` (voir les verdicts sans rien envoyer), `--exemple` (l'**exemple préparé** : 4 frictions de Léa et les vrais fils du Slack de PipingTable, jugés par la vraie IA ; à annoncer comme exemple).
+
+Garde-fous :
+- elle exige le consentement donné au démon (`bun andrea/daemon/main.ts activer`), sauf avec `--exemple` ;
+- le texte d'écran ne part que vers le modèle choisi dans Screenpipe, comme pour le démon ;
+- une règle qui contient un nom, un e-mail ou un téléphone est refusée, et la responsable relit tout ;
+- le stockage doit connaître le type « proposition » : sur Supabase, coller une fois `migrations/2026-10-17-boucle-de-nuit.sql` dans l'éditeur SQL.
+
+Dans le **parcours guidé**, c'est le chapitre 5, « La nuit » : le prospect belge resté sans réponse est rejugé par la vraie IA, puis Claire certifie.
+
 ## Avec le travail d'Andrea et de Minguk (sans modifier leur code)
 
 | Commande / fonction | Ce que ça fait | Réutilise |

@@ -96,6 +96,7 @@ Tout reste cliquable à la main : « Je bloque sur… », « Inviter », « Reti
 
   Elle mesure les délais et vérifie la préparation (démon, clé HubSpot, simulateur, carte, un seul décideur). Elle peut publier « Frictions en direct ». Mesuré sur la chaîne réelle (démon en simulation avec la vraie IA, page, Supabase) : fiche 3 s, demande 3 s, réponse de l'équipe 7 s.
 - **« Mon poste » sur le stockage de l'équipe** même en mode démo (`/api/config?page=moi`) : sinon, il ne voyait jamais les demandes des démons.
+- **Boucle de nuit** (`nuit.ts`, `start.sh nuit`, idée de Minguk) : les frictions sans réponse du jour, relues dans les 15 minutes qui ont suivi (Screenpipe), jugées par l'IA. Une règle trouvée devient une **proposition** chiffrée (nouveau type de bloc `candidate`, 30 jours, migration Supabase). Une friction non résolue devient une **attente**. La responsable certifie, modifie ou rejette le matin (« Mon poste » → 🌙 Cette nuit, notification Screenpipe, liste dans la Live View). Une règle contenant un nom, un e-mail ou un téléphone est refusée. Mesuré sur l'exemple préparé (vraie IA) : 3 règles trouvées sans aucun nom (« Dédommagement client : 1 mois offert maximum », confiance 0,92…), 1 friction en attente ; certification de bout en bout dans la page. Tests : 41/41.
 - Déroulé : [DEMO.md](DEMO.md), aligné sur `andrea/docs/demo.md`, qui fait référence.
 
 ## Les options tranchées, et pourquoi

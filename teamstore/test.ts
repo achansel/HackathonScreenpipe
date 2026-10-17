@@ -100,6 +100,11 @@ const wrong = await support.publish("solution", { id: "faux", step: "x", title: 
 check("la responsable retire une solution fausse", await support.purge(wrong) && !(await lea2.pull(0, "solution")).some((b) => b.data.id === "faux"));
 check("un membre ne peut pas purger", await rejects(lea2.purge(1)));
 
+// 10 bis. Boucle de nuit : une proposition chiffrée, lue par la responsable, retirée après validation.
+const cand = await lea2.publish("candidate", { type: "proposition", id: "nuit-test", step: "x", title: "Règle trouvée cette nuit", body: "…" });
+check("boucle de nuit : une proposition est publiée et relue par la responsable", (await support.pull(0, "candidate")).some((b) => b.data.id === "nuit-test"));
+check("boucle de nuit : la responsable retire la proposition traitée", await support.purge(cand) && !(await support.pull(0, "candidate")).some((b) => b.data.id === "nuit-test"));
+
 // 11. Le schéma refuse un type inconnu et un blob trop gros.
 const tok2 = (await deriveTeamKeys(parseInvite(r.invite).master)).accessToken;
 check("type de blob inconnu refusé", await rejects(store.put(support.id, tok2, "secret" as any, 2, "x")));

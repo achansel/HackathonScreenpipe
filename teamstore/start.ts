@@ -6,6 +6,7 @@
 //   bun teamstore/start.ts moi --serveur http://192.168.1.20:3001     … stockage hébergé par un collègue
 //   bun teamstore/start.ts verifier           vérifie le stockage configuré (Supabase ou autre)
 //   bun teamstore/start.ts carte [--lien "<lien>"]   carte d'équipe d'Andrea dans Screenpipe (Live View)
+//   bun teamstore/start.ts nuit [--exemple] [--depuis 14:30] [--lien "<lien>"] [--sans-publier]   boucle de nuit
 //   bun teamstore/start.ts equipe-demo        prépare les postes simulés du démon d'Andrea (Léa, Karim) sur ce stockage
 //   options : --alerte 60 (secondes avant d'alerter la responsable d'une demande en attente ; 120 par défaut)
 //   options : --crisp (« moi » : la détection Crisp de Minguk déclenche les frictions)
@@ -25,13 +26,13 @@ import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
 const argv = process.argv.slice(2);
 const flag = (name: string) => argv.includes(name);
 const opt = (name: string) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : undefined; };
-const VALUED = ["--serveur", "--port", "--escalade", "--lien"];
+const VALUED = ["--serveur", "--port", "--escalade", "--lien", "--depuis", "--alerte"];
 const mode = argv.find((a, i) => !a.startsWith("--") && !VALUED.includes(argv[i - 1])) ?? "demo";
 const PAGE_PORT = Number(opt("--port") ?? Bun.env.DEMO_PORT ?? 4322);
 const LOCAL_PORT = Number(Bun.env.TEAMSTORE_LOCAL_PORT ?? 3001);
 
-if (!["demo", "moi", "verifier", "carte", "equipe-demo", "aide"].includes(mode) || flag("--help") || flag("-h") || mode === "aide") {
-  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 15).map((l) => l.slice(3)).join("\n"));
+if (!["demo", "moi", "verifier", "carte", "equipe-demo", "nuit", "aide"].includes(mode) || flag("--help") || flag("-h") || mode === "aide") {
+  console.log(readFileSync(import.meta.path, "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 16).map((l) => l.slice(3)).join("\n"));
   process.exit(mode === "aide" || flag("--help") || flag("-h") ? 0 : 1);
 }
 
@@ -152,6 +153,53 @@ if (mode === "carte") {
   process.exit(0);
 }
 
+// ---- boucle de nuit (teamstore/nuit.ts) : relire ce qui a suivi chaque friction restée sans réponse, et proposer
+// des règles à la responsable. --exemple : l'exemple préparé (fils du Slack de PipingTable), jugé par la vraie IA.
+if (mode === "nuit") {
+  if (!process.env.SCREENPIPE_API_KEY) { console.error("Jeton Screenpipe absent : scripts/screenpipe-env.sh"); process.exit(1); }
+  const nuit = await import("./nuit");
+  const { chat, search } = await import("../andrea/daemon/screenpipe");
+  const { redact } = await import("../andrea/daemon/qualify");
+  const { SCOPE } = await import("../andrea/daemon/config");
+  let cases: import("./nuit").NightCase[];
+  if (flag("--exemple")) cases = nuit.EXEMPLE;
+  else {
+    // Lire l'historique de l'écran exige le consentement donné au démon (andrea/daemon/main.ts activer).
+    if (!existsSync(join(import.meta.dir, "..", "andrea", "daemon", ".state", "consent.json"))) {
+      console.error("Pas de consentement sur ce poste (bun andrea/daemon/main.ts activer). Pour l'exemple préparé : --exemple");
+      process.exit(1);
+    }
+    const d = opt("--depuis");
+    const since = d ? new Date(`${new Date().toISOString().slice(0, 10)}T${d.padStart(5, "0")}:00`).getTime() : Date.now() - 24 * 3_600_000;
+    const day = nuit.dayCases(join(import.meta.dir, ".."), since);
+    console.log(`${day.length} friction(s) sans réponse depuis ${new Date(since).toLocaleString("fr-FR")}.`);
+    cases = [];
+    for (const c of day) cases.push({ ...c, context: await nuit.contextAfter(c.at, search, SCOPE) });
+  }
+  const findings: import("./nuit").Finding[] = [];
+  for (const c of cases) {
+    const f = await nuit.judge(c, chat, redact);
+    findings.push(f);
+    console.log(f.resolved ? `✓ résolue  · ${c.label ?? c.step} → « ${f.title} » (${f.how}, confiance ${f.confidence})` : `… en attente · ${c.label ?? c.step} (confiance ${f.confidence})`);
+  }
+  if (flag("--sans-publier")) process.exit(0);
+  const url = remote || (envUrl ? envUrl : `http://127.0.0.1:${LOCAL_PORT}`);
+  const store = new SupabaseStore(url, anonKey, restPath);
+  const list: Membership[] = opt("--lien") ? [membershipFromInvite(opt("--lien")!)]
+    : existsSync(join(TEAMS_DIR, "teams.json")) ? JSON.parse(readFileSync(join(TEAMS_DIR, "teams.json"), "utf8")) : [];
+  if (!list.length) { console.error('Aucune équipe pour publier : --lien "<lien>" ou equipe-rejoindre côté démon. (--sans-publier pour seulement voir)'); process.exit(1); }
+  const teams = await Promise.all(list.map((m) => Team.open(store, m)));
+  try {
+    const r = await nuit.publish(findings, teams);
+    console.log(`Publié dans ${teams.map((t) => t.name).join(", ")} : ${r.proposals} proposition(s) à valider, ${r.pending} friction(s) en attente. La responsable les voit dans « Mon poste ».`);
+  } catch (e) {
+    console.error(`Publication impossible : ${(e as Error).message}`);
+    if (/check constraint|blobs_kind_check/.test((e as Error).message)) console.error("Le stockage ne connaît pas encore les propositions : coller teamstore/migrations/2026-10-17-boucle-de-nuit.sql dans l'éditeur SQL de Supabase.");
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
 // ---- postes simulés du démon d'Andrea (« simuler » : Léa et Karim) branchés sur ce stockage, sans toucher à son code :
 // on écrit les fichiers d'équipe que son démon lit (teams-lea.json, teams-karim.json).
 if (mode === "equipe-demo") {
@@ -253,6 +301,13 @@ try {
     storeMoi: !remote && envUrl && !flag("--heberger") && !flag("--local") ? { url: envUrl, anonKey, restPath, label: envUrl.includes("supabase.co") ? `Supabase (${new URL(envUrl).host})` : envUrl } : undefined,
     match: matchSolution,
     live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined,
+    // Boucle de nuit pour le parcours : le jugement par la vraie IA de Screenpipe (rien n'est publié ici).
+    night: process.env.SCREENPIPE_API_KEY ? async (cases) => {
+      const nuit = await import("./nuit");
+      const { chat } = await import("../andrea/daemon/screenpipe");
+      const { redact } = await import("../andrea/daemon/qualify");
+      return Promise.all(cases.map((c) => nuit.judge({ ...c, at: Date.now() }, chat, redact)));
+    } : undefined,
     // Régie de répétition : toujours sur le stockage de l'équipe configuré (team.env), comme le démon.
     regie: (since, publish) => snapshot({ since, storeUrl: envUrl, anonKey, crisp: flag("--crisp"), live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined, publish }),
   });

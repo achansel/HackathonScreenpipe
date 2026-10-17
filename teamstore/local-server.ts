@@ -7,8 +7,8 @@ import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
 const HEX64 = /^[0-9a-f]{64}$/;
-const KINDS = new Set(["request", "solution", "signature", "vote", "certification"]);
-const TTL: Record<string, number> = { request: 1, vote: 30, signature: 30, solution: 180, certification: 180 }; // jours
+const KINDS = new Set(["request", "solution", "signature", "vote", "certification", "candidate"]);
+const TTL: Record<string, number> = { request: 1, vote: 30, signature: 30, solution: 180, certification: 180, candidate: 30 }; // jours
 const DAY = 86_400_000;
 
 class RpcError extends Error {

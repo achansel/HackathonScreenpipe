@@ -27,6 +27,7 @@ interface State {
   status: Record<string, string>;           // teamId → "ok" | "révoqué"
   lastInvite?: { team: string; link: string; why: string }; // mode « mon poste » : lien à copier
   profile?: string;                         // mode « mon poste » : profil PipingTable joué
+  night?: { seq: number; team: string; data: any }[]; // responsable : propositions et frictions en attente de la nuit
   log: string[];
 }
 
@@ -251,10 +252,51 @@ class Machine {
         this.st.cursors[t.id] = Math.max(this.st.cursors[t.id] ?? 0, r.seq);
         if (r.kind === "request") await this.onRequest(t, r);
         if (r.kind === "solution") await this.onSolution(t, r);
+        if (r.kind === "candidate") this.onNight(t, r);
       }
     }
     await this.escalate();
+    await this.nightNotify();
     this.save();
+  }
+  // ---- boucle de nuit : la responsable reçoit les propositions de règle et les frictions restées sans solution
+  private nightNew = 0;
+  private onNight(t: Team, r: Received) {
+    if (!t.isAdmin || !r.data?.id) return;
+    const list = (this.st.night ??= []);
+    if (list.some((x) => x.data.id === r.data.id && x.team === t.name)) return;
+    if (this.st.solutions.some((s) => s.id === r.data.id && s.certified)) return; // déjà validée
+    list.push({ seq: r.seq, team: t.name, data: r.data });
+    if (r.data.type === "proposition") this.nightNew++;
+  }
+  async nightNotify() {
+    if (!this.nightNew) return;
+    const n = this.nightNew;
+    this.nightNew = 0;
+    const waiting = (this.st.night ?? []).filter((x) => x.data.type === "attente").length;
+    await this.notify(`${n} proposition${n > 1 ? "s" : ""} de la nuit à valider`, `Des collègues ont trouvé comment faire après avoir bloqué. Relis, puis certifie : la règle devient l'aide de toute l'équipe.${waiting ? `\n${waiting} étape(s) toujours sans solution.` : ""}`);
+  }
+  async validateNight(seq: number, edit: boolean) {
+    const item = (this.st.night ?? []).find((x) => x.seq === seq)!;
+    const t = this.teams.find((x) => x.name === item.team && x.isAdmin)!;
+    let { title, body } = item.data;
+    if (edit) {
+      title = prompt("Titre de la règle (une ligne) :", title)?.trim() || title;
+      body = prompt("Explication :", body)?.trim() ?? body;
+    }
+    // Avec l'id de la demande d'origine : la demande en attente est résolue, et celui qui bloquait reçoit l'aide.
+    const rule = { id: item.data.id, step: item.data.step, title, body, owner: "nuit", reviewed: today(), uses: 0, ...(item.data.requestId ? { requestId: item.data.requestId } : {}) };
+    await t.publish("solution", await t.certify(rule));
+    await t.purge(seq).catch(() => false);
+    this.st.night = (this.st.night ?? []).filter((x) => x.seq !== seq);
+    this.log(`proposition de la nuit certifiée : « ${title} » (aide de toute l'équipe)`);
+  }
+  async rejectNight(seq: number) {
+    const item = (this.st.night ?? []).find((x) => x.seq === seq)!;
+    const t = this.teams.find((x) => x.name === item.team && x.isAdmin)!;
+    await t.purge(seq).catch(() => false);
+    this.st.night = (this.st.night ?? []).filter((x) => x.seq !== seq);
+    this.log(`${item.data.type === "attente" ? "friction en attente" : "proposition"} retirée`);
   }
   // Personne n'a répondu à temps : l'aide « 💬 Slack + message » de Minguk, vers le bon canal.
   private async escalate() {
@@ -345,6 +387,11 @@ class Machine {
         <p class="muted">${cfg.crisp ? "Les vrais messages Crisp lus à l'écran (détection de Minguk) déclenchent l'aide tout seuls. Ce menu sert de secours." : "Lancer avec <code>--crisp</code> pour lire les vrais messages Crisp à l'écran (détection de Minguk)."}</p></section>` : ""}
       <section><h3>Je bloque sur…</h3><div class="frictions">${FRICTIONS.map((f, i) => `<button data-a="friction" data-f="${i}">${esc(f.label)}</button>`).join("")}<button data-a="friction-custom">Autre…</button></div>
         ${Object.keys(this.st.mine).length ? `<p class="muted">${Object.keys(this.st.mine).length} demande(s) anonyme(s) en attente</p>` : ""}</section>
+      ${(this.st.night ?? []).length ? `<section class="night"><h3>🌙 Cette nuit</h3>${(this.st.night ?? []).map((x) => x.data.type === "proposition"
+        ? `<div class="prop"><span class="tag">${esc(x.team)}</span> <b>${esc(x.data.title)}</b><div class="muted">${esc(x.data.body)}</div><div class="muted">étape : ${esc(x.data.step)} · trouvé via ${esc(x.data.how ?? "?")} · confiance ${esc(x.data.confidence)}</div>
+            <div class="row"><button class="primary" data-a="night-ok" data-q="${x.seq}">Certifier</button><button data-a="night-edit" data-q="${x.seq}">Modifier puis certifier</button><button class="danger" data-a="night-no" data-q="${x.seq}">Rejeter</button></div></div>`
+        : `<div class="prop wait"><span class="tag">${esc(x.team)}</span> ⚠ Toujours sans solution : <b>${esc(x.data.step)}</b><div class="muted">Personne n'a trouvé comment faire. À documenter, ou répondre ici puis certifier.</div>
+            <div class="row"><button data-a="night-no" data-q="${x.seq}">Marquer comme traitée</button></div></div>`).join("")}</section>` : ""}
       ${reqs ? `<section><h3>Demandes de l'équipe</h3><ul>${reqs}</ul></section>` : ""}
       <section><h3>Solutions (${this.st.solutions.length})</h3><ul class="sols">${sols || '<li class="muted">aucune</li>'}</ul>
         ${SOLO && !this.st.solutions.some((s) => !s.shared) ? `<p class="muted">Choisis un profil en haut : tu connaîtras les règles qu'il donne dans le Slack de PipingTable.</p>` : ""}</section>
@@ -387,6 +434,8 @@ class Machine {
     }
     if (a === "copy-last" && this.st.lastInvite) { await navigator.clipboard.writeText(this.st.lastInvite.link); this.log("lien copié : à coller dans un message privé"); }
     if (a === "hide-last") this.st.lastInvite = undefined;
+    if (a === "night-ok" || a === "night-edit") await this.validateNight(Number(d.q), a === "night-edit");
+    if (a === "night-no") await this.rejectNight(Number(d.q));
     if (a === "crisp-sim") {
       const [key, i] = val("crisp-msg").split("|");
       const c = CRISP_CUSTOMERS.find((x) => x.key === key)!;

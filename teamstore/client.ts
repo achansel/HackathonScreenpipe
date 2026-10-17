@@ -5,7 +5,7 @@ import {
   open, ownerKeyPair, parseInvite, randomKey, seal, sha256hex, verifyCertification, type TeamKeys,
 } from "./crypto";
 
-export type Kind = "request" | "solution" | "signature" | "vote" | "certification";
+export type Kind = "request" | "solution" | "signature" | "vote" | "certification" | "candidate"; // candidate : boucle de nuit
 export interface StoredBlob { seq: number; kind: Kind; epoch: number; ciphertext: string }
 export interface Received { seq: number; kind: Kind; data: any }
 
@@ -127,7 +127,7 @@ export class Team {
     // (quelqu'un bloque toujours). Une demande déjà résolue n'est pas republiée.
     const all = await this.pull(0);
     const answered = new Set(all.filter((r) => r.kind === "solution" && r.data?.requestId).map((r) => r.data.requestId));
-    const keep = all.filter((r) => r.kind === "solution" || r.kind === "signature" || (r.kind === "request" && !answered.has(r.data?.requestId)));
+    const keep = all.filter((r) => r.kind === "solution" || r.kind === "signature" || r.kind === "candidate" || (r.kind === "request" && !answered.has(r.data?.requestId)));
     const master = randomKey();
     const keys = await deriveTeamKeys(master);
     const epoch = await this.store.rotate(this.id, await deriveAdminToken(b64u.dec(this.m.admin.key)), await sha256hex(keys.accessToken));

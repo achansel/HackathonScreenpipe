@@ -47,10 +47,11 @@ const ui = {
   agentNote: "",
   done: false,
 };
-const CHAPTERS = ["Aide immédiate", "Demander à l'équipe", "Certifier la règle", "Personne ne sait", "Le lendemain", "Quelqu'un part", "La carte"];
+const CHAPTERS = ["Aide immédiate", "Demander à l'équipe", "Certifier la règle", "Personne ne sait", "La nuit", "Le lendemain", "Quelqu'un part", "La carte"];
 let actors: Actor[] = [];
 const A = (id: string) => actors.find((a) => a.id === id)!;
 const teamIds = new Set<string>();
+let lastPendingRequest = ""; // la demande du prospect belge restée sans réponse (chapitre 4), que la nuit résout
 
 // ---------- interactions : un bouton à cliquer (ou cliqué tout seul en mode présentation) ----------
 let resolveAct: ((act: string) => void) | null = null;
@@ -233,6 +234,7 @@ async function chapter4() {
   await stage(1, "active", "Friction : **créer un prospect venu du chat**"); await stage(1, "done");
   await stage(2, "miss", "Aucune solution dans la mémoire de Léa");
   const req = { requestId: Math.random().toString(16).slice(2, 18), step: s.step, type: "handoff", control: "influence", detour: "demande_aide", at: new Date().toISOString() };
+  lastPendingRequest = req.requestId;
   await signature(A("lea"), s.step, "handoff", "influence", "demande_aide");
   await A("lea").team.publish("request", req);
   await stage(3, "active", "Demande anonyme envoyée au Support…");
@@ -251,9 +253,55 @@ async function chapter4() {
   for (const id of ["karim", "yasmine"]) A(id).status = "";
 }
 
+// La nuit : le poste de Léa relit ce qui a suivi la friction restée sans réponse (le prospect belge), et l'IA dit
+// si elle s'en est sortie. Le texte d'écran est mis en scène (ce que Léa a vu après l'escalade) ; le jugement est
+// celui de la vraie IA de Screenpipe ; la proposition est réellement publiée, chiffrée, pour Claire.
+async function chapterNight() {
+  const s = sol("prospect-chat");
+  ui.chapter = 5; ui.screenOwner = "Léa"; ui.tab = "slack"; ui.why = ""; ui.leaNotif = undefined;
+  ui.title = "La nuit · le poste de Léa relit ce qui s'est passé après";
+  ui.what = "Après l'escalade, Léa a demandé dans **#new-leads**, et le message épinglé de Sarah lui a donné la réponse. Personne ne l'a écrite dans la mémoire d'équipe. Cette nuit, son poste relit les 15 minutes qui ont suivi la friction.";
+  ui.slack = [{ who: "Sarah Lambert (épinglé)", text: "Rappel : les prospects belges sont pour moi. Créez le contact en « Lead » dans HubSpot et postez-le ici, je reprends." }, { who: "Léa", text: "Lead : Brasserie des Arts (Bruxelles), 3 sites, demande de prix sur le chat." }];
+  ui.stages = [
+    { icon: "🌙", label: "Relire l'après-friction (Screenpipe)", detail: "", state: "idle" },
+    { icon: "🧠", label: "L'IA juge : résolue ? comment ?", detail: "", state: "idle" },
+    { icon: "✍️", label: "Règle générale, sans nom ni client", detail: "", state: "idle" },
+    { icon: "🔒", label: "Proposition chiffrée pour la responsable", detail: "", state: "idle" },
+  ];
+  render();
+  await ask([{ label: "🌙 Lancer la boucle de nuit", act: "go", primary: true }]);
+  const context = [`Crisp · ${pieter.nickname} : ${pieter.messages[0].text}`, "HubSpot · recherche « Brasserie des Arts » · 0 contacts", ...ui.slack.map((m) => `Slack #new-leads · ${m.who} : ${m.text}`), "HubSpot · Créer un contact · Cycle de vie : Lead"].join("\n");
+  await stage(0, "active", "Crisp, HubSpot, Slack #new-leads : les 15 minutes après la friction, **sur le poste de Léa seulement**"); await stage(0, "done");
+  await stage(1, "active", "Le modèle choisi dans Screenpipe lit ce texte…");
+  const r = await fetch("/api/nuit", { method: "POST", headers: H, body: JSON.stringify({ cases: [{ step: s.step, context, label: "prospect belge" }] }) }).then((x) => x.json()).catch(() => ({}));
+  const f = r.findings?.[0] ?? { resolved: true, title: "Prospect belge : créer en Lead, poster dans #new-leads", body: "Les prospects belges vont à la commerciale Belgique.", how: "slack", confidence: 0.9, fallback: true };
+  await stage(1, f.resolved ? "done" : "miss", f.resolved ? `**Résolue** (trouvé via ${f.how}, confiance ${f.confidence})${f.fallback ? " · IA indisponible : verdict préparé" : ""}` : "Non résolue : la friction part en attente chez la responsable");
+  await stage(2, "done", f.resolved ? `« **${f.title}** »\n${f.body}` : "—");
+  const id = `nuit-${Math.random().toString(16).slice(2, 12)}`;
+  const seq = await A("lea").team.publish("candidate", f.resolved ? { type: "proposition", id, step: s.step, title: f.title, body: f.body, how: f.how, confidence: f.confidence, day: today() } : { type: "attente", id, step: s.step, day: today() });
+  await stage(3, "done", "Publiée, chiffrée : les démons ne s'en servent **pas** tant que Claire ne l'a pas certifiée");
+  ui.reveal = { team: JSON.stringify({ type: f.resolved ? "proposition" : "attente", title: f.title, step: s.step }, null, 1), server: await lastCiphertext(seq) };
+  A("claire").notif = { title: "1 proposition de la nuit à valider", body: `« ${f.title ?? s.step} »\nDes collègues ont trouvé comment faire. Relis, puis certifie.`, tone: "ask", buttons: [{ label: "Certifier", act: "certify", primary: true }] };
+  await screenpipe(A("claire").notif!, "Claire");
+  ui.what = "Le matin, Claire reçoit la proposition. Elle relit (elle peut corriger le texte) et certifie.";
+  ui.why = "**La mémoire se nourrit seule** : personne n'a eu à écrire de documentation. Mais rien n'entre dans la mémoire d'équipe sans la responsable : l'IA propose, l'humaine valide.";
+  render();
+  await ask([{ label: "✓ Claire certifie la proposition", act: "certify", primary: true }]);
+  A("claire").notif = undefined; ui.reveal = undefined;
+  if (f.resolved) {
+    await A("claire").team.publish("solution", await A("claire").team.certify({ id, step: s.step, title: f.title, body: f.body, owner: "nuit", reviewed: today(), uses: 0, requestId: lastPendingRequest }));
+    await A("claire").team.purge(seq).catch(() => false);
+    for (const a of actors) await pull(a);
+    A("claire").status = "a certifié la règle trouvée cette nuit";
+    ui.what = "La règle est maintenant dans la mémoire de toute l'équipe, avec le badge **✓ certifiée**. Le prochain prospect belge aura l'aide tout de suite.";
+  }
+  render();
+  await ask([{ label: "Suite", act: "ok", primary: true }]);
+}
+
 async function chapter5() {
   const camille = CRISP_CUSTOMERS.find((c) => c.key !== "jean-dupont" && c.key !== "pieter-janssens" && c.key !== "elodie-marchand")?.nickname ?? "Camille Robert";
-  ui.chapter = 5; ui.screenOwner = "Yasmine"; ui.tab = "crisp"; ui.why = "";
+  ui.chapter = 6; ui.screenOwner = "Yasmine"; ui.tab = "crisp"; ui.why = "";
   ui.crisp = []; ui.slack = []; ui.hubspot = { query: "", result: "" };
   ui.title = "Le lendemain · Yasmine a la même question… et la réponse est déjà là";
   ui.what = `Yasmine (Support) n'a jamais entendu parler de la règle. Un client, ${camille}, demande à son tour un dédommagement.`;
@@ -276,7 +324,7 @@ async function chapter5() {
 }
 
 async function chapter6() {
-  ui.chapter = 6; ui.why = ""; ui.stages = [];
+  ui.chapter = 7; ui.why = ""; ui.stages = [];
   ui.title = "Karim quitte l'équipe Support : on change la serrure";
   ui.what = "Karim part chez les Ventes. Il ne doit plus lire ce que partage le Support. Claire, la responsable, change la clé de l'équipe.";
   ui.agentNote = "Le poste de Claire relit les solutions et signatures, génère une **nouvelle clé**, envoie au serveur seulement **l'empreinte** du nouveau jeton, puis republie tout sous la nouvelle clé. Le nouveau lien part en privé aux membres restants.";
@@ -297,7 +345,7 @@ async function chapter6() {
 }
 
 async function chapter7() {
-  ui.chapter = 7; ui.stages = []; ui.agentNote = "";
+  ui.chapter = 8; ui.stages = []; ui.agentNote = "";
   ui.title = "La carte de l'équipe : où ça coince, jamais qui";
   const rows = await A("claire").team.pull(0);
   const steps = new Map<string, { n: number; solved: boolean; certified: boolean }>();
@@ -315,7 +363,7 @@ async function chapter7() {
   ui.why = "On mesure le **process**, jamais la personne : impossible de savoir qui a bloqué. La même carte s'affiche dans Screenpipe (carte d'Andrea).";
   render();
   await ask([{ label: "Terminer", act: "ok", primary: true }]);
-  ui.done = true; ui.chapter = 8; render();
+  ui.done = true; ui.chapter = 9; render();
 }
 
 // ---------- affichage ----------
@@ -341,12 +389,13 @@ function render() {
       <li><b>Demande anonyme</b> : sinon l'équipe est sollicitée sans savoir qui bloque ; le serveur ne lit rien.</li>
       <li><b>Certification</b> : la responsable valide la bonne règle, infalsifiable.</li>
       <li><b>Escalade</b> : si personne ne sait, le bon canal Slack et un message prêt.</li>
+      <li><b>La nuit</b> : le poste relit ce qui a suivi, l'IA propose la règle trouvée, la responsable la certifie le matin.</li>
       <li><b>Mémoire d'équipe</b> : le lendemain, la friction ne se repaie pas.</li>
       <li><b>Départ</b> : on change la clé, rien n'est perdu.</li>
       <li><b>Carte</b> : où ça coince, jamais qui.</li></ol>
       <div class="next"><a class="btn primary" href="/parcours">Rejouer</a> <a class="btn" href="/equipe">Voir l'équipe simulée (5 postes)</a> <a class="btn" href="/moi">L'utiliser avec mes collègues</a></div>`;
   } else {
-    $("story").innerHTML = `<div class="chap">Chapitre ${ui.chapter} / 7</div><h2>${esc(ui.title)}</h2>
+    $("story").innerHTML = `<div class="chap">Chapitre ${ui.chapter} / 8</div><h2>${esc(ui.title)}</h2>
       <p class="what">${md(ui.what)}</p>${ui.why ? `<p class="why"><b>Pourquoi ça compte</b> · ${md(ui.why)}</p>` : ""}
       ${ui.countdown ? `<p class="countdown">Personne ne répond… ${ui.countdown}</p>` : ""}
       <div class="acts">${ui.actions.map((a) => `<button data-act="${a.act}" class="${a.primary ? "primary pulse" : ""}">${esc(a.label)}</button>`).join("")}</div>`;
@@ -400,4 +449,4 @@ setInterval(renderServer, 1500);
 let feeding = false;
 setInterval(async () => { if (feeding) return; feeding = true; try { await feedBoard(); } finally { feeding = false; } }, 1500);
 render();
-for (const ch of [chapter1, chapter2, chapter3, chapter4, chapter5, chapter6, chapter7]) await ch();
+for (const ch of [chapter1, chapter2, chapter3, chapter4, chapterNight, chapter5, chapter6, chapter7]) await ch();
