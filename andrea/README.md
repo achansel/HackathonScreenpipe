@@ -12,6 +12,8 @@ Rien ici ne remplace les documents de l'équipe à la racine : ce sont des propo
 | `scripts/collect-episodes.ts` | extrait des épisodes réels de Screenpipe vers `bench/real/` |
 | `scripts/test-receiver.ts` | récepteur local de test (joue le daemon) |
 | `daemon/` | **étape 1 de la proposition** : daemon friction-assist (détection, qualification, notification, relais des clics, 👍/👎). `bun andrea/daemon/main.ts activer`, `relais`, puis lancer ; `test-notif` pour la chaîne sans détection |
+| `offline/` | **étape 3** : traitement hors ligne. `collecter` (rejoue l'historique dans le même découpage que le direct), `apprendre` (étiquette, génère le détecteur, valide), `rapport`, `approuver` (humain), `installer-pipes` |
+| `pipes/` | pipes Screenpipe de nuit `friction-collect` → `friction-learn` (enchaînés par `pipe_completed`) |
 | `screenpipe-patch/` | correctif Screenpipe : boutons `api` traités en Rust sur Mac (non compilé ici) |
 
 Commandes depuis la racine du dépôt, après `source ~/.config/screenpipe/env`.

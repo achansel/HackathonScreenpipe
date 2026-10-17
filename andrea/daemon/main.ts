@@ -12,11 +12,15 @@
 // configuré dans Screenpipe, identifiants évidents masqués.
 import { appendFileSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { KEY, MIN_CONFIDENCE, PIPE_NAME, POLL_MS, PORT, SOLUTION_COOLDOWN_MS, STATE_DIR } from "./config";
+import { KEY, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR } from "./config";
 import { EpisodeBuilder } from "./episodes";
 import { qualify } from "./qualify";
 import { feedbackSince, notify, relayUrl, removeRelay, search, setupRelay } from "./screenpipe";
 import { loadSolutions, saveSolutions, type Solution } from "./solutions";
+import { collect } from "../offline/collect";
+import { approvedDetector } from "../offline/detector";
+import { learn } from "../offline/learn";
+import { offlineToken } from "../offline/token";
 
 const CONSENT = `${STATE_DIR}consent.json`;
 const PAUSED = `${STATE_DIR}paused`;
@@ -58,6 +62,19 @@ function startServer() {
     async fetch(req) {
       const path = new URL(req.url).pathname;
       if (path === "/health") return new Response("ok");
+      // Traitement de nuit, déclenché par nos pipes Screenpipe (jeton dans leur pipe.md).
+      if ((path === "/offline/collect" || path === "/offline/learn") && req.method === "POST") {
+        if (req.headers.get("x-friction-token") !== offlineToken()) return new Response("forbidden", { status: 403 });
+        try {
+          const result = path.endsWith("collect") ? await collect() : await learn();
+          record({ kind: path.slice(1) });
+          if (path.endsWith("learn") && (result as any).better)
+            await notify({ id: `fa-learn-${Date.now()}`, title: "Nouveau détecteur prêt", body: "Il a passé la porte de validation. Relire `rapport`, puis `approuver`.", pipe_name: PIPE_NAME, timeout: 0 });
+          return Response.json(result);
+        } catch (e) {
+          return Response.json({ error: (e as Error).message }, { status: 500 });
+        }
+      }
       if (path !== "/hook" || req.method !== "POST") return new Response("not found", { status: 404 });
       const body = (await req.json().catch(() => ({}))) as Record<string, string>;
       const p = pending.get(body.nonce ?? "");
@@ -93,6 +110,20 @@ function* readEvents() {
   for (const line of readFileSync(EVENTS, "utf8").split("\n")) if (line) yield JSON.parse(line);
 }
 
+// ---- repli du traitement de nuit : si nos pipes n'ont pas tourné aujourd'hui, le daemon s'en charge
+async function nightlyFallback() {
+  const now = new Date();
+  if (now.getHours() !== NIGHTLY_HOUR) return;
+  const today = now.toISOString().slice(0, 10);
+  const ranToday = [...readEvents()].some((e) => e.kind === "offline/learn" && String(e.at).startsWith(today));
+  if (ranToday) return;
+  log("traitement de nuit (repli) : collecte puis apprentissage");
+  const c = await collect();
+  const r = await learn();
+  record({ kind: "offline/learn", fallback: true, added: c.added, better: r.better });
+  if (r.better) await notify({ id: `fa-learn-${Date.now()}`, title: "Nouveau détecteur prêt", body: "Il a passé la porte de validation. Relire `rapport`, puis `approuver`.", pipe_name: PIPE_NAME, timeout: 0 });
+}
+
 // ---- boucle de détection
 async function run() {
   if (!KEY) throw new Error("SCREENPIPE_API_KEY manquant : source ~/.config/screenpipe/env");
@@ -106,6 +137,7 @@ async function run() {
   const lastShown = new Map<string, number>();
   let cursor = Date.now() - 5000;
   let tick = 0;
+  const stats = { skipped: 0, qualified: 0 };
   log(`friction-assist actif (port ${PORT}, ${solutions.length} solutions). « pause » pour couper.`);
 
   for (;;) {
@@ -119,6 +151,14 @@ async function run() {
       cursor = Date.now();
 
       for (const ep of builder.ready(Date.now())) {
+        // Filtre en direct : le détecteur approuvé (appris hors ligne) écarte le travail normal
+        // sans appel au modèle. Sans détecteur approuvé, tout épisode va au modèle.
+        const detector = approvedDetector();
+        if (detector) {
+          const d = detector(ep);
+          if (!d.friction && d.confidence >= SKIP_CONFIDENCE) { stats.skipped++; continue; }
+        }
+        stats.qualified++;
         const v = await qualify(ep, solutions);
         if (debug) log("épisode", { app: ep.app, window: ep.window, titles: ep.titles, text: ep.text, verdict: v });
         else log(`épisode ${ep.app} → ${v ? `${v.detour} (${v.type}/${v.control}) solution=${v.solution_id ?? "aucune"} conf=${v.confiance}` : "non qualifié"}`);
@@ -131,6 +171,8 @@ async function run() {
         log(`notification « ${s.title} » : ${message}`);
       }
       if (++tick % 10 === 0) await pollFeedback(solutions);
+      if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
+      if (tick % 60 === 0) await nightlyFallback();
     } catch (e) {
       log("erreur :", (e as Error).message);
     }

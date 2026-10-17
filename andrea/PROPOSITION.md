@@ -63,6 +63,13 @@ nuit : pipes Screenpipe (collect → learn), diffusés par Teams
   3. **porte de validation** : déployé seulement s'il bat la version courante sur un jeu de test non vu ;
   4. **approbation humaine** (admin), puis exécution comme code fixe (cf. starter : « fixed code, not AI-generated instructions », « unapproved until a person checks it »).
 
+**Implémenté (`offline/`, `pipes/`) et mesuré le 17/10 sur l'historique réel :**
+- collecte = rejeu de l'historique dans le **même** `EpisodeBuilder` que le direct : 2 987 frames + 4 214 événements → 210 épisodes en ~4 s ; incrémentale ensuite (curseur) ;
+- **périmètre** (vie privée, pas classement) : seules les applis de travail sont lues ; jugé sur l'appli, le titre/URL ne compte que pour les navigateurs (frames de `claude.exe`/`explorer.exe` titrées « … - Slack » mesurées) ;
+- étiquetage par le modèle (≤ 150/nuit, cache ; étiquettes humaines prioritaires dans `labels.human.json`) : 108 « aucun » / 42 frictions sur les 150 premiers ;
+- le détecteur est un **filtre avant le modèle** : la porte exige ≥ 90 % des frictions conservées, puis de faire mieux que l'approuvé. Candidat actuel : **97 % des frictions conservées (1 ratée / 31), 15 % du travail normal écarté**, < 1 ms/épisode. Sûr, mais économise peu : il faut des étiquettes humaines et plus de données ;
+- pipes installés via `POST /pipes/install` (planif, trigger, permissions relus OK) ; **exécution en échec** sur notre poste : l'agent Pi de Screenpipe ne démarre pas (`pi-subagents … toToolDeclaration is not a function`), bug de leur côté → **repli** : le daemon lance collecte + apprentissage à 3 h si aucun passage n'a eu lieu. `/offline/*` protégé par jeton (403 sans).
+
 Banc d'essai : `bench/run.mjs` (52 cas synthétiques). Résultats **[mesuré, synthétique, optimiste]** : IA texte+titres F1 97 % / 0 fausse alerte / ~1,1 s ; code généré F1 77 % / 0 ms ; règles à la main 59 % ; titres seuls 58 %.
 
 ## 4. Vocabulaire des frictions

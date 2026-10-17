@@ -1,7 +1,7 @@
 // Transforme le flux de frames et d'événements d'entrée en épisodes :
 // une fenêtre dont le texte a changé puis est resté stable DEBOUNCE_MS.
 // Rien n'est conservé au-delà de LOOKBACK_MS.
-import { DEBOUNCE_MS, IGNORE, LOOKBACK_MS } from "./config";
+import { BROWSERS, DEBOUNCE_MS, IGNORE, LOOKBACK_MS, SCOPE } from "./config";
 import type { Item } from "./screenpipe";
 
 export type Episode = {
@@ -16,6 +16,9 @@ export type Episode = {
 type WindowState = { app: string; window: string; lastWords: Set<string>; delta: string[]; changedAt: number };
 
 const t = (c: Item) => new Date(c.timestamp).getTime();
+const inScope = (app: string, window: string, url = "") => (BROWSERS.test(app) ? SCOPE.test(`${window} ${url}`) : SCOPE.test(app));
+// Identifiant déterministe (fenêtre + instant du changement) : le rejeu hors ligne ne double pas un épisode.
+const hash = (s: string) => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return (h >>> 0).toString(36); };
 const words = (s: string) => s.split(/\s+/).filter(Boolean);
 
 // Texte d'interface répété (barres d'outils, menus) : 5-grammes présents dans ≥ 40 % des
@@ -48,19 +51,18 @@ function clean(app: string, text: string): string[] {
 export class EpisodeBuilder {
   private windows = new Map<string, WindowState>();
   private titles: { at: number; title: string }[] = [];
-  private seq = 0;
 
   addInput(ev: Item) {
     if (!["app_switch", "window_focus"].includes(ev.event_type)) return;
     const title = `${ev.app_name ?? ""} | ${ev.window_title ?? ""}`;
-    if (IGNORE.test(title)) return;
+    if (IGNORE.test(title) || !inScope(ev.app_name ?? "", ev.window_title ?? "", ev.browser_url)) return;
     if (this.titles.at(-1)?.title !== title) this.titles.push({ at: t(ev), title });
   }
 
   addFrame(f: Item) {
     const app = f.app_name ?? "";
     const window = f.window_name ?? "";
-    if (!f.text || IGNORE.test(`${app} ${window}`)) return;
+    if (!f.text || IGNORE.test(`${app} ${window}`) || !inScope(app, window, f.browser_url)) return;
     // Firefox : le texte d'accessibilité peut venir d'un autre onglet (mesuré) → OCR seulement.
     if (/firefox/i.test(app) && f.text_source === "accessibility") return;
     const key = `${app}|${window}`;
@@ -83,7 +85,7 @@ export class EpisodeBuilder {
       if (now - st.changedAt > LOOKBACK_MS) { this.windows.delete(key); continue; }
       if (!st.delta.length || now - st.changedAt < DEBOUNCE_MS) continue;
       out.push({
-        id: `ep${now.toString(36)}${(this.seq++).toString(36)}`,
+        id: `ep${st.changedAt.toString(36)}${hash(key)}`,
         app: st.app,
         window: st.window,
         titles: this.titles.map((x) => x.title).slice(-8),

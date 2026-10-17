@@ -4,15 +4,15 @@ import { API, KEY, MODEL, NOTIFY, RELAY } from "./config";
 const auth = { Authorization: `Bearer ${KEY}` };
 export type Item = Record<string, any>;
 
-export async function search(params: Record<string, string>): Promise<Item[]> {
+export async function search(params: Record<string, string>, max = 1000): Promise<Item[]> {
   const out: Item[] = [];
-  for (let offset = 0; offset < 1000; offset += 200) {
+  for (let offset = 0; offset < max; offset += 200) {
     const q = new URLSearchParams({ limit: "200", offset: String(offset), order: "ascending", ...params });
     const r = await fetch(`${API}/search?${q}`, { headers: auth });
     if (!r.ok) throw new Error(`/search HTTP ${r.status}`);
     const page = ((await r.json()).data ?? []) as { content: Item }[];
+    if (!page.length) break; // une page courte n'est pas la fin : /search déduplique (mesuré)
     out.push(...page.map((p) => p.content));
-    if (page.length < 200) break;
   }
   return out;
 }
