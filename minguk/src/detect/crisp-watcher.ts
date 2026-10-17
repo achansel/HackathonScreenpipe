@@ -8,7 +8,7 @@
  *   avec son compteur « 💬N ». C'est ce qui révèle un message quand l'agent est sur HubSpot.
  */
 import { defined } from "../notify/defined.ts";
-import { type FrameElement, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
+import { conversationText, type FrameElement, inboxRows, openConversation, unreadCount } from "./crisp-inbox.ts";
 
 export type CrispEvent =
 	| { kind: "message"; name: string; preview: string; frameAt: number; detectedAt: number }
@@ -39,17 +39,21 @@ const TAB_TITLE = /^(?:💬\s*(\d+)\s*-\s*)?.+\|\s*Crisp(?:\s+-\s+Memory usage.*
 
 export class CrispWatcher {
 	private readonly options: Required<CrispWatcherOptions>;
-	private cursor: number;
+	/** Un curseur par source : si l'une échoue (Screenpipe occupé), l'autre avance quand même. */
+	private crispCursor: number;
+	private chromeCursor: number;
 	private baseline = true;
 	private readonly seenFrames = new Set<number>();
-	private readonly previews = new Map<string, string>();
+	/** Par client : le dernier texte connu, et si sa ligne était récente (« now », « 1m »). */
+	private readonly rows = new Map<string, { text: string; fresh: boolean }>();
 	private unread = 0;
 	private opened: string | undefined;
 	private ticking: Promise<void> | undefined;
 
 	constructor(options: CrispWatcherOptions) {
 		this.options = { fetch: globalThis.fetch, now: Date.now, freshMinutes: 2, lookbackMs: 60_000, ...defined(options) };
-		this.cursor = this.options.now() - this.options.lookbackMs;
+		this.crispCursor = this.options.now() - this.options.lookbackMs;
+		this.chromeCursor = this.crispCursor;
 	}
 
 	/** Un tour de surveillance ; deux appels simultanés partagent le même tour. */
@@ -60,16 +64,27 @@ export class CrispWatcher {
 		return this.ticking;
 	}
 
+	/**
+	 * Les deux recherches partent l'une après l'autre : en parallèle, Screenpipe répond souvent
+	 * 503 « search is busy ». Une recherche refusée est simplement retentée au tour suivant.
+	 */
 	private async run(): Promise<void> {
-		const since = this.cursor;
-		const [crispFrames, chromeFrames] = await Promise.all([
-			this.search({ browser_url: "app.crisp.chat" }, since),
-			this.search({ app_name: "Google Chrome" }, since),
-		]);
-		for (const item of crispFrames) await this.readCrispFrame(item);
-		for (const item of chromeFrames) this.readTabStrip(item);
-		const latest = [...crispFrames, ...chromeFrames].map((item) => Date.parse(item.content.timestamp));
-		if (latest.length > 0) this.cursor = Math.max(this.cursor, ...latest);
+		const errors: Error[] = [];
+		try {
+			const crispFrames = await this.search({ browser_url: "app.crisp.chat" }, this.crispCursor);
+			for (const item of crispFrames) await this.readCrispFrame(item);
+			this.crispCursor = latest(crispFrames, this.crispCursor);
+		} catch (error) {
+			errors.push(error as Error);
+		}
+		try {
+			const chromeFrames = await this.search({ app_name: "Google Chrome" }, this.chromeCursor);
+			for (const item of chromeFrames) this.readTabStrip(item);
+			this.chromeCursor = latest(chromeFrames, this.chromeCursor);
+		} catch (error) {
+			errors.push(error as Error);
+		}
+		if (errors.length === 2) throw errors[0];
 		this.baseline = false;
 	}
 
@@ -107,14 +122,17 @@ export class CrispWatcher {
 		if (!response.ok) return;
 		const elements = ((await response.json()) as { data?: FrameElement[] }).data ?? [];
 		for (const row of inboxRows(elements)) {
-			if (!row.preview) continue;
-			const known = this.previews.get(row.name);
-			this.previews.set(row.name, row.preview);
-			if (known === row.preview || this.baseline) continue;
-			// Même message, aperçu tronqué différemment par l'OCR : pas un nouveau message.
-			if (known && (known.startsWith(row.preview.replace(/…$/, "")) || row.preview.startsWith(known.replace(/…$/, "")))) continue;
-			if (row.ageMinutes === undefined || row.ageMinutes > this.options.freshMinutes) continue;
-			this.emit({ kind: "message", name: row.name, preview: row.preview, frameAt });
+			const fresh = row.ageMinutes !== undefined && row.ageMinutes <= this.options.freshMinutes;
+			// L'OCR rate parfois l'aperçu de la liste : si la conversation est ouverte, on lit son texte.
+			const text = row.preview || (opened === row.name ? conversationText(elements) : "");
+			const known = this.rows.get(row.name);
+			this.rows.set(row.name, { text: text || known?.text || "", fresh });
+			if (this.baseline || !fresh) continue;
+			// Nouveau message : la ligne vient de devenir récente, ou son aperçu a vraiment changé
+			// (pas seulement tronqué autrement par l'OCR).
+			const changed = Boolean(row.preview && known?.text && !sameText(known.text, row.preview));
+			if (known?.fresh && !changed) continue;
+			this.emit({ kind: "message", name: row.name, preview: text, frameAt });
 		}
 	}
 
@@ -134,4 +152,14 @@ export class CrispWatcher {
 	private emit(event: Detected): void {
 		this.options.onEvent({ ...event, detectedAt: this.options.now() } as CrispEvent);
 	}
+}
+
+function latest(items: SearchItem[], cursor: number): number {
+	return Math.max(cursor, ...items.map((item) => Date.parse(item.content.timestamp)));
+}
+
+/** Deux lectures du même message : l'une commence comme l'autre, aux points de suspension près. */
+function sameText(a: string, b: string): boolean {
+	const [x, y] = [a.replace(/…$/, ""), b.replace(/…$/, "")];
+	return x.startsWith(y) || y.startsWith(x);
 }

@@ -1,10 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { ageMinutes, type FrameElement, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
+import { ageMinutes, conversationText, type FrameElement, inboxRows, openConversation, unreadCount } from "../src/detect/crisp-inbox.ts";
 import { type CrispEvent, CrispWatcher } from "../src/detect/crisp-watcher.ts";
 
 // Deux vraies captures de la boîte Crisp (16 octobre), e-mails et nom de l'agent masqués.
 const frame1089: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-1089.json", import.meta.url)).json();
 const frame1090: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-1090.json", import.meta.url)).json();
+// Le premier vrai message de Jean Dupont (17 octobre) : l'OCR a raté l'aperçu de la liste.
+const frame8486: FrameElement[] = await Bun.file(new URL("./data/crisp-frame-8486.json", import.meta.url)).json();
 
 describe("Lecture de la boîte Crisp", () => {
 	test("la liste des conversations : nom, horodatage, aperçu", () => {
@@ -16,6 +18,11 @@ describe("Lecture de la boîte Crisp", () => {
 
 	test("les pictogrammes lus par l'OCR après l'aperçu sont retirés", () => {
 		expect(inboxRows(frame1089).find((row) => row.name === "Crisp Team")?.preview).toBe("Enfin, nous avons créé quelque…");
+	});
+
+	test("aperçu manqué par l'OCR : le texte se lit dans la conversation ouverte", () => {
+		expect(inboxRows(frame8486)[0]).toMatchObject({ name: "Jean Dupont", ago: "now", preview: "" });
+		expect(conversationText(frame8486)).toBe("Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir.");
 	});
 
 	test("ancienneté", () => {
@@ -51,7 +58,7 @@ function row(top: number, name: string, ago: string, preview: string): FrameElem
 	];
 }
 
-function setup() {
+function setup(options: { busy?: (filter: string) => boolean } = {}) {
 	let now = Date.parse("2026-10-17T10:00:00Z");
 	const frames: FakeFrame[] = [];
 	const events: CrispEvent[] = [];
@@ -61,6 +68,7 @@ function setup() {
 		if (elements) return Response.json({ data: frames.find((frame) => frame.id === Number(elements[1]))?.elements ?? [] });
 		const since = Date.parse(url.searchParams.get("start_time")!);
 		const crisp = url.searchParams.get("browser_url") === "app.crisp.chat";
+		if (options.busy?.(crisp ? "crisp" : "chrome")) return Response.json({ error: "search is busy — retry shortly" }, { status: 503 });
 		const data = frames
 			.filter((frame) => frame.at >= since && (crisp ? frame.url?.includes("app.crisp.chat") : true))
 			.map((frame) => ({ content: { frame_id: frame.id, timestamp: new Date(frame.at).toISOString(), window_name: frame.window, browser_url: frame.url ?? null, text: frame.text ?? "" } }));
@@ -125,6 +133,29 @@ describe("Surveillance de Crisp", () => {
 		t.capture({ window: "Contacts | HubSpot", text: "💬1 - Inbox | Crisp - Memory usage - 192 MB\nContacts | HubSpot" });
 		await t.watcher.tick();
 		expect(t.events).toMatchObject([{ kind: "unread", count: 1, where: "other-tab" }]);
+	});
+
+	test("la vraie capture de Jean Dupont : message détecté avec son texte, sans aperçu dans la liste", async () => {
+		const t = setup();
+		await t.watcher.tick();
+		t.capture({ window: "Jean Dupont | Crisp", url: `${INBOX}session_1`, elements: frame8486 });
+		await t.watcher.tick();
+		expect(t.events.find((event) => event.kind === "message")).toMatchObject({
+			name: "Jean Dupont",
+			preview: "Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir.",
+		});
+	});
+
+	test("Screenpipe occupé sur une recherche : l'autre continue, rien n'est perdu", async () => {
+		let busy = true;
+		const t = setup({ busy: (filter) => busy && filter === "chrome" });
+		await t.watcher.tick();
+		t.capture({ window: "Inbox | Crisp", url: INBOX, elements: row(0.25, "Jean Dupont", "now", "Ma page de réservation est en p...") });
+		await t.watcher.tick();
+		expect(t.events.map((event) => event.kind)).toEqual(["message"]);
+		busy = false;
+		await t.watcher.tick();
+		expect(t.events.map((event) => event.kind)).toEqual(["message"]);
 	});
 
 	test("l'agent ouvre la conversation", async () => {

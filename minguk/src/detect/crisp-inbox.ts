@@ -118,6 +118,39 @@ export function inboxRows(elements: FrameElement[]): InboxRow[] {
 	return rows;
 }
 
+/** Repères de la colonne de droite (fiche du client) : la conversation s'arrête à sa gauche. */
+const PROFILE_PANE = /View .*Profile|Voir le profil|Conversation Routing|Main information|Visitor device/i;
+const NOT_A_MESSAGE = /^(Today|Aujourd'hui|Yesterday|Hier|Start LiveTranslate)$/i;
+
+/**
+ * Le texte de la conversation ouverte : la colonne entre la liste et la fiche du client,
+ * sous « Today » et au-dessus de la barre « Reply ». Utile quand l'OCR rate l'aperçu de la liste.
+ */
+export function conversationText(elements: FrameElement[]): string {
+	const all = lines(elements);
+	const anchors = all.flatMap((line) => line.words.filter((word) => AGO.test(word.text)));
+	if (anchors.length === 0) return "";
+	const listRight = Math.max(...anchors.map((anchor) => anchor.right));
+	const profileLeft = Math.min(0.78, ...all.filter((line) => PROFILE_PANE.test(line.text)).map((line) => line.left));
+	const today = all.find((line) => NOT_A_MESSAGE.test(line.text) && line.left > listRight);
+	const toolbar = all.find((line) => /^(Reply|Répondre)\b/.test(line.text) && line.left > listRight);
+	const text = all
+		.filter(
+			(line) =>
+				line.left > listRight + 0.02 &&
+				line.left < profileLeft - 0.01 &&
+				line.top > (today?.top ?? 0.2) &&
+				line.top < (toolbar?.top ?? 1) &&
+				!NOT_A_MESSAGE.test(line.text),
+		)
+		// L'avatar du client (« JD ») est lu comme un mot au début de la ligne.
+		.map((line) => line.text.replace(/^[A-Z]{2}\s+/, ""))
+		.filter((line) => /\p{L}{2}/u.test(line))
+		.join(" ");
+	// Mot coupé en fin de ligne : « peu- vent » → « peuvent ».
+	return text.replace(/(\p{L})-\s+(\p{Ll})/gu, "$1$2").trim();
+}
+
 /** La conversation ouverte : le titre de l'onglet est « Nom du client | Crisp », précédé d'un compteur s'il y a du non-lu. */
 export function openConversation(windowName: string | null | undefined): string | undefined {
 	const match = (windowName ?? "").replace(/^💬\d+\s*-\s*/u, "").match(/^(.+?)\s*\|\s*Crisp\b/);

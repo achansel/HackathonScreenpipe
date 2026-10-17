@@ -33,17 +33,16 @@ const watcher = new CrispWatcher({
 });
 
 console.log("Écoute de Crisp via Screenpipe. Entrée = « le client vient d'envoyer », Ctrl+C pour arrêter.");
-// Une erreur répétée (Screenpipe qui redémarre) ne s'affiche qu'une fois.
-let lastError = "";
+// Screenpipe refuse parfois une recherche (« search is busy ») : on ne le signale que si ça dure.
+let failures = 0;
 setInterval(() => {
 	watcher
 		.tick()
 		.then(() => {
-			lastError = "";
+			failures = 0;
 		})
 		.catch((error: Error) => {
-			if (error.message !== lastError) console.error(`${time(Date.now())}  erreur : ${error.message} (nouvel essai chaque seconde)`);
-			lastError = error.message;
+			if (++failures === 5) console.error(`${time(Date.now())}  Screenpipe ne répond plus depuis 5 s : ${error.message} (nouvel essai chaque seconde)`);
 		});
 }, 1_000);
 
