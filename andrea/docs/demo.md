@@ -37,7 +37,7 @@ source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && 
 | Temps | Écran | Geste | Ce qu'on voit / dit |
 | --- | --- | --- | --- |
 | 0:00 | — | — | « Quand un process coince, on cherche, on demande sur Slack, on attend. Et le suivant recommence. » |
-| 0:20 | Léa | Jean Dupont écrit dans Crisp : « Ma page de réservation est en panne ». Léa cherche `jean.d@example.com` dans HubSpot : 0 résultat | Notification **« Client introuvable : chercher par domaine »** (solution partagée hier). Léa clique **Ça m'a aidé** |
+| 0:20 | Léa | Jean Dupont écrit dans Crisp : « Ma page de réservation est en panne ». Léa cherche `jd.resto75@resa-paris.test` dans HubSpot : 0 résultat | Notification **« Client introuvable : chercher par domaine »** (solution partagée hier). Léa clique **Ça m'a aidé** |
 | 0:50 | Léa | Jean : « Je veux un dédommagement ». Léa écrit dans Slack `#support` : « On peut offrir quelque chose à un client premium ? » | Aucune solution chez Léa → **demande anonyme** à l'équipe |
 | 1:05 | Karim | — | Notification **« Un collègue bloque : … dédommagement »** → **Partager**. « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | ~4 s après : **« Geste commercial : 1 mois offert maximum »** avec **Copier**. Léa répond à Jean |

@@ -15,7 +15,7 @@ But : des épisodes **réels** du cas d'usage (Crisp + HubSpot + Slack), frictio
 
 | Client | Lien |
 | --- | --- |
-| Jean Dupont | `https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Jean%20Dupont&user_email=jean.d%40example.com&locale=fr` |
+| Jean Dupont | `https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Jean%20Dupont&user_email=jd.resto75%40resa-paris.test&locale=fr` |
 | Sophie Arnaud | `https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Sophie%20Arnaud&user_email=sophie.arnaud%40example.com&locale=fr` |
 | Élodie Marchand | `https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=%C3%89lodie%20Marchand&user_email=elodie.marchand%40example.com&locale=fr` |
 | Pieter Janssens | `https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Pieter%20Janssens&user_email=pieter.janssens%40example.com&locale=fr` |
@@ -30,7 +30,7 @@ But : des épisodes **réels** du cas d'usage (Crisp + HubSpot + Slack), frictio
 
 | # | Ce que tu fais | Attendu |
 | --- | --- | --- |
-| 1 | Jean : « Bonjour, ma page de réservation est en panne, les clients ne peuvent plus réserver. » → HubSpot, chercher exactement `jean.d@example.com` (0 résultat), puis `jean.d` (0) | recherche / client-introuvable |
+| 1 | Jean : « Bonjour, ma page de réservation est en panne, les clients ne peuvent plus réserver. » → HubSpot, chercher exactement `jd.resto75@resa-paris.test` (0 résultat), et reste 3 s sur cet écran | recherche / client-introuvable |
 | 2 | HubSpot : chercher `le-bistro.example` → trouvé, ouvrir la fiche | aucun |
 | 3 | Slack `#support` : « Je signale où un bug de page de réservation ? » | demande_aide / signaler-bug |
 | 4 | HubSpot : créer un ticket, ouvrir la liste des pipelines, choisir « Support OLD », se raviser, prendre « Support » | tatonnement / pipeline-support |

@@ -19,7 +19,7 @@ export const CRISP_CUSTOMERS: CrispCustomer[] = [
 	{
 		key: "jean-dupont",
 		nickname: "Jean Dupont",
-		email: "jean.d@example.com",
+		email: "jd.resto75@resa-paris.test",
 		label: "Le Bistro, Paris · Premium · adresse différente de HubSpot",
 		messages: [
 			{ when: "9 h 05", text: "Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir." },

@@ -43,7 +43,7 @@ Hackathon Screenpipe (42 Paris, 16–18/10, finale dimanche : 3 min de démo + 2
 
 ## Prochaines étapes
 
-1. **Scénario réel** sur l'écran d'Andrea : `bun andrea/daemon/main.ts activer` (par Andrea), puis `bun andrea/daemon/main.ts --debug` ; jouer Jean Dupont (Crisp, Chrome) → recherche HubSpot → question Slack ; lire les journaux, corriger. Étape c validée (« Geste commercial » sur la question Slack, 15:38). **À jouer : la recherche HubSpot à 0 résultat** (`jean.d@example.com`).
+1. **Scénario réel** sur l'écran d'Andrea : `bun andrea/daemon/main.ts activer` (par Andrea), puis `bun andrea/daemon/main.ts --debug` ; jouer Jean Dupont (Crisp, Chrome) → recherche HubSpot → question Slack ; lire les journaux, corriger. Étape c validée (« Geste commercial » sur la question Slack, 15:38). **À jouer : la recherche HubSpot à 0 résultat** (`jd.resto75@resa-paris.test`).
 2. Étiquetage humain : `bun andrea/offline/main.ts etiqueter` (~40 épisodes), puis `apprendre` / `rapport` / `approuver`.
 3. Poster `docs/discord.md` ; compiler le correctif Mac et faire `docs/test-mac.md` ; tester à deux vraies machines.
 4. Voir la carte à l'écran (`screenpipe://live-view/friction-map`).

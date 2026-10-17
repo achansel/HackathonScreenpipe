@@ -48,7 +48,7 @@ https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e
 | --- | --- | --- |
 | Camille Martin | `camille.martin@example.com` | remboursement d'une commande arrivée abîmée |
 | Julien Moreau | `julien.moreau@example.com` | colis jamais reçu, demande de remboursement ou de renvoi |
-| Jean Dupont | `jean.d@example.com` | démo 9 h 05 et 11 h : « Ma page de réservation est en panne », puis demande de dédommagement (introuvable dans HubSpot sous cet e-mail) |
+| Jean Dupont | `jd.resto75@resa-paris.test` | démo 9 h 05 et 11 h : « Ma page de réservation est en panne », puis demande de dédommagement (introuvable dans HubSpot sous cet e-mail) |
 | Lucas Peeters | `lucas.peeters@example.com` | démo 15 h 30 : prospect belge, « Combien pour 3 restaurants ? » |
 
 Ajouter ici chaque nouveau client avec son scénario.
@@ -58,7 +58,7 @@ Documentation Crisp : [lien direct vers le chatbox](https://help.crisp.chat/en/a
 ### Liens des clients de démo
 
 ```
-https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Jean%20Dupont&user_email=jean.d%40example.com&locale=fr
+https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Jean%20Dupont&user_email=jd.resto75%40resa-paris.test&locale=fr
 ```
 
 ```

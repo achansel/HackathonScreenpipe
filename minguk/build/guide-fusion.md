@@ -66,7 +66,7 @@ Ton point faible mesuré : la recherche HubSpot à 0 résultat n'a jamais été 
 
 ```ts
 // format attendu par handleEpisode (andrea/daemon/episodes.ts)
-{ id, app: "Google Chrome", window: "Contacts | HubSpot", titles: [...], text: "Recherche « jean.d@example.com » : 0 résultat. Puis « Jean » : 10 résultats.", at }
+{ id, app: "Google Chrome", window: "Contacts | HubSpot", titles: [...], text: "Recherche « jd.resto75@resa-paris.test » : 0 résultat. Puis « Jean » : 10 résultats.", at }
 ```
 
 Point d'entrée à choisir pendant la session :

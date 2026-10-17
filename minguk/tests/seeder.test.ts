@@ -13,7 +13,7 @@ describe("Traduction en propriétés HubSpot", () => {
 	test("l'adresse Crisp de Jean Dupont n'entre pas dans HubSpot", () => {
 		const props = contactProperties(bistro.contacts[0]!, bistro, ALL);
 		expect(props.email).toBe("jean.dupont@example.com");
-		expect(JSON.stringify(props)).not.toContain("jean.d@example.com");
+		expect(JSON.stringify(props)).not.toContain("jd.resto75@resa-paris.test");
 		expect(props.lifecyclestage).toBe("customer");
 	});
 

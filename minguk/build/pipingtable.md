@@ -103,7 +103,7 @@ C'est le cœur de l'histoire : **la documentation existe, elle est fausse, et la
 
 | Client | Ce qui est préparé | Friction (UseCase.md) |
 | --- | --- | --- |
-| **Le Bistro**, Paris · Jean Dupont | Premium + SMS + acompte, signé en mars. HubSpot : `jean.dupont@example.com` ; dans Crisp il écrit avec **`jean.d@example.com`** | 9 h 05 introuvable · 9 h 20 offre à 4 clics · 9 h 40 bug · 11 h geste commercial |
+| **Le Bistro**, Paris · Jean Dupont | Premium + SMS + acompte, signé en mars. HubSpot : `jean.dupont@example.com` ; dans Crisp il écrit avec **`jd.resto75@resa-paris.test`** | 9 h 05 introuvable · 9 h 20 offre à 4 clics · 9 h 40 bug · 11 h geste commercial |
 | **Le Bistro** (doublon) | même nom, sans contact ni transaction | 9 h 05 : plusieurs « Bistro » |
 | **Maison Pivoine**, Nantes · Élodie Marchand | signée il y a 3 jours par Thomas, **conditions particulières vides** | 14 h : « Thomas m'a promis l'installation gratuite » |
 | **Le Petit Zinc**, Bordeaux · Luc Fabre | contrat envoyé, **pas de SIREN** | Thomas ne peut pas clôturer |

@@ -112,7 +112,7 @@ const SCENARIO: Restaurant[] = [
 				firstname: "Jean",
 				lastname: "Dupont",
 				email: "jean.dupont@example.com",
-				crispEmail: "jean.d@example.com",
+				crispEmail: "jd.resto75@resa-paris.test",
 				phone: phone(1001),
 				jobtitle: "Gérant",
 			},

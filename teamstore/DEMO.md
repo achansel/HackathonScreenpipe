@@ -58,7 +58,7 @@ Ensuite :
 | --- | --- | --- | --- |
 | 0:00 | — | — | « Quand un process coince, on cherche, on demande sur Slack, on attend. Et le suivant recommence. » |
 | 0:15 | simulateur | Jean Dupont envoie son message dans Crisp | Un **vrai** message arrive dans la boîte Crisp de Léa. |
-| 0:25 | Léa | elle cherche `jean.d@example.com` dans HubSpot : 0 résultat | Le démon détecte la friction. Léa connaît la règle : **« Client introuvable : chercher par domaine »** s'affiche tout de suite. |
+| 0:25 | Léa | elle cherche `jd.resto75@resa-paris.test` dans HubSpot : 0 résultat | Le démon détecte la friction. Léa connaît la règle : **« Client introuvable : chercher par domaine »** s'affiche tout de suite. |
 | 0:50 | simulateur, puis Léa | Jean : « Je veux un dédommagement ». Léa demande dans Slack #support | Le démon n'a pas la solution : une **demande anonyme** part à l'équipe. |
 | 1:05 | Karim | notification **« Un collègue bloque… »**, il clique **Partager** (c'est un lien, il marche sur Mac) | « Karim ne sait pas qui demande. » |
 | 1:15 | Léa | — | Quelques secondes plus tard, la solution arrive dans Screenpipe. Léa répond à Jean. |
