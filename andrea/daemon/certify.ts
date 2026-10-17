@@ -21,7 +21,10 @@ type Hooks = {
   log: (...a: unknown[]) => void;
 };
 
+let retryAt = 0; // Screenpipe ne répond pas aux notifications : on attend 1 min avant de réessayer
+
 export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
+  if (Date.now() < retryAt) return;
   const seen: Record<string, true> = existsSync(SEEN) ? JSON.parse(readFileSync(SEEN, "utf8")) : {};
   let sent = 0;
   for (const t of store.teams.filter((x) => x.isAdmin)) {
@@ -30,7 +33,12 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
       if (seen[key] || !r.data || sent >= MAX_PER_POLL) continue;
       sent++;
       // Marquée « vue » seulement si la notification est vraiment partie (sinon, nouvel essai au tour suivant).
-      const done = (message: string) => { if (!message.startsWith("NON AFFICHÉE")) { seen[key] = true; writeFileSync(SEEN, JSON.stringify(seen)); } };
+      const done = (message: string) => {
+        if (message.startsWith("NON AFFICHÉE")) { retryAt = Date.now() + 60_000; return false; }
+        seen[key] = true;
+        writeFileSync(SEEN, JSON.stringify(seen));
+        return true;
+      };
       const d = r.data;
       const edit = { id: "edit", label: "Rédiger", type: "link", url: PAGE_URL };
       if (d.type === "proposition") {
@@ -53,8 +61,8 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           timeout: 0,
           actions: [{ id: "certify", label: "Certifier", type: "api", url: relayUrl, method: "POST", primary: true, body: { action: "certify", episode, nonce } }, edit],
         });
-        done(message);
         hooks.log(`proposition de la nuit à certifier : « ${d.title} » (${message})`);
+        if (!done(message)) return;
       } else if (d.type === "attente") {
         const message = await notify({
           id: `fa-doc-${r.seq}`,
@@ -65,8 +73,8 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           timeout: 0,
           actions: [{ ...edit, primary: true }],
         });
-        done(message);
         hooks.log(`étape à documenter : « ${d.step} » (${message})`);
+        if (!done(message)) return;
       }
     }
   }
