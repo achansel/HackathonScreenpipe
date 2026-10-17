@@ -72,7 +72,9 @@ switch (cmd) {
     const KEYS: Record<string, string> = { "1": "blocage", "2": "demande_aide", "3": "recherche", "4": "tatonnement", "5": "parcours", "6": "ressaisie", "7": "contournement", "8": "attente_relance", "0": "aucun" };
     const human: Record<string, string> = existsSync(HUMAN_LABELS) ? JSON.parse(readFileSync(HUMAN_LABELS, "utf8")) : {};
     const model: Record<string, string> = existsSync(`${STATE_DIR}labels.model.json`) ? JSON.parse(readFileSync(`${STATE_DIR}labels.model.json`, "utf8")) : {};
-    const todo = loadEpisodes().filter((e) => !human[e.id]);
+    // --depuis HH:MM (aujourd'hui) : seulement les épisodes d'une session de scénarios
+    const since = arg("depuis") ? new Date(new Date().toDateString() + " " + arg("depuis")).getTime() : 0;
+    const todo = loadEpisodes().filter((e) => !human[e.id] && e.at >= since);
     const h = (id: string) => [...id].reduce((a, c) => (Math.imul(a ^ c.charCodeAt(0), 16777619) >>> 0), 2166136261);
     const n = Number(arg("n") ?? 40);
     const frictions = todo.filter((e) => model[e.id] && model[e.id] !== "aucun").sort((a, b) => h(a.id) - h(b.id));
