@@ -39,7 +39,7 @@ La page d'accueil s'ouvre toute seule dans le navigateur. Elle propose trois ent
 
 | Page | Pour quoi |
 | --- | --- |
-| **Parcours guidé** (`/parcours`) | **Comprendre en 5 minutes.** La journée de Léa en 7 chapitres : on voit son écran (Crisp, HubSpot, Slack, Notion), ce que fait l'agent à chaque étape, ce que reçoivent ses collègues, et ce que voit le serveur. On clique soi-même, ou « Mode présentation » pour que ça défile seul. Les équipes et les blocs chiffrés sont réels. |
+| **Parcours guidé** (`/parcours`) | **Comprendre en 5 minutes** ([guide : PARCOURS.md](PARCOURS.md), [le reproduire : PARCOURS-REPRODUIRE.md](PARCOURS-REPRODUIRE.md)). La journée de Léa en 8 chapitres : on voit son écran (Crisp, HubSpot, Slack, Notion), ce que fait l'agent à chaque étape, ce que reçoivent ses collègues, et ce que voit le serveur. On clique soi-même, ou « Mode présentation » pour que ça défile seul. Les équipes et les blocs chiffrés sont réels. |
 | **Équipe simulée** (`/equipe`) | Les 5 collègues côte à côte, le scénario en 10 étapes et les attaques : pour montrer au jury. |
 | **Mon poste** (`/moi`) | L'usage réel, chacun sur sa machine (voir plus bas). Toujours sur le stockage de l'équipe (`team.env`) s'il est configuré, pour voir les demandes des démons. |
 | **Répétition** (`/repetition`) | **Répéter la démo avec les vrais outils** : le déroulé d'Andrea, pas à pas. Tu joues les gestes dans Crisp, HubSpot et Slack ; le démon et Screenpipe réagissent ; la page coche chaque étape quand la vraie notification arrive, avec le délai. Détail : [DEMO.md](DEMO.md). |
@@ -273,6 +273,7 @@ Dans `teamstore/.data/`, ignoré par git.
 
 ## Pour aller plus loin
 
+- [PARCOURS.md](PARCOURS.md) : le parcours guidé, chapitre par chapitre, et comment le présenter ; [PARCOURS-REPRODUIRE.md](PARCOURS-REPRODUIRE.md) : comment il est construit, pour le refaire ou l'adapter.
 - [RAPPORT.md](RAPPORT.md) : le rapport d'ensemble (ce qui a été construit, choix, mesures, limites, suite).
 
 - [FICHE.md](FICHE.md) : ce qui a été construit, les choix, les tests, les limites.
