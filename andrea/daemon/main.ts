@@ -59,16 +59,27 @@ const pending = new Map<string, { episode: string; at: number; handler: (action:
 const register = (nonce: string, episode: string, handler: (action: string) => Promise<void>) =>
   pending.set(nonce, { episode, at: Date.now(), handler });
 
-// ---- notification d'aide : titre = la réponse, 2 boutons max, pas d'emoji ni de « ! »
+// ---- notification d'aide : titre = la réponse, pas d'emoji ni de « ! ».
+// Retour visible d'emblée par nos propres boutons (sous Windows, les 👍/👎 de Screenpipe sont
+// cachés dans le menu « … ») ; les deux clics arrivent au daemon par le relais.
 function helpNotification(episode: string, s: Solution) {
-  const nonce = randomBytes(12).toString("hex");
-  register(nonce, episode, async (action) => {
-    record({ kind: "click", action, episode, solution: s.id });
-    log(`clic « ${action} » sur ${s.id}`);
-  });
+  const helped = randomBytes(12).toString("hex");
+  const notThis = randomBytes(12).toString("hex");
+  const onClick = async (action: string) => {
+    pending.delete(action === "helped" ? notThis : helped); // un seul retour par notification
+    const rating = action === "helped" ? "up" : "down";
+    s.score = (s.score ?? 0) + (rating === "up" ? 1 : -1);
+    saveSolutions(solutions);
+    record({ kind: "feedback", source: "bouton", rating, episode, solution: s.id });
+    log(`retour « ${action} » sur ${s.id} (score ${s.score})`);
+  };
+  register(helped, episode, onClick);
+  register(notThis, episode, onClick);
   const actions: Record<string, unknown>[] = [
     { id: "helped", label: "Ça m'a aidé", type: "api", url: relayUrl, method: "POST", primary: true,
-      body: { action: "helped", episode, nonce } },
+      body: { action: "helped", episode, nonce: helped } },
+    { id: "not-this", label: "Pas ça", type: "api", url: relayUrl, method: "POST",
+      body: { action: "not-this", episode, nonce: notThis } },
   ];
   if (s.copy) actions.push({ id: "copy", label: "Copier", type: "copy", value: s.copy });
   return {
@@ -374,7 +385,7 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
     const ep = `test${Date.now().toString(36)}`;
     const message = await notify(helpNotification(ep, s));
     record({ kind: "shown", episode: ep, solution: s.id, test: true, message });
-    log(`notification de test « ${s.title} » : ${message}. Clique « Ça m'a aidé » ou donne un 👍/👎 (5 min).`);
+    log(`notification de test « ${s.title} » : ${message}. Clique « Ça m'a aidé » ou « Pas ça » (5 min).`);
     const end = Date.now() + 300_000;
     let closedLogged = false;
     while (Date.now() < end) {
