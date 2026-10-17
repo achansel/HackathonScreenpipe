@@ -146,7 +146,11 @@ export class RpcTeamStore implements TeamStore {
       try {
         for (const r of await t.pull(afterId, kind)) {
           if (kind === "request" && r.data?.requestId) this.requestTeam.set(r.data.requestId, t);
-          rows.push({ id: r.seq, at: typeof r.data?.at === "string" ? r.data.at : "", payload: { ...r.data, team: t.name } });
+          // Date approximative tirée du contenu chiffré (le serveur n'en donne aucune) : demande (at, arrondie
+          // à 10 min), solution partagée (sharedAt), signature (day). Sert aux filtres de team.ts et de la carte.
+          const d = r.data ?? {};
+          const at = [d.at, d.sharedAt, d.day, d.reviewed].find((x) => typeof x === "string" && !Number.isNaN(Date.parse(x))) ?? "";
+          rows.push({ id: r.seq, at, payload: { ...d, team: t.name } });
         }
         this.denied.delete(t.id);
       } catch (e) {

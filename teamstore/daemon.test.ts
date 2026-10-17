@@ -13,7 +13,9 @@ mock.module("../andrea/daemon/screenpipe", () => ({
   notify: async (p: any) => { notified.push(p); return "sent successfully"; },
   relayUrl: "http://127.0.0.1:3030/connections/n8n/proxy?instance=test",
 }));
+mock.module("../andrea/daemon/steps", () => ({ canonicalSteps: async (labels: string[]) => new Map(labels.map((l) => [l, l])) }));
 const { TeamSync } = await import("../andrea/daemon/team");
+const { buildMap } = await import("../andrea/daemon/map");
 const { RpcTeamStore, saveMemberships } = await import("../andrea/daemon/teamstore");
 const { TEAMS_FILE, STATE_DIR } = await import("../andrea/daemon/config");
 const seed = (await import("../andrea/daemon/solutions.seed.json")).default as any[];
@@ -83,6 +85,14 @@ test("la responsable certifie une solution → le cache de Karim la marque certi
   const s = karimSolutions.find((x: any) => x.id === "geste-commercial");
   expect(s.certified).toBe(true);
   expect(s.team).toBe("Support");
+});
+
+test("la carte d'équipe (map.ts) se construit sur le stockage RPC : signatures comptées, étape résolue", async () => {
+  await karim.sign({ friction: true, detour: "demande_aide", type: "unclear", control: "required", step: geste.step, solution_id: null, confiance: 0.9 });
+  const map = await buildMap(karimStore);
+  const row = map.etapes.items.find((i: any) => i.label === geste.step);
+  expect(map.total.value).toBe("moins de 5");
+  expect(row?.detail).toContain("solution partagée");
 });
 
 test("Karim retiré du Support (rotation) : son daemon continue avec Ventes et le signale une fois", async () => {

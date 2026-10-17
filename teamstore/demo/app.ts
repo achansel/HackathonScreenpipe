@@ -151,6 +151,9 @@ class Machine {
     this.log(`« ${t.name} » rejointe (époque ${t.epoch})`);
   }
   async friction(f: Friction) {
+    // Signature anonyme pour la carte d'équipe d'Andrea (map.ts) : étape + type, au jour près, comme le démon.
+    const signTo = routeTeams(this.teams.filter((t) => this.st.status[t.id] === "ok"), f.step);
+    for (const t of signTo) await t.publish("signature", { step: f.step, type: f.type, control: f.control, detour: f.detour, day: today() });
     const local = this.st.solutions.find((s) => s.step === f.step);
     if (local) {
       this.log(`friction « ${f.label} » : solution en cache, rien ne sort de la machine`);
