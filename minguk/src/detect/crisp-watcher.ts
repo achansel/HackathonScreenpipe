@@ -99,6 +99,9 @@ export class CrispWatcher {
 			const windowsFrames = await this.search({ content_type: "ocr", app_name: "chrome.exe" }, this.windowsCursor);
 			for (const item of windowsFrames) {
 				if (CRISP_WINDOW.test(item.content.window_name ?? "")) await this.readCrispFrame(item);
+				// Alt+Tab (« Task Switching ») : la seule capture lisible de la liste Crisp en répétition (mesuré
+				// le 17/10, 23:31:32 ; les captures de l'onglet n'avaient que la barre d'outils). Liste seulement.
+				else if (item.content.text?.includes("app.crisp.chat")) await this.readCrispFrame(item, false);
 				else this.readTabStrip(item);
 			}
 			this.windowsCursor = latest(windowsFrames, this.windowsCursor);
@@ -126,15 +129,16 @@ export class CrispWatcher {
 		return { Authorization: `Bearer ${this.options.apiKey}` };
 	}
 
-	private async readCrispFrame(item: SearchItem): Promise<void> {
+	private async readCrispFrame(item: SearchItem, crispWindow = true): Promise<void> {
 		const { frame_id: frameId, timestamp, window_name: windowName } = item.content;
 		if (frameId === undefined || this.seenFrames.has(frameId)) return;
 		this.seenFrames.add(frameId);
 		const frameAt = Date.parse(timestamp);
 
-		this.noteUnread(unreadCount(windowName), "crisp", frameAt);
-		const opened = openConversation(windowName);
-		if (opened && opened !== this.opened) {
+		// Hors de la fenêtre Crisp, le titre ne dit rien du compteur ni de la conversation ouverte.
+		if (crispWindow) this.noteUnread(unreadCount(windowName), "crisp", frameAt);
+		const opened = crispWindow ? openConversation(windowName) : this.opened;
+		if (crispWindow && opened && opened !== this.opened) {
 			this.opened = opened;
 			if (!this.baseline) this.emit({ kind: "opened", name: opened, frameAt });
 		}
@@ -156,7 +160,7 @@ export class CrispWatcher {
 			if (!kept || (fresh && !kept.fresh)) byName.set(fold(name), { row, fresh, name });
 		}
 		for (const [key, { row, fresh, name }] of byName) {
-			const isOpen = opened === name;
+			const isOpen = crispWindow && opened === name;
 			// Le texte complet se lit dans la conversation ouverte ; sinon, l'aperçu de la liste.
 			const text = (isOpen && (row.preview ? fullMessage(elements, row.preview) : conversationText(elements))) || row.preview;
 			const known = this.rows.get(key);
