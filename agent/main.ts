@@ -21,8 +21,9 @@
 // Screenpipe (identifiants évidents masqués) ; l'équipe ne reçoit que des blocs chiffrés sans identité.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
+import { fileURLToPath } from "node:url";
 import {
-  API, CALL, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, PIPE_NAME, POLL_MS, PORT, SIM,
+  API, CALL, CRISP, DATABASE_URL, DOSSIER_MS, INSTANCE, KEY, LABEL, MIN_CONFIDENCE, NIGHTLY_HOUR, OFFLINE, PIPE_NAME, POLL_MS, PORT, SIM,
   SKIP_CONFIDENCE, SOLUTION_COOLDOWN_MS, STATE_DIR, TEAM_DIR, TEAM_KEY_FILE, TEAM_POLL_MS,
 } from "./config";
 import { type CustomerCard, HubSpotLookup } from "../integrations/src/assist/hubspot-lookup";
@@ -74,8 +75,13 @@ function* readEvents() {
 
 // ---- clics relayés : nonce émis par ce daemon → action. /notify est ouvert à tout programme.
 const pending = new Map<string, { episode: string; at: number; handler: (action: string) => Promise<void> }>();
-const register = (nonce: string, episode: string, handler: (action: string) => Promise<void>) =>
+const NONCE_TTL_MS = 24 * 3600_000; // une notification en attente ne reste pas cliquable indéfiniment
+const register = (nonce: string, episode: string, handler: (action: string) => Promise<void>) => {
+  for (const [k, v] of pending) if (Date.now() - v.at > NONCE_TTL_MS) pending.delete(k);
   pending.set(nonce, { episode, at: Date.now(), handler });
+};
+const paused = () => existsSync(PAUSED);
+const unregister = (nonce: string) => { pending.delete(nonce); };
 
 // ---- notification d'aide : titre = la réponse, pas d'emoji ni de « ! ».
 // Retour visible d'emblée par nos propres boutons (sous Windows, les 👍/👎 de Screenpipe sont
@@ -189,6 +195,7 @@ function callCardNotification(meetingId: number, card: CustomerCard) {
 const calls = CALL && !SIM
   ? new CallEpisodes({
       onCallStart: ({ meetingId, customer }) => {
+        if (paused()) return;
         log(`appel en cours (réunion ${meetingId})${customer ? " : client nommé par le titre" : ""}`);
         if (!customer) return;
         dossier = { name: customer, text: "(appel téléphonique en cours)", at: Date.now() };
@@ -201,7 +208,7 @@ const calls = CALL && !SIM
       },
       onCustomerSentence: (text) => { if (dossier) dossier = { ...dossier, text, at: Date.now() }; },
       onCallEnd: () => log("appel terminé"),
-      onEpisode: (ep) => void handleEpisode(ep).catch((e) => log("appel :", (e as Error).message)),
+      onEpisode: (ep) => { if (!paused()) void handleEpisode(ep).catch((e) => log("appel :", (e as Error).message)); },
     })
   : null;
 function listenToCalls() {
@@ -260,8 +267,8 @@ async function handleEpisode(ep: Episode) {
     const shownKey = card ? `${s.id}|${card.contactId}` : s.id;
     if (Date.now() - (lastShown.get(shownKey) ?? 0) < SOLUTION_COOLDOWN_MS) { stage("help", "skip", "déjà montrée il y a peu"); return { verdict: v, cooldown: true }; }
     const n = card ? cardNotification(ep.id, s, card) : helpNotification(ep.id, s);
+    lastShown.set(shownKey, Date.now()); // avant l'envoi : deux épisodes jugés en parallèle ne notifient pas deux fois
     const message = await notify(n);
-    lastShown.set(shownKey, Date.now());
     record({ kind: "shown", episode: ep.id, solution: s.id, detour: v.detour, type: v.type, control: v.control, message });
     log(`notification « ${n.title.replace(LABEL, "")} »${card ? " (fiche client)" : ""} : ${message}`);
     helped(Date.now() - ep.at, n.title.replace(LABEL, ""));
@@ -297,6 +304,7 @@ function startServer() {
       if (path === "/health") return new Response("ok");
       if ((path === "/offline/collect" || path === "/offline/learn") && req.method === "POST") {
         if (req.headers.get("x-friction-token") !== offlineToken()) return new Response("forbidden", { status: 403 });
+        if (!OFFLINE || paused()) return Response.json({ error: OFFLINE ? "en pause" : "collecte hors ligne non activée (FRICTION_OFFLINE=1)" }, { status: 409 });
         try {
           const result = path.endsWith("collect") ? await collect() : await learn();
           record({ kind: path.slice(1) });
@@ -315,9 +323,9 @@ function startServer() {
       if (path !== "/hook" || req.method !== "POST") return new Response("not found", { status: 404 });
       const body = (await req.json().catch(() => ({}))) as Record<string, string>;
       const p = pending.get(body.nonce ?? "");
-      if (!p || p.episode !== body.episode) return new Response("unknown nonce", { status: 403 });
+      if (!p || p.episode !== body.episode || Date.now() - p.at > NONCE_TTL_MS) return new Response("unknown nonce", { status: 403 });
       pending.delete(body.nonce);
-      await p.handler(String(body.action ?? ""));
+      try { await p.handler(String(body.action ?? "")); } catch (e) { log("clic non traité :", (e as Error).message); return Response.json({ error: (e as Error).message }, { status: 500 }); }
       return new Response("ok");
     },
   });
@@ -343,7 +351,7 @@ async function pollFeedback() {
 // ---- repli du traitement de nuit : si nos pipes n'ont pas tourné aujourd'hui, le daemon s'en charge
 async function nightlyFallback() {
   const now = new Date();
-  if (SIM || now.getHours() !== NIGHTLY_HOUR) return;
+  if (!OFFLINE || SIM || paused() || now.getHours() !== NIGHTLY_HOUR) return;
   const today = now.toISOString().slice(0, 10);
   if ([...readEvents()].some((e) => e.kind === "offline/learn" && String(e.at).startsWith(today))) return;
   log("traitement de nuit (repli) : collecte puis apprentissage");
@@ -375,7 +383,7 @@ async function startTeam() {
     const store = new RpcTeamStore(log);
     await store.init();
     teamStore = traced(store);
-    team = new TeamSync(store, solutions, { register, helpNotification, record, log });
+    team = new TeamSync(store, solutions, { register, unregister, paused, helpNotification, record, log });
     log("équipe connectée par RPC (blocs chiffrés par équipe, sans identité)");
     return;
   }
@@ -384,7 +392,7 @@ async function startTeam() {
     return;
   }
   teamStore = new PostgresTeamStore(teamKey());
-  team = new TeamSync(teamStore, solutions, { register, helpNotification, record, log });
+  team = new TeamSync(teamStore, solutions, { register, unregister, paused, helpNotification, record, log });
   log("équipe connectée (blocs chiffrés, sans identité)");
 }
 
@@ -404,6 +412,7 @@ async function run() {
   const MAX_IN_FLIGHT = 3;
   let cursor = Date.now() - 5000;
   let tick = 0;
+  let mapInFlight = false;
   log(`agent ${SIM ? "en SIMULATION (aucun écran lu)" : "actif"} (port ${PORT}, ${solutions.length} solutions). « pause » pour couper.`);
 
   for (;;) {
@@ -435,9 +444,13 @@ async function run() {
       // Responsable d'équipe : règles de la nuit à certifier, étapes à documenter (notifications).
       if (teamStore instanceof RpcTeamStore && tick % 15 === 0) await pollProposals(teamStore, { register, record, log }).catch((e) => debug && log("propositions :", (e as Error).message));
       if (tick % 300 === 0) log(`épisodes écartés par le détecteur : ${stats.skipped}, envoyés au modèle : ${stats.qualified}`);
-      if (tick % 60 === 0) await nightlyFallback();
-      // Vue d'équipe republiée toutes les 30 s : en démo, elle bouge pendant qu'on parle. Une erreur ne bloque pas la boucle.
-      if (teamStore && !INSTANCE && tick % 30 === 0) await publishMap(teamStore).catch((e) => debug && log("vue d'équipe :", (e as Error).message));
+      if (tick % 60 === 0) void nightlyFallback().catch((e) => log("traitement de nuit :", (e as Error).message));
+      // Vue d'équipe republiée toutes les 30 s, hors de la boucle de lecture : ses appels au modèle (regroupement des
+      // étapes) ne doivent pas retarder la lecture de l'écran. Une publication à la fois.
+      if (teamStore && !INSTANCE && tick % 30 === 0 && !mapInFlight) {
+        mapInFlight = true;
+        void publishMap(teamStore).catch((e) => debug && log("vue d'équipe :", (e as Error).message)).finally(() => { mapInFlight = false; });
+      }
     } catch (e) {
       if (e instanceof ScreenpipeClosed) {
         log(`${e.message}. Nouvel essai dans 30 s.`);
@@ -449,7 +462,7 @@ async function run() {
 
 // ---- simulation : un processus par membre de l'équipe simulée
 async function simulate() {
-  const self = new URL(import.meta.url).pathname;
+  const self = fileURLToPath(import.meta.url);
   const env = (m: (typeof SIM_TEAM)[number]) => ({ ...process.env, FRICTION_INSTANCE: m.name, FRICTION_PORT: String(m.port), FRICTION_SIM: "1", FRICTION_SEED: m.seed ? "1" : "0" });
   for (const m of SIM_TEAM) await Bun.spawn(["bun", self, "relais"], { env: env(m), stdout: "inherit", stderr: "inherit" }).exited;
   const procs = SIM_TEAM.map((m) => Bun.spawn(["bun", self, ...(debug ? ["--debug"] : [])], { env: env(m), stdout: "inherit", stderr: "inherit" }));
@@ -468,7 +481,7 @@ switch (cmd) {
 - lit les frames et les changements de fenêtre de Screenpipe des 3 dernières minutes, dans le périmètre de travail ;
 - envoie le texte nouveau d'une fenêtre (identifiants évidents masqués) au modèle choisi dans Screenpipe ;
 - affiche une aide quand une solution correspond ; sinon publie une demande anonyme (étape + type, sans texte) ;
-- n'écrit aucun texte d'écran sur disque. « pause » coupe tout, « desactiver » retire le consentement.`);
+- n'écrit aucun texte d'écran sur disque (sauf la collecte hors ligne, FRICTION_OFFLINE=1, hors démo). « pause » coupe tout, « desactiver » retire le consentement.`);
     break;
   case "desactiver":
     rmSync(CONSENT, { force: true });

@@ -48,8 +48,9 @@ export class LocalTeamServer {
     if (ct.length > 24000) throw new RpcError(`new row for relation "blobs" violates check constraint "blobs_ciphertext_check"`, 400, "23514");
     const day = new Date().toISOString().slice(0, 10);
     if ((this.db.query("select count(*) n from blobs where team_id = ? and day = ?").get(t.id, day) as any).n >= 2000) throw new RpcError("quota quotidien atteint");
-    return Number(this.db.query("insert into blobs (team_id, kind, epoch, ciphertext, day, expires_at) values (?, ?, ?, ?, ?, ?) returning seq")
-      .get(t.id, a.p_kind, t.epoch, ct, day, Date.now() + TTL[a.p_kind] * DAY)!.seq);
+    const row = this.db.query("insert into blobs (team_id, kind, epoch, ciphertext, day, expires_at) values (?, ?, ?, ?, ?, ?) returning seq")
+      .get(t.id, a.p_kind, t.epoch, ct, day, Date.now() + TTL[a.p_kind] * DAY) as { seq: number };
+    return Number(row.seq);
   }
   list_blobs(a: any) {
     const t = this.team(a.p_team);

@@ -8,7 +8,7 @@ Stockage de blocs chiffrés côté poste pour ce que l'agent partage : demandes 
 | `server/` | `schema.sql` + `migrations/` (Supabase : Postgres + RPC, à coller dans l'éditeur SQL) ; `local-server.ts` (mêmes 6 RPC sur SQLite, sans compte : `bun teamstore/server/local-server.ts`, port 3001, `--heberger` pour écouter sur le réseau) ; `local-db.sh` (Postgres + PostgREST en Docker, pour tester le vrai schéma). |
 | `nuit/` | `index.ts` : boucle de nuit, relit dans Screenpipe les 15 min après chaque friction sans réponse, l'IA propose une règle sans nom (bloc `candidate`), certifiée depuis une notification. `eval.ts` : évaluation avec le vrai modèle. |
 | `board/` | Tableau d'équipe (attente, résolues, certifiées, fil) → Live View « Frictions de l'équipe ». |
-| `cli.ts` | `verifier`, `nuit [--exemple] [--depuis HH:MM] [--sans-publier]`, `equipe-demo`. |
+| `cli.ts` | `verifier`, `nuit [--exemple [--cas <libellé>]] [--depuis HH:MM] [--lien <lien>] [--sans-publier]`, `equipe-demo`. |
 | `tests/` | `tests.sh` lance tout : unitaires (`nuit.test.ts`, `board.test.ts`), bout en bout sur le serveur local (`e2e.ts`), circuit de l'agent (`daemon.test.ts`). |
 | `mesures/` | Résultats (`*.json`) et `perf.ts`. |
 | `dashboard/` | Pages web : ébauche et démo, voir [dashboard/README.md](dashboard/README.md). |

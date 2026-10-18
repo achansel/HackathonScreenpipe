@@ -82,7 +82,7 @@ async function listAll(store: TeamStore, kind: Kind) {
 /** Remplit chaque bloc de la Live View. Renvoie les blocs mis à jour. */
 export async function publishMap(store: TeamStore): Promise<string[]> {
   const payloads = await buildMap(store);
-  const r = await fetch(`${API}/outputs/targets?pipe=${MAP_PIPE}`, { headers: auth });
+  const r = await fetch(`${API}/outputs/targets?pipe=${MAP_PIPE}`, { headers: auth, signal: AbortSignal.timeout(10_000) });
   if (!r.ok) throw new Error(`/outputs/targets HTTP ${r.status}`);
   const targets = ((await r.json()).data ?? []) as { id: string; revision: number }[];
   const done: string[] = [];
@@ -93,6 +93,7 @@ export async function publishMap(store: TeamStore): Promise<string[]> {
     const s = await fetch(`${API}/outputs/targets/${encodeURIComponent(t.id)}/submit`, {
       method: "POST",
       headers: { ...auth, "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(10_000),
       body: JSON.stringify({ target_revision: t.revision, source_pipe: MAP_PIPE, payload }),
     });
     if (!s.ok) throw new Error(`soumission ${t.id} : HTTP ${s.status} ${(await s.text()).slice(0, 200)}`);

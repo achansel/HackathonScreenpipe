@@ -53,6 +53,13 @@ Détail, méthode et fichiers sources : [mesures.md](mesures.md).
 
 ## Limites
 
+Relecture technique du 18/10 (trois passes, voir le journal git) : corrigé ce qui tenait en quelques lignes, le reste est écrit ici plutôt que caché.
+
+- Mémoire d'équipe : la signature de certification couvre le contenu de la règle, pas l'équipe ni l'époque ni une date. Un membre pourrait republier une ancienne version certifiée, qui resterait « certifiée ». La clé publique de la responsable voyage dans le lien d'invitation (confiance au premier lien, pas d'empreinte affichée). `expires_at` côté serveur date chaque bloc à la seconde. En `--heberger`, le serveur local parle HTTP en clair sur le réseau.
+- Boucle de nuit : le filtre d'identité est une liste de prénoms de la fiction plus e-mail/téléphone ; les noms d'entreprises passent. La mesure « 0 fuite » utilise ce même filtre.
+- Collecte hors ligne (`agent/offline/`) : seule partie qui écrit du texte d'écran sur disque ; désormais seulement avec `FRICTION_OFFLINE=1`, jamais dans la démo.
+- Le modèle reçoit les titres de fenêtres tels quels (un nom de client dans « Jean Dupont | Crisp » n'est pas masqué) ; l'étape publiée à l'équipe est celle écrite par le modèle, la règle « sans nom » n'est imposée que par la consigne.
+
 - Il faut une capture de la liste Crisp qui montre le message : rester 1–2 s dessus avant de changer d'onglet.
 - Une aide générique « client introuvable » bloque la fiche du même client 10 min.
 - Le serveur de notifications de Screenpipe se fige parfois : relancer l'app.

@@ -120,7 +120,7 @@ export class CrispWatcher {
 			start_time: new Date(since).toISOString(),
 			...filter,
 		});
-		const response = await this.options.fetch(`${this.options.screenpipeUrl}/search?${query}`, { headers: this.headers() });
+		const response = await this.options.fetch(`${this.options.screenpipeUrl}/search?${query}`, { headers: this.headers(), signal: AbortSignal.timeout(15_000) });
 		if (!response.ok) throw new Error(`/search : HTTP ${response.status}`);
 		return ((await response.json()) as { data?: SearchItem[] }).data ?? [];
 	}
@@ -132,7 +132,6 @@ export class CrispWatcher {
 	private async readCrispFrame(item: SearchItem, crispWindow = true): Promise<void> {
 		const { frame_id: frameId, timestamp, window_name: windowName } = item.content;
 		if (frameId === undefined || this.seenFrames.has(frameId)) return;
-		this.seenFrames.add(frameId);
 		const frameAt = Date.parse(timestamp);
 
 		// Hors de la fenêtre Crisp, le titre ne dit rien du compteur ni de la conversation ouverte.
@@ -143,8 +142,10 @@ export class CrispWatcher {
 			if (!this.baseline) this.emit({ kind: "opened", name: opened, frameAt });
 		}
 
-		const response = await this.options.fetch(`${this.options.screenpipeUrl}/frames/${frameId}/elements`, { headers: this.headers() });
-		if (!response.ok) return;
+		const response = await this.options.fetch(`${this.options.screenpipeUrl}/frames/${frameId}/elements`, { headers: this.headers(), signal: AbortSignal.timeout(15_000) });
+		if (!response.ok) return; // relue au tour suivant : une capture Alt+Tab est parfois la seule lisible
+		this.seenFrames.add(frameId);
+		if (this.seenFrames.size > 5000) for (const id of [...this.seenFrames].slice(0, 2500)) this.seenFrames.delete(id);
 		const elements = ((await response.json()) as { data?: FrameElement[] }).data ?? [];
 		// Un même client peut avoir deux lignes (une ancienne conversation « Élodie › Andrea ») : on garde la plus récente.
 		const byName = new Map<string, { row: ReturnType<typeof inboxRows>[number]; fresh: boolean; name: string }>();

@@ -27,7 +27,7 @@ export interface TeamKeys { encKey: CryptoKey; accessToken: string }
 // K (32 octets, dans le lien d'invitation) → une clé de chiffrement + un jeton d'accès au serveur.
 // Le serveur ne reçoit que sha256(jeton) : il ne peut ni déchiffrer, ni retrouver K.
 export async function deriveTeamKeys(master: Uint8Array): Promise<TeamKeys> {
-  const base = await crypto.subtle.importKey("raw", master, "HKDF", false, ["deriveKey", "deriveBits"]);
+  const base = await crypto.subtle.importKey("raw", master as BufferSource, "HKDF", false, ["deriveKey", "deriveBits"]);
   const hkdf = (info: string) => ({ name: "HKDF", hash: "SHA-256", salt: SALT, info: te.encode(info) });
   const encKey = await crypto.subtle.deriveKey(hkdf("enc"), base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
   const token = new Uint8Array(await crypto.subtle.deriveBits(hkdf("access"), base, 256));
@@ -36,7 +36,7 @@ export async function deriveTeamKeys(master: Uint8Array): Promise<TeamKeys> {
 
 // Jeton admin, dérivé d'une clé admin distincte qui n'est PAS dans le lien d'invitation.
 export async function deriveAdminToken(adminKey: Uint8Array): Promise<string> {
-  const base = await crypto.subtle.importKey("raw", adminKey, "HKDF", false, ["deriveBits"]);
+  const base = await crypto.subtle.importKey("raw", adminKey as BufferSource, "HKDF", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt: SALT, info: te.encode("admin") }, base, 256);
   return b64u.enc(new Uint8Array(bits));
 }
@@ -65,7 +65,7 @@ const aad = (c: BlobContext) => te.encode(`fa1|${c.teamId}|${c.kind}|${c.epoch}`
 export async function seal(keys: TeamKeys, ctx: BlobContext, obj: unknown): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const ct = new Uint8Array(await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv, additionalData: aad(ctx) }, keys.encKey, pad(te.encode(JSON.stringify(obj)))));
+    { name: "AES-GCM", iv, additionalData: aad(ctx) }, keys.encKey, pad(te.encode(JSON.stringify(obj))) as BufferSource));
   const out = new Uint8Array(12 + ct.length);
   out.set(iv); out.set(ct, 12);
   return b64u.enc(out);

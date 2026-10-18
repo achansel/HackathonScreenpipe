@@ -37,7 +37,7 @@ export async function judge(c: NightCase, chat: (s: string, u: string, n?: numbe
   const out = await chat(PROMPT, `Étape où elle a bloqué : ${c.step}\n\nCe qu'elle a vu ensuite :\n${redact(c.context).slice(0, MAX_CONTEXT)}`, 600);
   let v: any = {};
   try { v = JSON.parse(out.match(/\{[\s\S]*\}/)?.[0] ?? "{}"); } catch {}
-  const leaked = IDENTIFYING.test(`${v.title ?? ""} ${v.body ?? ""}`);
+  const leaked = IDENTIFYING.test(`${v.title ?? ""} ${v.body ?? ""} ${v.how ?? ""} ${c.step}`);
   const resolved = Boolean(v.resolved) && Number(v.confidence) >= MIN_CONFIDENCE && Boolean(v.title) && !leaked;
   return { step: c.step, resolved, title: resolved ? String(v.title).slice(0, 80) : undefined, body: resolved ? String(v.body ?? "").slice(0, 400) : undefined,
     how: v.how, confidence: Number(v.confidence) || 0, requestId: c.requestId, label: c.label };

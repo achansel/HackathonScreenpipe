@@ -9,10 +9,10 @@
 //   bun agent/offline/main.ts desinstaller-pipes
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { API, KEY, PORT } from "../config";
+import { API, KEY, PORT, STATE_DIR } from "../config";
+import { fileURLToPath } from "node:url";
 import { APPROVED, CANDIDATE } from "./detector";
 import { HUMAN_LABELS, learn, REPORT } from "./learn";
-import { STATE_DIR } from "../config";
 import { collect, loadEpisodes } from "./collect";
 import { offlineToken } from "./token";
 
@@ -23,7 +23,7 @@ const PIPES = ["friction-collect", "friction-learn"];
 /** Chemin vu par Screenpipe : sous WSL, Screenpipe tourne sous Windows. */
 function pipeSourceDir(): string {
   const wsl = existsSync("/proc/version") && /microsoft/i.test(readFileSync("/proc/version", "utf8"));
-  if (!wsl) return new URL("./.pipes/", import.meta.url).pathname;
+  if (!wsl) return fileURLToPath(new URL("./.pipes/", import.meta.url));
   const user = execFileSync("cmd.exe", ["/c", "echo %USERNAME%"], { encoding: "utf8", cwd: "/mnt/c" }).trim();
   return `/mnt/c/Users/${user}/AppData/Local/Temp/friction-assist/`;
 }
@@ -47,6 +47,8 @@ async function installPipes() {
 
 switch (cmd) {
   case "collecter":
+    // Lire l'historique de l'écran exige le consentement donné à l'agent (activer).
+    if (!existsSync(`${STATE_DIR}consent.json`)) { console.error("Pas de consentement sur ce poste : bun agent/main.ts activer"); process.exit(1); }
     console.log(await collect(arg("depuis") && new Date(arg("depuis")!).toISOString()));
     break;
   case "apprendre":

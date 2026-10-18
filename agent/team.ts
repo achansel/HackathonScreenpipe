@@ -16,6 +16,8 @@ type Hooks = {
   helpNotification: (episode: string, s: Solution) => object;
   record: (e: Record<string, unknown>) => void;
   log: (...a: unknown[]) => void;
+  paused?: () => boolean;
+  unregister?: (nonce: string) => void;
 };
 
 // Curseurs et ids de MES demandes en cours (aléatoires, sans contenu d'écran).
@@ -45,6 +47,7 @@ export class TeamSync {
     // Délai aléatoire avant publication : l'heure de la demande ne désigne pas la personne.
     const delay = REQUEST_JITTER_MS.min + Math.random() * (REQUEST_JITTER_MS.max - REQUEST_JITTER_MS.min);
     setTimeout(() => {
+      if (this.hooks.paused?.()) { this.hooks.log("demande non publiée : agent en pause"); return; }
       this.store.put("request", { requestId, step: v.step, type: v.type, control: v.control, detour: v.detour })
         .catch((e) => this.hooks.log("demande non publiée :", (e as Error).message));
     }, delay);
@@ -73,6 +76,7 @@ export class TeamSync {
       const s = mine.find((x) => x.id === solutionId)!;
       const episode = `share-${req.requestId}`;
       const handler = async (action: string) => {
+        this.hooks.unregister?.(action === "share" ? skip : share); // un seul retour par notification
         if (action !== "share") return this.hooks.record({ kind: "share-declined", solution: s.id });
         const { score, shared, ...publishable } = s;
         await this.store.put("solution", { ...publishable, requestId: req.requestId, sharedAt: new Date().toISOString() });

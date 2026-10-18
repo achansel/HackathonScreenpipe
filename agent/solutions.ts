@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 // Cache local des solutions d'équipe. Étape 1 : amorcé par solutions.seed.json (règles
 // fictives de UseCase.md). Étape 2 : alimenté par le stockage d'équipe chiffré.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -23,7 +24,7 @@ export type Solution = {
 };
 
 const FILE = `${STATE_DIR}solutions.json`;
-const SEED_FILE = new URL("./solutions.seed.json", import.meta.url).pathname;
+const SEED_FILE = fileURLToPath(new URL("./solutions.seed.json", import.meta.url));
 
 export function loadSolutions(): Solution[] {
   if (existsSync(FILE)) return JSON.parse(readFileSync(FILE, "utf8"));

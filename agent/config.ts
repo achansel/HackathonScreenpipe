@@ -2,6 +2,7 @@
 // (source ~/.config/screenpipe/env). Le jeton n'est jamais journalisé.
 import { mkdirSync } from "node:fs";
 import { homedir } from "node:os";
+import { fileURLToPath } from "node:url";
 
 export const API = process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
 export const NOTIFY = process.env.SCREENPIPE_NOTIFY_URL ?? "http://127.0.0.1:11435";
@@ -73,6 +74,9 @@ export const BROWSERS = /chrome|firefox|msedge|edge|safari|arc|brave|opera/i;
 export const MAX_LABELS_PER_RUN = 150;
 // Repli du traitement de nuit si les pipes Screenpipe n'ont pas tourné (agent Pi en panne, mesuré) : à cette heure locale.
 export const NIGHTLY_HOUR = 3; // étiquetage hors ligne borné (quota du modèle)
+// Collecte et apprentissage hors ligne (agent/offline) : seulement si demandés. Ils écrivent le texte des épisodes
+// sur disque (.state/episodes.jsonl) : hors de la démo, et jamais sans ce choix explicite.
+export const OFFLINE = process.env.FRICTION_OFFLINE === "1";
 
-export const STATE_DIR = new URL(`./.state/${INSTANCE ? `${INSTANCE}/` : ""}`, import.meta.url).pathname;
+export const STATE_DIR = fileURLToPath(new URL(`./.state/${INSTANCE ? `${INSTANCE}/` : ""}`, import.meta.url));
 mkdirSync(STATE_DIR, { recursive: true });

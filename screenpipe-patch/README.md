@@ -36,4 +36,6 @@ bun run build:tauri:dev
 
 ## Licence
 
+Le diff dérive du code de Screenpipe et reste sous sa licence ; la licence MIT du dépôt ne s'y applique pas.
+
 Licence commerciale Screenpipe (`LICENSE.md`) : modifier et compiler est permis pour « Evaluation, development, and testing for up to seven (7) days » et pour un usage non commercial ou éducatif. Interdit sans licence commerciale : distribuer dans un produit commercial, l'offrir en service hébergé. Une machine cloud peut **compiler** ; **faire tourner** l'app sur une machine non rattachée à un utilisateur licencié demande un accord commercial (§3). Les modifications appartiennent à Screenpipe (§6).

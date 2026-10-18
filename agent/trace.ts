@@ -4,7 +4,6 @@
 import { API, KEY } from "./config";
 
 export const AGENT_PIPE = "friction-agent";
-export const AGENT_DEEPLINK = "screenpipe://live-view/friction-agent";
 const auth = { Authorization: `Bearer ${KEY}` };
 const events: { at: number; title: string; subtitle: string }[] = [];
 const stats = { judged: 0, frictions: 0 };

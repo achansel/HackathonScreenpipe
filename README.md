@@ -80,4 +80,6 @@ cd integrations && bun install && bun test    # 122
 `bun agent/main.ts` + `activer | pause | reprendre | statut | test-notif | carte-installer | carte | equipe-creer | equipe-rejoindre | equipe-liste | equipe-rotation | equipe-certifier | simuler | injecter | desactiver`.
 Variables : `FRICTION_MODEL` (`claude-opus-5`), `FRICTION_MIN_CONFIDENCE` (0,72), `FRICTION_SCOPE` (applis lues), `FRICTION_CRISP=0`, `FRICTION_CALL=0`, `FRICTION_REQUEST_JITTER` (délai d'anonymat, `10-60` s par défaut).
 
+Licence MIT ([LICENSE](LICENSE)).
+
 <sub>ham</sub>

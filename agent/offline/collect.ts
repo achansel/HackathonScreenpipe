@@ -17,10 +17,9 @@ export function loadEpisodes(): Episode[] {
 export async function collect(sinceIso?: string): Promise<{ since: string; frames: number; inputs: number; added: number; total: number }> {
   const since = sinceIso ?? (existsSync(CURSOR) ? readFileSync(CURSOR, "utf8").trim() : new Date(Date.now() - 24 * 3600_000).toISOString());
   const until = new Date().toISOString();
-  const [frames, inputs] = await Promise.all([
-    search({ content_type: "ocr", start_time: since, end_time: until }, 20_000),
-    search({ content_type: "input", start_time: since, end_time: until }, 20_000),
-  ]);
+  // L'une après l'autre : en parallèle, Screenpipe répond 503 « search is busy » (mesuré).
+  const frames = await search({ content_type: "ocr", start_time: since, end_time: until }, 20_000);
+  const inputs = await search({ content_type: "input", start_time: since, end_time: until }, 20_000);
   const items = [...frames.map((c) => ({ kind: "f", c })), ...inputs.map((c) => ({ kind: "i", c }))]
     .sort((a, b) => new Date(a.c.timestamp).getTime() - new Date(b.c.timestamp).getTime());
 

@@ -6,10 +6,10 @@ set -euo pipefail
 if grep -qi microsoft /proc/version 2>/dev/null; then
   # WSL : Screenpipe tourne côté Windows ; réseau "mirrored" => 127.0.0.1 partagé
   WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r\n')
-  CLI=$(ls -d /mnt/c/Users/"$WIN_USER"/.screenpipe/cli/*/screenpipe.exe 2>/dev/null | sort -V | tail -1)
+  CLI=$(ls -d /mnt/c/Users/"$WIN_USER"/.screenpipe/cli/*/screenpipe.exe 2>/dev/null | sort -V | tail -1 || true)
 else
   # macOS : CLI dans le PATH, sinon dans ~/.screenpipe/cli
-  CLI=$(command -v screenpipe || ls -d "$HOME"/.screenpipe/cli/*/screenpipe 2>/dev/null | sort -V | tail -1)
+  CLI=$(command -v screenpipe || ls -d "$HOME"/.screenpipe/cli/*/screenpipe 2>/dev/null | sort -V | tail -1 || true)
 fi
 [ -n "${CLI:-}" ] || { echo "CLI screenpipe introuvable (l'app est-elle installée ?)" >&2; exit 1; }
 

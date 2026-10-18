@@ -22,7 +22,7 @@ export const CRISP_CUSTOMERS: CrispCustomer[] = [
 		email: "jd.resto75@resa-paris.test",
 		label: "Le Bistro, Paris · Premium · adresse différente de HubSpot",
 		messages: [
-			{ when: "9 h 05", text: "Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir." },
+			{ when: "9 h 05", text: "Bonjour, ma page de réservation est en panne !! Les clients ne peuvent plus réserver pour ce soir. Vous pouvez me répondre ici ou sur jd.resto75@resa-paris.test." },
 			{ when: "11 h 00", text: "Toujours rien… J'ai perdu des réservations ce midi, je veux un dédommagement." },
 		],
 	},

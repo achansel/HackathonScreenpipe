@@ -13,7 +13,7 @@ import { SupabaseStore, Team, type Membership } from "../client";
 
 const API = () => process.env.SCREENPIPE_URL ?? "http://127.0.0.1:3030";
 const NOTIFY = () => process.env.SCREENPIPE_NOTIFY_URL ?? "http://127.0.0.1:11435";
-const ROOT = join(import.meta.dir, "..");
+const ROOT = join(import.meta.dir, "..", "..");
 const TEAM_DIR = join(homedir(), ".config", "friction-assist");
 
 async function ping(url: string, init?: RequestInit) {

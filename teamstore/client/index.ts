@@ -5,6 +5,7 @@ import {
   open, ownerKeyPair, parseInvite, randomKey, seal, sha256hex, verifyCertification, type TeamKeys,
 } from "./crypto";
 
+const PAGE = 500; // taille de page de list_blobs (plafond serveur)
 export type Kind = "request" | "solution" | "signature" | "vote" | "certification" | "candidate"; // candidate : boucle de nuit
 export interface StoredBlob { seq: number; kind: Kind; epoch: number; ciphertext: string }
 export interface Received { seq: number; kind: Kind; data: any }
@@ -39,7 +40,7 @@ export class SupabaseStore {
   put = (team: string, token: string, kind: Kind, epoch: number, ciphertext: string) =>
     this.rpc<number>("put_blob", { p_team: team, p_token: token, p_kind: kind, p_epoch: epoch, p_ciphertext: ciphertext });
   list = (team: string, token: string, since: number, kind: Kind | null = null) =>
-    this.rpc<StoredBlob[]>("list_blobs", { p_team: team, p_token: token, p_since: since, p_kind: kind });
+    this.rpc<StoredBlob[]>("list_blobs", { p_team: team, p_token: token, p_since: since, p_kind: kind, p_limit: PAGE });
   rotate = (team: string, adminToken: string, newAccessHash: string) =>
     this.rpc<number>("rotate_team", { p_team: team, p_admin_token: adminToken, p_new_access_hash: newAccessHash });
   purge = (team: string, adminToken: string, seq: number) => this.rpc<boolean>("purge_blob", { p_team: team, p_admin_token: adminToken, p_seq: seq });
@@ -98,7 +99,15 @@ export class Team {
    *  Une solution porteuse d'une certification reçoit `certified: true` seulement si la signature est valide. */
   async pull(since = 0, kind: Kind | null = null): Promise<Received[]> {
     const out: Received[] = [];
-    for (const r of await this.store.list(this.id, this.keys.accessToken, since, kind)) {
+    // Page par page (le serveur plafonne à 500) : sans ça, une rotation au-delà de la première page perdrait des blocs.
+    const rows: StoredBlob[] = [];
+    for (let after = since; ; ) {
+      const page = await this.store.list(this.id, this.keys.accessToken, after, kind);
+      rows.push(...page);
+      if (page.length < PAGE) break;
+      after = Number(page[page.length - 1]!.seq);
+    }
+    for (const r of rows) {
       let data: any;
       try { data = await open(this.keys, { teamId: this.id, kind: r.kind, epoch: r.epoch }, r.ciphertext); }
       catch { continue; }
