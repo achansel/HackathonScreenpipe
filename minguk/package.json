@@ -15,6 +15,7 @@
 		"listen:call": "bun run src/cli/listen-call.ts",
 		"call": "bun run src/cli/call.ts",
 		"preview:notifs": "bun run src/cli/preview-notifs.ts",
+		"studio:notifs": "bun run src/cli/notif-studio.ts",
 		"test": "bun test",
 		"typecheck": "tsc --noEmit"
 	},

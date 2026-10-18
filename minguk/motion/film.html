@@ -1,0 +1,766 @@
+<title>The friction-assist film</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+	/* Layout : une scène 16:9 de 1280 × 720 mise à l'échelle de la page ; texte à gauche, vraie capture à droite ; transport et chapitres dessous. Fond clair, halos pastel en mouvement. */
+	:root {
+		--bg: #fbfaff;
+		--card: #ffffff;
+		--ink: #1d1a2e;
+		--mute: #6f6a88;
+		--line: #e8e5f3;
+		--violet: #6c5cf6;
+		--ok: #1c9a68;
+		--crit: #dc5446;
+		--peach: #ffd8cb;
+		--lilac: #ddd4ff;
+		--mint: #c8f0de;
+		--sky: #cfe4ff;
+		--butter: #fff0b5;
+		--notif-fg: 0 0% 96%;
+		--sans: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+		--mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+		color-scheme: light;
+	}
+	* { box-sizing: border-box; }
+	body {
+		background: var(--bg);
+		color: var(--ink);
+		font: 15px/1.45 var(--sans);
+		padding-left: max(16px, env(safe-area-inset-left, 0px));
+		padding-right: max(16px, env(safe-area-inset-right, 0px));
+		padding-block: 20px 40px;
+	}
+	.wrap { max-width: 1280px; margin: 0 auto; display: grid; gap: 14px; }
+	.head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+	.head h1 { font: 800 22px/1.2 var(--sans); margin: 0; letter-spacing: -0.02em; }
+	.head p { margin: 0; color: var(--mute); font-size: 14px; }
+
+	/* ---- scène */
+	.frame { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(60, 40, 140, 0.08); }
+	.stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; background: var(--bg); perspective: 1400px; }
+	.halo { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.75; pointer-events: none; }
+	.scene { position: absolute; inset: 0; visibility: hidden; }
+	.abs { position: absolute; }
+	.tag { position: absolute; left: 56px; top: 32px; display: flex; gap: 10px; align-items: center; font: 600 13px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); z-index: 40; }
+	.tag b { color: var(--violet); }
+	.cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 54px 140px 24px; text-align: center; font: 600 22px/1.4 var(--sans); color: var(--ink); background: linear-gradient(to top, rgba(251, 250, 255, 0.97) 45%, rgba(251, 250, 255, 0)); text-wrap: balance; z-index: 45; }
+	.cap:empty { display: none; }
+	.frame.nosubs .cap { display: none; }
+	.wipe { position: absolute; inset: 0; z-index: 60; background: linear-gradient(110deg, var(--peach) 0%, var(--lilac) 35%, var(--sky) 65%, var(--mint) 100%); pointer-events: none; }
+
+	/* ---- texte qui monte mot à mot */
+	.kin .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+	.kin .w > span { display: inline-block; }
+	.h1 { font: 800 92px/1.02 var(--sans); letter-spacing: -0.045em; }
+	.h2 { font: 800 46px/1.08 var(--sans); letter-spacing: -0.035em; text-wrap: balance; }
+	.lead { font: 500 21px/1.45 var(--sans); color: var(--mute); }
+	.eyebrow { font: 600 13px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); }
+	.grad { background: linear-gradient(90deg, #6c5cf6, #e0699a 55%, #f0a04b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+	.grad .w > span { background: linear-gradient(90deg, #6c5cf6, #e0699a 55%, #f0a04b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+	/* ---- vraie capture, encadrés et étiquettes */
+	.shot { position: absolute; border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: 0 30px 70px rgba(50, 30, 120, 0.18), 0 0 0 1px rgba(60, 40, 140, 0.08); transform-style: preserve-3d; }
+	.shot .zoom { position: relative; width: 100%; transform-origin: 50% 50%; }
+	.shot img { display: block; width: 100%; height: auto; }
+	.shot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+	.hl { fill: rgba(108, 92, 246, 0.08); stroke: var(--violet); stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; }
+	.hl.red { stroke: var(--crit); fill: rgba(220, 84, 70, 0.08); }
+	.hl.green { stroke: var(--ok); fill: rgba(28, 154, 104, 0.1); }
+	.pill { position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--ink); color: #fff; font: 600 14px var(--sans); white-space: nowrap; box-shadow: 0 10px 24px rgba(30, 20, 80, 0.25); z-index: 30; }
+	.pill.violet { background: var(--violet); }
+	.pill.red { background: var(--crit); }
+	.pill.green { background: var(--ok); }
+	.scan { position: absolute; top: 0; bottom: 0; width: 120px; background: linear-gradient(90deg, rgba(108, 92, 246, 0), rgba(108, 92, 246, 0.22), rgba(108, 92, 246, 0)); }
+
+	/* ---- objets dessinés */
+	.card { position: absolute; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; box-shadow: 0 16px 40px rgba(60, 40, 140, 0.08); }
+	.label { font: 600 12px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute); }
+	.big { font: 800 64px/1 var(--sans); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+	.mono { font-family: var(--mono); }
+	.node { position: absolute; width: 236px; height: 104px; border-radius: 20px; display: grid; align-content: center; gap: 4px; padding: 0 20px; border: 1px solid rgba(60, 40, 140, 0.08); box-shadow: 0 14px 34px rgba(60, 40, 140, 0.1); }
+	.node b { font: 700 20px var(--sans); }
+	.node span { color: var(--mute); font: 500 13px var(--mono); }
+	.av { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font: 700 17px var(--sans); color: var(--ink); flex: none; border: 2px solid #fff; box-shadow: 0 6px 16px rgba(60, 40, 140, 0.15); }
+	.av.lea { background: var(--sky); } .av.karim { background: var(--butter); } .av.claire { background: var(--mint); } .av.yasmine { background: var(--peach); }
+	.who { display: flex; gap: 12px; align-items: center; }
+	.who b { display: block; font: 700 17px var(--sans); }
+	.who span { color: var(--mute); font-size: 14px; }
+	.chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); font: 600 14px var(--sans); white-space: nowrap; }
+	.blob { position: absolute; padding: 10px 14px; border-radius: 12px; background: var(--ink); color: #c9c2ff; font: 600 13px/1.3 var(--mono); width: 230px; box-shadow: 0 12px 30px rgba(30, 20, 80, 0.3); z-index: 20; }
+	.blob.green { color: #9be8c6; }
+	.dotp { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 6px rgba(108, 92, 246, 0.18); z-index: 15; }
+	.cursor { position: absolute; width: 26px; height: 26px; z-index: 50; pointer-events: none; }
+	.ripple { position: absolute; width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--violet); opacity: 0; z-index: 49; }
+	.key { display: inline-block; width: 18px; height: 14px; border: 2.5px solid currentColor; border-radius: 3px; position: relative; top: 2px; }
+	.key::before { content: ""; position: absolute; left: 2px; top: -10px; width: 9px; height: 9px; border: 2.5px solid currentColor; border-bottom: 0; border-radius: 6px 6px 0 0; }
+
+	/* ---- le panneau Screenpipe, tel qu'il est (sombre), d'après app/notification-panel/page.tsx */
+	.sp { position: absolute; width: 340px; background: hsl(0 0% 4% / 0.97); border: 1px solid hsl(var(--notif-fg) / 0.1); border-radius: 8px; font-family: "IBM Plex Mono", var(--mono); color: hsl(var(--notif-fg) / 0.8); box-shadow: 0 24px 60px rgba(20, 10, 60, 0.35); z-index: 35; }
+	.sp-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 0; font-size: 10px; letter-spacing: 0.05em; color: hsl(var(--notif-fg) / 0.4); }
+	.sp-head span:first-child { display: flex; align-items: center; gap: 6px; }
+	.sp-head span:first-child::before { content: ""; width: 14px; height: 14px; border-radius: 3px; background: hsl(var(--notif-fg) / 0.85); }
+	.sp-body { padding: 8px 14px; }
+	.sp-title { font-size: 12px; font-weight: 500; margin-bottom: 4px; color: hsl(var(--notif-fg) / 0.92); }
+	.sp-text { font-size: 11px; line-height: 1.4; color: hsl(var(--notif-fg) / 0.55); }
+	.sp-text strong { color: hsl(var(--notif-fg) / 0.92); }
+	.sp-actions { display: flex; gap: 8px; padding: 0 14px 10px; }
+	.sp-btn { flex: 1 1 0; text-align: center; white-space: nowrap; background: hsl(var(--notif-fg) / 0.05); border: 1px solid hsl(var(--notif-fg) / 0.14); border-radius: 6px; padding: 6px 10px; font-size: 10px; font-weight: 500; letter-spacing: 0.03em; color: hsl(var(--notif-fg) / 0.85); }
+	.sp-actions.one .sp-btn { flex: 0 1 auto; }
+	.sp-btn.primary { background: hsl(var(--notif-fg) / 0.9); color: #0a0a0a; }
+
+	/* ---- transport */
+	.transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+	.transport button { font: 600 14px var(--sans); color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+	.transport button:hover { border-color: var(--mute); }
+	.transport button:focus-visible, .chapters button:focus-visible, #scrub:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+	.transport .play { background: var(--ink); color: #fff; border-color: var(--ink); min-width: 96px; }
+	#time { font: 500 14px var(--mono); color: var(--mute); font-variant-numeric: tabular-nums; min-width: 110px; }
+	#scrub { flex: 1 1 220px; min-width: 0; accent-color: var(--violet); }
+	.chapters { display: flex; flex-wrap: wrap; gap: 6px; }
+	.chapters button { font: 600 13px var(--sans); color: var(--mute); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; cursor: pointer; }
+	.chapters button.on { color: #fff; background: var(--violet); border-color: var(--violet); }
+	.keys { color: var(--mute); font-size: 13px; margin: 0; }
+	.keys kbd { font: 500 12px var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--ink); background: var(--card); }
+	body.record .head, body.record .transport, body.record .chapters, body.record .keys { display: none; }
+	body.record { padding-block: 0; }
+</style>
+
+<div class="wrap">
+	<div class="head">
+		<h1>The friction-assist film</h1>
+		<p>The whole system in 2 minutes, on the real interfaces. The subtitles are the voice-over.</p>
+	</div>
+
+	<div class="frame" id="frame">
+		<div class="stage" id="stage">
+			<div class="halo" id="h1" style="width:520px;height:520px;left:-120px;top:-160px;background:var(--lilac)"></div>
+			<div class="halo" id="h2" style="width:460px;height:460px;right:-100px;top:-120px;background:var(--peach)"></div>
+			<div class="halo" id="h3" style="width:520px;height:420px;left:380px;bottom:-220px;background:var(--mint)"></div>
+			<div class="halo" id="h4" style="width:380px;height:380px;right:120px;bottom:-160px;background:var(--sky)"></div>
+			<div class="tag" id="tag"><b id="tag-n">00</b><span id="tag-t">friction-assist</span></div>
+
+			<!-- 0 · Titre -->
+			<section class="scene" id="s0">
+				<div class="abs" style="left:110px;top:150px;width:1060px">
+					<div class="eyebrow kin" style="margin-bottom:26px">friction-assist · Screenpipe hackathon · October 18</div>
+					<div class="h1 kin">Who do I <span class="grad">ask?</span></div>
+					<div class="lead kin" style="margin-top:30px;max-width:780px">In every team, part of the know-how is written down nowhere. It lives in a few colleagues' heads.</div>
+				</div>
+			</section>
+
+			<!-- 1 · Le problème (vraie capture Slack) -->
+			<section class="scene" id="s1">
+				<div class="abs" style="left:56px;top:110px;width:420px">
+					<div class="eyebrow kin">The problem</div>
+					<div class="h2 kin" style="margin-top:14px">The rules live in Karim's head.</div>
+					<div class="lead kin" style="margin-top:18px">So we ask him. We wait. So does the customer.</div>
+				</div>
+				<div class="card" id="s1-count" style="left:56px;top:430px;width:300px;padding:16px 20px">
+					<div class="label">Questions in #support</div>
+					<div class="big" style="margin-top:6px;color:var(--violet)"><span id="s1-n">0</span></div>
+				</div>
+				<div class="shot" id="s1-shot" style="left:520px;top:96px;width:720px">
+					<div class="zoom"><img src="img/slack.jpg" alt="The #support channel in Slack: questions about the rules, unanswered">
+						<svg viewBox="0 0 903 605" preserveAspectRatio="none">
+							<rect class="hl" id="s1-r1" x="282" y="166" width="460" height="64" rx="10" pathLength="1"/>
+							<rect class="hl" id="s1-r2" x="282" y="255" width="470" height="62" rx="10" pathLength="1"/>
+							<rect class="hl" id="s1-r3" x="282" y="410" width="470" height="62" rx="10" pathLength="1"/>
+						</svg>
+					</div>
+				</div>
+				<div class="pill red" id="s1-p1" style="left:1010px;top:250px">No answer</div>
+				<div class="pill red" id="s1-p2" style="left:1010px;top:322px">No answer</div>
+				<div class="pill red" id="s1-p3" style="left:1010px;top:446px">No answer</div>
+			</section>
+
+			<!-- 2 · Screenpipe voit (vraies captures Crisp puis HubSpot) -->
+			<section class="scene" id="s2">
+				<div class="abs" style="left:56px;top:110px;width:400px">
+					<div class="eyebrow kin">Screenpipe sees</div>
+					<div class="h2 kin" style="margin-top:14px">The screen, locally.</div>
+					<div class="lead kin" style="margin-top:18px">A customer writes in Crisp. Léa looks him up in HubSpot.</div>
+				</div>
+				<div class="pill violet" id="s2-rec" style="left:56px;top:420px"><span style="width:9px;height:9px;border-radius:50%;background:#fff;display:inline-block"></span>Screenpipe · <span id="s2-clock" class="mono">09:05:10</span></div>
+				<div class="shot" id="s2-crisp" style="left:520px;top:92px;width:520px">
+					<div class="zoom"><img src="img/crisp.jpg" alt="Crisp: Jean Dupont writes, his booking page is down">
+						<svg viewBox="0 0 661 607" preserveAspectRatio="none"><rect class="hl" id="s2-r1" x="352" y="280" width="300" height="52" rx="10" pathLength="1"/></svg>
+						<div class="scan" id="s2-scan1"></div>
+					</div>
+				</div>
+				<div class="pill" id="s2-p1" style="left:700px;top:96px">Jean wants compensation</div>
+				<div class="shot" id="s2-hub" style="left:470px;top:150px;width:770px">
+					<div class="zoom"><img src="img/hubspot-vide.jpg" alt="HubSpot: searching Jean's address finds no contact">
+						<svg viewBox="0 0 903 607" preserveAspectRatio="none">
+							<rect class="hl" id="s2-r2" x="238" y="152" width="200" height="36" rx="18" pathLength="1"/>
+							<rect class="hl red" id="s2-r3" x="282" y="308" width="180" height="60" rx="10" pathLength="1"/>
+						</svg>
+						<div class="scan" id="s2-scan2"></div>
+					</div>
+				</div>
+				<div class="pill" id="s2-p2" style="left:640px;top:236px">Search by email</div>
+				<div class="pill red" id="s2-p3" style="left:900px;top:360px">0 results</div>
+				<div class="pill violet" id="s2-p4" style="left:56px;top:480px;font-size:18px;padding:12px 20px">Detour spotted</div>
+			</section>
+
+			<!-- 3 · L'IA juge -->
+			<section class="scene" id="s3">
+				<div class="abs" style="left:56px;top:96px;width:1160px">
+					<div class="eyebrow kin">The AI judges</div>
+					<div class="h2 kin" style="margin-top:12px">Friction, or normal work?</div>
+				</div>
+				<svg class="abs" style="left:0;top:0;width:1280px;height:720px;overflow:visible;z-index:1" viewBox="0 0 1280 720">
+					<path id="c1" d="M292 288 C 320 288, 330 288, 352 288" fill="none" stroke="#6c5cf6" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+					<path id="c2" d="M588 288 C 616 288, 626 288, 648 288" fill="none" stroke="#6c5cf6" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+					<path id="c3" d="M884 288 C 912 288, 922 288, 944 288" fill="none" stroke="#6c5cf6" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+				</svg>
+				<div class="node" id="n1" style="left:56px;top:236px;background:var(--sky)"><b>Screenpipe</b><span>the screen, locally</span></div>
+				<div class="node" id="n2" style="left:352px;top:236px;background:var(--lilac)"><b>Episode</b><span>the seconds of the detour</span></div>
+				<div class="node" id="n3" style="left:648px;top:236px;background:var(--peach)"><b>The AI</b><span>a single call</span></div>
+				<div class="node" id="n4" style="left:944px;top:236px;background:var(--mint)"><b>Verdict</b><span>and the solution</span></div>
+				<div class="dotp" id="s3-dot" style="left:285px;top:281px"></div>
+				<div class="card" id="s3-ep" style="left:56px;top:380px;width:560px;height:200px">
+					<div class="label" style="margin-bottom:10px">Episode sent to the AI</div>
+					<div class="mono" style="font-size:15px;line-height:1.75">
+						<div><span style="color:var(--mute)">app&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>Chrome · HubSpot</div>
+						<div><span style="color:var(--mute)">text&nbsp;&nbsp;&nbsp;&nbsp;</span>search « <span id="s3-mail" style="color:var(--crit);font-weight:600">jean.d@example.com</span> » · 0 results</div>
+						<div><span style="color:var(--mute)">context</span> a customer is waiting in Crisp</div>
+					</div>
+					<div id="s3-mask" style="margin-top:12px;color:var(--violet);font-weight:600"><span class="key" style="margin-right:10px"></span>Identifiers masked before sending</div>
+				</div>
+				<div class="card" id="s3-ver" style="left:660px;top:380px;width:520px;height:200px">
+					<div class="label" style="margin-bottom:10px;display:flex;justify-content:space-between"><span>Verdict</span><span id="s3-ms" style="color:var(--ok)">2.6 s · median</span></div>
+					<div class="mono" style="font-size:16px;line-height:1.7">
+						<div class="v">friction&nbsp;&nbsp;&nbsp;<b style="color:var(--ok)">yes</b></div>
+						<div class="v">detour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;search</div>
+						<div class="v">solution&nbsp;&nbsp;&nbsp;<b style="color:var(--violet)">customer-not-found</b></div>
+						<div class="v">confidence 0.85</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- 4 · La réponse -->
+			<section class="scene" id="s4">
+				<div class="abs" style="left:56px;top:110px;width:400px">
+					<div class="eyebrow kin">The answer</div>
+					<div class="h2 kin" style="margin-top:14px">On screen, in one click.</div>
+				</div>
+				<div class="card" id="s4-time" style="left:56px;top:330px;width:300px;padding:18px 22px">
+					<div class="label">From search to answer</div>
+					<div class="big" style="margin-top:8px;color:var(--violet)"><span id="s4-sec">0</span> s</div>
+					<div style="color:var(--mute);font-size:14px;margin-top:4px">measured in rehearsal</div>
+				</div>
+				<div class="shot" id="s4-a" style="left:470px;top:110px;width:770px">
+					<div class="zoom"><img src="img/hubspot-vide.jpg" alt="HubSpot: no contact"></div>
+				</div>
+				<div class="shot" id="s4-b" style="left:470px;top:110px;width:770px">
+					<div class="zoom"><img src="img/hubspot-liste.jpg" alt="HubSpot: Jean Dupont found">
+						<svg viewBox="0 0 903 607" preserveAspectRatio="none"><rect class="hl green" id="s4-r" x="236" y="488" width="430" height="38" rx="8" pathLength="1"/></svg>
+					</div>
+				</div>
+				<div class="pill green" id="s4-p" style="left:830px;top:500px">Jean Dupont · Le Bistro · Premium</div>
+				<div class="sp" id="s4-n" style="left:880px;top:84px">
+					<div class="sp-head"><span>screenpipe</span><span>··· ✕</span></div>
+					<div class="sp-body"><div class="sp-title">Jean Dupont · Le Bistro</div><div class="sp-text"><strong>Premium</strong> customer</div></div>
+					<div class="sp-actions one"><div class="sp-btn primary">Open his record</div></div>
+				</div>
+				<svg class="cursor" id="s4-cur" viewBox="0 0 22 22" style="left:700px;top:560px"><path d="M3 2l15 8-6.5 1.6L8.8 18z" fill="#1d1a2e" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+				<div class="ripple" id="s4-rip" style="left:912px;top:162px"></div>
+			</section>
+
+			<!-- 5 · Personne ne sait -->
+			<section class="scene" id="s5">
+				<div class="abs" style="left:56px;top:84px;width:1160px">
+					<div class="eyebrow kin">Nobody knows?</div>
+					<div class="h2 kin" style="margin-top:10px">The question goes to the team. Encrypted, nameless.</div>
+				</div>
+				<div class="card" style="left:56px;top:228px;width:330px;height:340px;background:linear-gradient(160deg,#fff 40%,#eef5ff)">
+					<div class="who"><div class="av lea">L</div><div><b>Léa's computer</b><span>Support, 3 weeks in</span></div></div>
+					<div id="s5-q" class="chip" style="margin-top:20px;white-space:normal">“What am I allowed to offer?”</div>
+					<div id="s5-mem" style="margin-top:12px;color:var(--crit);font-weight:600">No rule on this computer</div>
+				</div>
+				<div class="card" style="left:475px;top:228px;width:330px;height:340px;background:linear-gradient(160deg,#fff 40%,#f2efff)">
+					<div class="who"><div class="av" style="background:#ece9fb;color:var(--violet)"><span class="key"></span></div><div><b>Team storage</b><span>reads nothing</span></div></div>
+					<div class="mono" style="margin-top:18px;font-size:13px;line-height:2.1;color:#9a95b5">
+						<div>▒ 3f9a c217 0b84 e5d1</div><div>▒ a07e 91c3 5d2f 7b60</div><div>▒ 6c14 f8e2 2a93 d05b</div>
+						<div id="s5-in" style="color:var(--violet);font-weight:600;opacity:0">▒ 7f3a c91e 44b2 0e8d</div>
+						<div id="s5-out" style="color:var(--ok);font-weight:600;opacity:0">▒ d2b6 08fa 9c71 31e4</div>
+					</div>
+				</div>
+				<div class="card" style="left:894px;top:228px;width:330px;height:340px;background:linear-gradient(160deg,#fff 40%,#fff6e3)">
+					<div class="who"><div class="av karim">K</div><div><b>Karim's computer</b><span>Support, 3 years</span></div></div>
+					<div id="s5-anon" style="margin-top:200px;color:var(--mute);font-weight:600">He doesn't know who asked.</div>
+				</div>
+				<div class="blob" id="s5-b1">Crisp · compensation</div>
+				<div class="blob green" id="s5-b2">d2b6 08fa 9c71 31e4</div>
+				<div class="sp" id="s5-nk" style="left:888px;top:320px">
+					<div class="sp-head"><span>screenpipe</span><span>··· ✕</span></div>
+					<div class="sp-body"><div class="sp-title">A colleague needs you</div><div class="sp-text">Topic: goodwill gesture</div></div>
+					<div class="sp-actions"><div class="sp-btn primary">Share</div><div class="sp-btn">Later</div></div>
+				</div>
+				<svg class="cursor" id="s5-cur" viewBox="0 0 22 22" style="left:1180px;top:540px"><path d="M3 2l15 8-6.5 1.6L8.8 18z" fill="#1d1a2e" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+				<div class="ripple" id="s5-rip" style="left:930px;top:388px"></div>
+				<div class="sp" id="s5-nl" style="left:50px;top:400px">
+					<div class="sp-head"><span>screenpipe</span><span>··· ✕</span></div>
+					<div class="sp-body"><div class="sp-title">Offer Jean 1 month</div><div class="sp-text">He is <strong>Premium</strong>: it's allowed.</div></div>
+					<div class="sp-actions one"><div class="sp-btn primary">Copy reply</div></div>
+				</div>
+			</section>
+
+			<!-- 6 · La nuit -->
+			<section class="scene" id="s6">
+				<div class="abs" id="s6-sky" style="inset:0;background:linear-gradient(180deg,#e9e4ff 0%,#f6efff 50%,rgba(251,250,255,0) 100%)"></div>
+				<div class="abs" id="s6-moon" style="right:110px;top:70px;width:76px;height:76px;border-radius:50%;box-shadow:-16px 9px 0 0 #b8acf5"></div>
+				<div class="abs" style="left:56px;top:96px;width:700px">
+					<div class="eyebrow kin">At night</div>
+					<div class="h2 kin" style="margin-top:12px">The AI gathers. Claire certifies.</div>
+				</div>
+				<div class="abs mono" id="s6-clock" style="left:56px;top:226px;font-size:40px;font-weight:600;color:var(--violet)">03:00</div>
+				<div class="card" id="s6-a" style="left:56px;top:300px;width:300px;padding:14px 16px"><div class="label">Shared · Monday</div><div style="margin-top:6px;font-weight:600">1 month free, Premium customer</div></div>
+				<div class="card" id="s6-b" style="left:56px;top:396px;width:300px;padding:14px 16px"><div class="label">Shared · Tuesday</div><div style="margin-top:6px;font-weight:600">Group customer: 1 month, approved</div></div>
+				<div class="card" id="s6-c" style="left:56px;top:492px;width:300px;padding:14px 16px"><div class="label">Shared · Thursday</div><div style="margin-top:6px;font-weight:600">Essential: 10% voucher</div></div>
+				<div class="node" id="s6-ai" style="left:420px;top:380px;width:190px;background:var(--lilac)"><b>The AI, at night</b><span>gathers</span></div>
+				<div class="card" id="s6-rule" style="left:670px;top:250px;width:520px;padding:22px 24px">
+					<div class="label">Proposed rule</div>
+					<div style="font:700 25px/1.3 var(--sans);margin-top:10px;letter-spacing:-0.01em">Compensation: 1 month for Premium or Group customers, otherwise a 10% voucher.</div>
+					<div id="s6-stamp" class="pill green" style="position:relative;margin-top:16px">Certified · signed by Claire</div>
+				</div>
+				<div class="abs who" id="s6-claire" style="left:670px;top:470px"><div class="av claire">C</div><div><b>Claire</b><span>support manager</span></div></div>
+				<div class="sp" id="s6-n" style="left:850px;top:450px">
+					<div class="sp-head"><span>screenpipe</span><span>··· ✕</span></div>
+					<div class="sp-body"><div class="sp-title">Approve last night's rule?</div><div class="sp-text">Compensation: 1 month for <strong>Premium</strong>.</div></div>
+					<div class="sp-actions"><div class="sp-btn primary">Certify</div><div class="sp-btn">Edit</div></div>
+				</div>
+				<div class="ripple" id="s6-rip" style="left:900px;top:520px"></div>
+			</section>
+
+			<!-- 7 · Le lendemain (vraie capture Crisp) -->
+			<section class="scene" id="s7">
+				<div class="abs" style="left:56px;top:110px;width:420px">
+					<div class="eyebrow kin">The next day</div>
+					<div class="h2 kin" style="margin-top:14px">Yasmine gets stuck at the same step.</div>
+					<div class="lead kin" style="margin-top:18px">The answer is already there.</div>
+				</div>
+				<div class="card" id="s7-k" style="left:56px;top:430px;width:300px;padding:16px 20px">
+					<div class="label">Questions to Karim</div>
+					<div class="big" style="margin-top:6px;color:var(--ok)">0</div>
+				</div>
+				<div class="shot" id="s7-shot" style="left:560px;top:96px;width:560px">
+					<div class="zoom"><img src="img/crisp.jpg" alt="Crisp: a customer asks for a goodwill gesture">
+						<svg viewBox="0 0 661 607" preserveAspectRatio="none"><rect class="hl" id="s7-r" x="352" y="280" width="300" height="52" rx="10" pathLength="1"/></svg>
+					</div>
+				</div>
+				<div class="sp" id="s7-n" style="left:860px;top:330px">
+					<div class="sp-head"><span>screenpipe</span><span>··· ✕</span></div>
+					<div class="sp-body"><div class="sp-title">Yes: 1 month, approved by Claire</div></div>
+					<div class="sp-actions one"><div class="sp-btn primary">Copy reply</div></div>
+				</div>
+			</section>
+
+			<!-- 8 · Quelqu'un part -->
+			<section class="scene" id="s8">
+				<div class="abs" style="left:56px;top:96px;width:1160px">
+					<div class="eyebrow kin">Someone leaves</div>
+					<div class="h2 kin" style="margin-top:12px">Karim leaves. His rules stay.</div>
+				</div>
+				<div class="card" style="left:56px;top:226px;width:700px;height:150px;background:linear-gradient(160deg,#fff 40%,#eef5ff)">
+					<div class="label">Support team</div>
+					<div style="display:flex;gap:28px;margin-top:20px">
+						<div class="who"><div class="av claire">C</div><b style="font-size:15px">Claire</b></div>
+						<div class="who" id="s8-karim" style="position:relative;z-index:5"><div class="av karim">K</div><b style="font-size:15px">Karim</b></div>
+						<div class="who"><div class="av lea">L</div><b style="font-size:15px">Léa</b></div>
+						<div class="who"><div class="av yasmine">Y</div><b style="font-size:15px">Yasmine</b></div>
+					</div>
+				</div>
+				<div class="card" style="left:800px;top:226px;width:420px;height:150px">
+					<div class="label">Team key</div>
+					<div style="display:flex;align-items:center;gap:14px;margin-top:14px;font:800 42px var(--sans)"><span class="key" id="s8-lock" style="color:var(--violet)"></span><span id="s8-k1">v1</span><span id="s8-k2" style="color:var(--ok);margin-left:-56px">v2</span></div>
+					<div id="s8-rot" style="color:var(--mute);font-size:14px;margin-top:6px">New link, sent privately to remaining members.</div>
+				</div>
+				<div class="card" id="s8-mem" style="left:56px;top:404px;width:700px;height:200px">
+					<div class="label">Team memory</div>
+					<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px" class="s8-rules">
+						<span class="chip">Customer not found: search by name</span>
+						<span class="chip">Bug: #bugs + “Support” ticket</span>
+						<span class="chip">Promise: “Special conditions” field</span>
+						<span class="chip">Compensation: 1 month for Premium</span>
+					</div>
+				</div>
+				<div class="card" style="left:800px;top:404px;width:420px;height:200px;background:linear-gradient(160deg,#fff 40%,#fff6e3)">
+					<div class="label">Sales team</div>
+					<div id="s8-denied" class="pill red" style="position:relative;margin-top:96px">Support: access denied</div>
+				</div>
+			</section>
+
+			<!-- 9 · What the server sees -->
+			<section class="scene" id="s9">
+				<div class="abs" style="left:56px;top:96px;width:1160px">
+					<div class="eyebrow kin">Privacy</div>
+					<div class="h2 kin" style="margin-top:12px">We measure the process, never the person.</div>
+				</div>
+				<div class="card" id="s9-l" style="left:56px;top:230px;width:540px;height:360px;background:linear-gradient(160deg,#fff 40%,#eefbf4)">
+					<div class="label">What the team reads</div>
+					<div style="font:700 25px/1.35 var(--sans);margin-top:16px">Compensation: 1 month for Premium or Group customers, otherwise a 10% voucher.</div>
+					<div class="pill green" style="position:relative;margin-top:18px">Certified · signed by Claire</div>
+				</div>
+				<div class="card" id="s9-r" style="left:680px;top:230px;width:540px;height:360px;background:linear-gradient(160deg,#fff 40%,#f2efff)">
+					<div class="label">What the server sees</div>
+					<div class="s9-blocks" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+						<div class="blob" style="position:static;width:auto">7f3a c91e 44b2</div><div class="blob" style="position:static;width:auto">d2b6 08fa 9c71</div>
+						<div class="blob" style="position:static;width:auto">3f9a c217 0b84</div><div class="blob" style="position:static;width:auto">a07e 91c3 5d2f</div>
+						<div class="blob" style="position:static;width:auto">6c14 f8e2 2a93</div><div class="blob" style="position:static;width:auto">0e8d 44b2 c91e</div>
+					</div>
+					<div style="margin-top:16px;color:var(--mute);font-weight:500">Same size · no author · no team · no exact time</div>
+				</div>
+			</section>
+
+			<!-- 10 · Fin -->
+			<section class="scene" id="s10">
+				<div class="abs" style="left:110px;top:130px;width:1060px">
+					<div class="eyebrow kin" style="margin-bottom:24px">friction-assist · on Screenpipe · local and encrypted</div>
+					<div class="h1 kin" style="font-size:80px">Every friction is paid <span class="grad">only once.</span></div>
+					<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px">
+						<div class="s10-f card" style="position:relative;background:linear-gradient(160deg,#fff 30%,#f2efff)"><div class="big" style="color:var(--violet)"><span id="s10-a">0</span> s</div><div style="color:var(--mute);margin-top:8px;font-weight:500">from search to customer record</div></div>
+						<div class="s10-f card" style="position:relative;background:linear-gradient(160deg,#fff 30%,#fff1e9)"><div class="big" style="color:#d4627f"><span id="s10-b">0</span> s</div><div style="color:var(--mute);margin-top:8px;font-weight:500">for the AI to judge an episode</div></div>
+						<div class="s10-f card" style="position:relative;background:linear-gradient(160deg,#fff 30%,#eafaf2)"><div class="big" style="color:var(--ok)">0</div><div style="color:var(--mute);margin-top:8px;font-weight:500">readable text on the server</div></div>
+					</div>
+				</div>
+			</section>
+
+			<div class="cap" id="cap"></div>
+			<div class="wipe" id="wipe"></div>
+		</div>
+	</div>
+
+	<div class="transport">
+		<button type="button" id="prev" aria-label="Previous scene">◀</button>
+		<button type="button" class="play" id="play">Pause</button>
+		<button type="button" id="next" aria-label="Next scene">▶</button>
+		<span id="time">0:00 / 0:00</span>
+		<input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Position in the film">
+		<button type="button" id="subs">Subtitles: on</button>
+		<button type="button" id="full">Full screen</button>
+	</div>
+	<div class="chapters" id="chapters"></div>
+	<p class="keys"><kbd>Space</kbd> play · <kbd>←</kbd> <kbd>→</kbd> scene · <kbd>S</kbd> subtitles · <kbd>H</kbd> hide everything but the film, to record it · <kbd>F</kbd> full screen</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+<script>
+gsap.registerPlugin(TextPlugin);
+const $ = (s) => document.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+
+const SCENES = [
+	{ id: "s0", title: "Who do I ask?", dur: 6, cap: "" },
+	{ id: "s1", title: "The problem", dur: 13, cap: "Support rules are written down nowhere. They live in Karim's head. So we ask him, and the customer waits." },
+	{ id: "s2", title: "Screenpipe sees", dur: 14, cap: "Screenpipe records the screen, locally. Our agent spots a detour: a search that finds nothing, while a customer is waiting." },
+	{ id: "s3", title: "The AI judges", dur: 13, cap: "The AI reads only those few seconds, with identifiers masked. Verdict: it's a friction, and the team has a solution." },
+	{ id: "s4", title: "The answer", dur: 11, cap: "The answer shows up in Screenpipe. One click, Jean is found. Nobody was interrupted." },
+	{ id: "s5", title: "Nobody knows", dur: 17, cap: "When nobody on this computer knows, the question goes to the team, encrypted and nameless. Karim shares his rule in one click, without knowing who asked." },
+	{ id: "s6", title: "At night", dur: 13, cap: "At night, the AI gathers what the team shared and proposes a rule. In the morning, Claire, the manager, certifies it in one click." },
+	{ id: "s7", title: "The next day", dur: 9, cap: "The next day, Yasmine gets stuck at the same step. The answer is already there, certified. Karim is no longer interrupted." },
+	{ id: "s8", title: "Someone leaves", dur: 11, cap: "Karim moves to another team. We change the key: he can't read anything anymore. His rules stay with the team." },
+	{ id: "s9", title: "Privacy", dur: 10, cap: "Everything is encrypted on the computer. The server only sees same-size blocks, with no name and no exact time." },
+	{ id: "s10", title: "Only once", dur: 8, cap: "Every friction is paid only once." },
+];
+let at = 0;
+for (const s of SCENES) { s.start = at; at += s.dur; }
+const TOTAL = at;
+const T = (id) => SCENES.find((s) => s.id === id).start;
+
+// Découpe un texte en mots masqués, pour les faire monter un à un.
+for (const el of $$(".kin")) {
+	const walk = (node) => {
+		for (const child of [...node.childNodes]) {
+			if (child.nodeType === 3) {
+				const frag = document.createDocumentFragment();
+				child.textContent.split(/(\s+)/).forEach((part) => {
+					if (!part) return;
+					if (/^\s+$/.test(part)) { frag.append(part); return; }
+					const w = document.createElement("span"); w.className = "w";
+					const inner = document.createElement("span"); inner.textContent = part;
+					w.append(inner); frag.append(w);
+				});
+				child.replaceWith(frag);
+			} else if (child.nodeType === 1 && !child.classList.contains("w")) walk(child);
+		}
+	};
+	walk(el);
+}
+
+const tl = gsap.timeline({ paused: true, onUpdate: sync, onComplete: () => setPlaying(false) });
+const ease = "power3.out";
+const words = (scope, t, stagger = 0.045) => tl.fromTo($$(`${scope} .kin .w > span`), { yPercent: 115, rotate: 4 }, { yPercent: 0, rotate: 0, duration: 0.75, stagger, ease }, t);
+const pop = (el, t, extra = {}) => tl.fromTo(el, { autoAlpha: 0, scale: 0.6, y: 10 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(2.2)", ...extra }, t);
+const rise = (el, t, extra = {}) => tl.fromTo(el, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.7, ease, ...extra }, t);
+const tilt = (el, t, from = {}) => tl.fromTo(el, { autoAlpha: 0, rotateY: -18, rotateX: 8, x: 80, scale: 0.92, ...from }, { autoAlpha: 1, rotateY: 0, rotateX: 0, x: 0, y: 0, scale: 1, duration: 1.1, ease }, t);
+const draw = (el, t, dur = 0.7) => tl.fromTo(el, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: dur, ease: "power2.inOut" }, t);
+const zoomTo = (shot, t, scale, x, y, dur = 2.2) => tl.to(`${shot} .zoom`, { scale, xPercent: x, yPercent: y, duration: dur, ease: "power2.inOut" }, t);
+const count = (el, from, to, t, dur, fmt) => { const o = { v: from }; tl.fromTo(o, { v: from }, { v: to, duration: dur, ease: "power2.out", onUpdate: () => { el.textContent = fmt(o.v); } }, t); };
+const HEX = "0123456789abcdef";
+const scramble = (el, final, t, dur) => {
+	const o = { p: 0 };
+	tl.fromTo(o, { p: 0 }, { p: 1, duration: dur, ease: "none", onUpdate: () => {
+		const n = Math.floor(o.p * final.length);
+		el.textContent = [...final].map((c, i) => (i < n || c === " " ? c : HEX[Math.floor(Math.random() * 16)])).join("");
+	} }, t);
+};
+const click = (cursor, ripple, x, y, t) => {
+	tl.fromTo(cursor, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, t - 0.2);
+	tl.to(cursor, { left: x, top: y, duration: 0.9, ease: "power2.inOut" }, t);
+	tl.to(cursor, { scale: 0.8, duration: 0.12, yoyo: true, repeat: 1 }, t + 0.9);
+	tl.fromTo(ripple, { autoAlpha: 0.9, scale: 0.3 }, { autoAlpha: 0, scale: 1.7, duration: 0.6, ease: "power1.out", immediateRender: false }, t + 0.92);
+};
+
+// Changement de scène sous un balayage pastel (position tenue par GSAP seul, pas par le CSS).
+gsap.set("#wipe", { xPercent: -101 });
+SCENES.forEach((s, i) => {
+	const el = document.getElementById(s.id);
+	if (i === 0) { tl.set(el, { autoAlpha: 1 }, 0); return; }
+	tl.fromTo("#wipe", { xPercent: -101 }, { xPercent: 101, duration: 1, ease: "power2.inOut", immediateRender: false }, s.start - 0.5);
+	tl.set(document.getElementById(SCENES[i - 1].id), { autoAlpha: 0 }, s.start);
+	tl.set(el, { autoAlpha: 1 }, s.start);
+});
+
+// Les halos changent de place à chaque scène.
+SCENES.forEach((s, i) => {
+	const k = i % 3;
+	tl.to("#h1", { x: [0, 260, -40][k], y: [0, 120, 60][k], duration: 3, ease: "sine.inOut" }, s.start);
+	tl.to("#h2", { x: [0, -300, -80][k], y: [0, 160, 40][k], duration: 3, ease: "sine.inOut" }, s.start);
+	tl.to("#h3", { x: [0, 200, -260][k], y: [0, -60, -120][k], duration: 3, ease: "sine.inOut" }, s.start);
+	tl.to("#h4", { x: [0, -200, 120][k], y: [0, -80, -40][k], duration: 3, ease: "sine.inOut" }, s.start);
+});
+
+// 0 · Titre
+words("#s0", 0.2, 0.06);
+
+// 1 · Le problème
+{
+	const t = T("s1");
+	words("#s1", t + 0.4);
+	tilt("#s1-shot", t + 0.8);
+	rise("#s1-count", t + 1.6);
+	[["#s1-r1", "#s1-p1"], ["#s1-r2", "#s1-p2"], ["#s1-r3", "#s1-p3"]].forEach(([r, p], i) => {
+		draw(r, t + 2.6 + i * 2.2);
+		pop(p, t + 3.1 + i * 2.2);
+	});
+	count($("#s1-n"), 0, 3, t + 2.6, 5, (v) => String(Math.round(v)));
+	zoomTo("#s1-shot", t + 8.6, 1.12, 4, -4, 3);
+}
+
+// 2 · Screenpipe voit
+{
+	const t = T("s2");
+	words("#s2", t + 0.4);
+	pop("#s2-rec", t + 1.4);
+	count($("#s2-clock"), 10, 32, t + 1.4, 12, (v) => `09:05:${String(Math.round(v)).padStart(2, "0")}`);
+	tilt("#s2-crisp", t + 0.9);
+	tl.fromTo("#s2-scan1", { left: "-20%" }, { left: "110%", duration: 1.4, ease: "none" }, t + 1.8);
+	draw("#s2-r1", t + 2.6);
+	pop("#s2-p1", t + 3);
+	tl.to(["#s2-crisp", "#s2-p1"], { x: -60, y: -20, scale: 0.9, autoAlpha: 0.35, duration: 0.8, ease }, t + 5);
+	tilt("#s2-hub", t + 5.1, { rotateY: 18, x: 120 });
+	tl.fromTo("#s2-scan2", { left: "-20%" }, { left: "110%", duration: 1.4, ease: "none" }, t + 6.2);
+	draw("#s2-r2", t + 6.8);
+	pop("#s2-p2", t + 7.1);
+	draw("#s2-r3", t + 8.6);
+	pop("#s2-p3", t + 8.9);
+	zoomTo("#s2-hub", t + 9.2, 1.18, 6, -2, 2.4);
+	pop("#s2-p4", t + 10.2, { ease: "elastic.out(1, 0.5)", duration: 1 });
+}
+
+// 3 · L'IA juge
+{
+	const t = T("s3");
+	words("#s3", t + 0.3);
+	["#n1", "#n2", "#n3", "#n4"].forEach((n, i) => pop(n, t + 1 + i * 0.25));
+	tl.fromTo("#s3-dot", { autoAlpha: 0, left: 285 }, { autoAlpha: 1, duration: 0.2 }, t + 2.4);
+	[["#c1", 2.4, 345], ["#c2", 3.4, 641], ["#c3", 7.6, 937]].forEach(([c, d, x]) => {
+		draw(c, t + d, 0.6);
+		tl.to("#s3-dot", { left: x, duration: 0.6, ease: "power2.inOut" }, t + d);
+	});
+	tl.to("#s3-dot", { scale: 1.8, autoAlpha: 0, duration: 0.4 }, t + 8.3);
+	rise("#s3-ep", t + 3.2);
+	tl.to("#s3-mail", { text: "[EMAIL]", duration: 0.01 }, t + 5.2);
+	tl.fromTo("#s3-mail", { color: "#dc5446" }, { color: "#6c5cf6", duration: 0.4, immediateRender: false }, t + 5.2);
+	pop("#s3-mask", t + 5.5, { scale: 0.9 });
+	tl.to("#n3", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut" }, t + 4.2);
+	rise("#s3-ver", t + 6.4);
+	tl.fromTo("#s3-ver .v", { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.5, ease }, t + 7.2);
+	pop("#s3-ms", t + 9.6);
+}
+
+// 4 · La réponse
+{
+	const t = T("s4");
+	words("#s4", t + 0.3);
+	tilt("#s4-a", t + 0.6);
+	tl.set("#s4-b", { autoAlpha: 0 }, t);
+	rise("#s4-time", t + 1.2);
+	tl.fromTo("#s4-n", { autoAlpha: 0, x: 80, rotate: 3 }, { autoAlpha: 1, x: 0, rotate: 0, duration: 0.9, ease: "elastic.out(1, 0.6)" }, t + 2);
+	count($("#s4-sec"), 0, 10, t + 1.4, 1.6, (v) => String(Math.round(v)));
+	click("#s4-cur", "#s4-rip", 935, 186, t + 3.6);
+	tl.to("#s4-n", { autoAlpha: 0, y: -20, duration: 0.4 }, t + 4.8);
+	tl.to("#s4-a", { autoAlpha: 0, duration: 0.4 }, t + 4.9);
+	tl.fromTo("#s4-b", { autoAlpha: 0, scale: 0.97 }, { autoAlpha: 1, scale: 1, duration: 0.5, immediateRender: false }, t + 4.9);
+	draw("#s4-r", t + 5.6);
+	pop("#s4-p", t + 6);
+	zoomTo("#s4-b", t + 6.4, 1.2, 0, -12, 2.4);
+	tl.to("#s4-cur", { autoAlpha: 0, duration: 0.3 }, t + 6);
+}
+
+// 5 · Personne ne sait
+{
+	const t = T("s5");
+	words("#s5", t + 0.3, 0.035);
+	pop("#s5-q", t + 1.4);
+	pop("#s5-mem", t + 2.4);
+	tl.fromTo("#s5-b1", { autoAlpha: 0, left: 80, top: 420, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, t + 3.6);
+	scramble($("#s5-b1"), "7f3a c91e 44b2 0e8d", t + 4.4, 1.2);
+	tl.to("#s5-b1", { left: 525, top: 470, duration: 1.2, ease: "power2.inOut" }, t + 5.6);
+	tl.to("#s5-in", { opacity: 1, duration: 0.3 }, t + 6.8);
+	tl.to("#s5-b1", { left: 944, top: 470, duration: 1.2, ease: "power2.inOut" }, t + 7);
+	tl.to("#s5-b1", { autoAlpha: 0, scale: 0.6, duration: 0.3 }, t + 8.2);
+	tl.fromTo("#s5-nk", { autoAlpha: 0, y: 20, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.7, ease: "elastic.out(1, 0.6)" }, t + 8.3);
+	click("#s5-cur", "#s5-rip", 950, 395, t + 9.6);
+	pop("#s5-anon", t + 10.6);
+	tl.to("#s5-nk", { autoAlpha: 0, duration: 0.3 }, t + 10.8);
+	tl.to("#s5-cur", { autoAlpha: 0, duration: 0.3 }, t + 10.8);
+	tl.fromTo("#s5-b2", { autoAlpha: 0, left: 944, top: 470 }, { autoAlpha: 1, duration: 0.3 }, t + 11);
+	tl.to("#s5-b2", { left: 525, top: 500, duration: 1.1, ease: "power2.inOut" }, t + 11.3);
+	tl.to("#s5-out", { opacity: 1, duration: 0.3 }, t + 12.4);
+	tl.to("#s5-b2", { left: 80, top: 470, duration: 1.1, ease: "power2.inOut" }, t + 12.6);
+	tl.to("#s5-b2", { autoAlpha: 0, duration: 0.3 }, t + 13.7);
+	tl.fromTo("#s5-nl", { autoAlpha: 0, y: 20, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.8, ease: "elastic.out(1, 0.6)" }, t + 13.8);
+}
+
+// 6 · La nuit
+{
+	const t = T("s6");
+	tl.fromTo("#s6-sky", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2 }, t);
+	tl.fromTo("#s6-moon", { autoAlpha: 0, y: 30, rotate: -30 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 1.4, ease }, t + 0.2);
+	words("#s6", t + 0.4);
+	count($("#s6-clock"), 180, 525, t + 0.8, 10, (v) => { const m = Math.round(v); return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; });
+	["#s6-a", "#s6-b", "#s6-c"].forEach((c, i) => tl.fromTo(c, { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.6, ease }, t + 1.2 + i * 0.3));
+	pop("#s6-ai", t + 2.6);
+	tl.to(["#s6-a", "#s6-b", "#s6-c"], { left: 440, top: 400, autoAlpha: 0, scale: 0.5, rotate: 8, duration: 0.9, stagger: 0.18, ease: "power2.in" }, t + 3.4);
+	tl.to("#s6-ai", { scale: 1.12, duration: 0.25, yoyo: true, repeat: 3 }, t + 4.2);
+	tl.fromTo("#s6-rule", { autoAlpha: 0, x: -40, scale: 0.95 }, { autoAlpha: 1, x: 0, scale: 1, duration: 0.8, ease }, t + 5);
+	tl.set("#s6-stamp", { autoAlpha: 0 }, t);
+	tl.to("#s6-sky", { autoAlpha: 0.3, duration: 2 }, t + 6.2);
+	rise("#s6-claire", t + 6.6);
+	tl.fromTo("#s6-n", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: "elastic.out(1, 0.6)" }, t + 7.2);
+	tl.fromTo("#s6-rip", { autoAlpha: 0.9, scale: 0.3 }, { autoAlpha: 0, scale: 1.7, duration: 0.6, immediateRender: false }, t + 9);
+	tl.to("#s6-n", { autoAlpha: 0, y: -10, duration: 0.4 }, t + 9.5);
+	tl.fromTo("#s6-stamp", { autoAlpha: 0, scale: 2.2, rotate: -8 }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.5, ease: "back.out(2.5)", immediateRender: false }, t + 9.7);
+}
+
+// 7 · Le lendemain
+{
+	const t = T("s7");
+	words("#s7", t + 0.3);
+	tilt("#s7-shot", t + 0.6);
+	draw("#s7-r", t + 2);
+	tl.fromTo("#s7-n", { autoAlpha: 0, x: 80 }, { autoAlpha: 1, x: 0, duration: 0.9, ease: "elastic.out(1, 0.6)" }, t + 2.8);
+	pop("#s7-k", t + 4.4, { ease: "elastic.out(1, 0.5)", duration: 1 });
+}
+
+// 8 · Quelqu'un part
+{
+	const t = T("s8");
+	words("#s8", t + 0.3);
+	tl.set("#s8-k2", { autoAlpha: 0 }, t);
+	tl.set(["#s8-denied", "#s8-rot"], { autoAlpha: 0 }, t);
+	tl.to("#s8-karim", { x: 680, y: 160, rotate: -6, duration: 1.6, ease: "power2.inOut" }, t + 1.8);
+	tl.to("#s8-karim", { rotate: 0, duration: 0.3 }, t + 3.4);
+	tl.to("#s8-lock", { rotate: 360, duration: 0.8, ease: "power2.inOut" }, t + 3.6);
+	tl.to("#s8-k1", { autoAlpha: 0, y: -20, duration: 0.3 }, t + 3.8);
+	tl.fromTo("#s8-k2", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.4, immediateRender: false }, t + 3.9);
+	tl.to("#s8-rot", { autoAlpha: 1, duration: 0.4 }, t + 4.3);
+	tl.fromTo("#s8-denied", { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2)", immediateRender: false }, t + 5.2);
+	tl.fromTo(".s8-rules .chip", { y: 0 }, { y: -6, borderColor: "#1c9a68", color: "#1c9a68", backgroundColor: "#eafaf2", duration: 0.4, stagger: 0.25 }, t + 6.4);
+}
+
+// 9 · Vie privée
+{
+	const t = T("s9");
+	words("#s9", t + 0.3);
+	rise("#s9-l", t + 1);
+	rise("#s9-r", t + 1.3);
+	$$(".s9-blocks .blob").forEach((b, i) => scramble(b, b.textContent, t + 2 + i * 0.25, 1.6));
+}
+
+// 10 · Fin
+{
+	const t = T("s10");
+	words("#s10", t + 0.3, 0.07);
+	tl.fromTo(".s10-f", { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.25, ease }, t + 1.8);
+	count($("#s10-a"), 0, 10, t + 2, 1.4, (v) => String(Math.round(v)));
+	count($("#s10-b"), 0, 2.6, t + 2.25, 1.4, (v) => v.toFixed(1));
+}
+tl.to({}, { duration: 0.01 }, TOTAL - 0.01);
+
+// Les halos respirent en continu, hors de la ligne de temps.
+["#h1", "#h2", "#h3", "#h4"].forEach((h, i) => gsap.to(h, { scale: 1.15, duration: 4 + i, yoyo: true, repeat: -1, ease: "sine.inOut" }));
+
+// ---- transport
+const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const chapters = $("#chapters");
+chapters.innerHTML = SCENES.map((s, i) => `<button type="button" data-i="${i}">${i ? `${i}. ` : ""}${s.title}</button>`).join("");
+let lastScene = -1;
+let scrubbing = false;
+function sceneAt(time) { let i = 0; SCENES.forEach((s, j) => { if (time >= s.start - 0.001) i = j; }); return i; }
+function sync() {
+	const time = tl.time();
+	const i = sceneAt(time);
+	if (i !== lastScene) {
+		lastScene = i;
+		$("#cap").textContent = SCENES[i].cap;
+		$("#tag-n").textContent = String(i).padStart(2, "0");
+		$("#tag-t").textContent = SCENES[i].title;
+		$$("#chapters button").forEach((b, j) => b.classList.toggle("on", j === i));
+	}
+	$("#time").textContent = `${fmt(time)} / ${fmt(TOTAL)}`;
+	if (!scrubbing) $("#scrub").value = String(Math.round((time / TOTAL) * 1000));
+}
+function setPlaying(on) {
+	if (on) { if (tl.progress() >= 1) tl.seek(0, false); tl.play(); } else tl.pause();
+	$("#play").textContent = on ? "Pause" : tl.progress() >= 1 ? "Replay" : "Play";
+}
+const go = (i) => { i = Math.max(0, Math.min(SCENES.length - 1, i)); tl.seek(SCENES[i].start + 0.001, false); sync(); };
+$("#play").addEventListener("click", () => setPlaying(tl.paused() || tl.progress() >= 1));
+$("#prev").addEventListener("click", () => go(sceneAt(tl.time()) - 1));
+$("#next").addEventListener("click", () => go(sceneAt(tl.time()) + 1));
+chapters.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) go(Number(b.dataset.i)); });
+$("#scrub").addEventListener("input", (e) => { scrubbing = true; tl.seek((Number(e.target.value) / 1000) * TOTAL, false); scrubbing = false; sync(); });
+const toggleSubs = () => { const off = $("#frame").classList.toggle("nosubs"); $("#subs").textContent = `Subtitles: ${off ? "off" : "on"}`; };
+$("#subs").addEventListener("click", toggleSubs);
+const fullscreen = () => { const f = $("#frame"); const p = document.fullscreenElement ? document.exitFullscreen() : f.requestFullscreen?.(); p?.catch?.(() => {}); };
+$("#full").addEventListener("click", fullscreen);
+document.addEventListener("keydown", (e) => {
+	if (e.target.closest("input, textarea")) return;
+	if (e.key === " ") { e.preventDefault(); setPlaying(tl.paused() || tl.progress() >= 1); }
+	else if (e.key === "ArrowRight") go(sceneAt(tl.time()) + 1);
+	else if (e.key === "ArrowLeft") go(sceneAt(tl.time()) - 1);
+	else if (e.key === "s" || e.key === "S") toggleSubs();
+	else if (e.key === "h" || e.key === "H") document.body.classList.toggle("record");
+	else if (e.key === "f" || e.key === "F") fullscreen();
+});
+
+const frame = $("#frame");
+const fit = () => { $("#stage").style.transform = `scale(${frame.clientWidth / 1280})`; };
+new ResizeObserver(fit).observe(frame);
+fit();
+
+// Lien direct : #s5 ouvre la scène 5, #t40 la 40e seconde (en pause). Sinon, lecture dès l'ouverture.
+const hash = location.hash.match(/^#(s|t)(\d+)$/);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (hash) { hash[1] === "s" ? go(Number(hash[2])) : tl.seek(Math.min(TOTAL, Number(hash[2])), false); setPlaying(false); }
+else if (reduced) { tl.seek(2.5, false); setPlaying(false); }
+else setPlaying(true);
+sync();
+</script>
