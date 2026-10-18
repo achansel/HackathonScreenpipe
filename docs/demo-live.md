@@ -46,8 +46,10 @@ bun agent/main.ts carte-installer
 
 ```bash
 rm -f agent/.state/solutions.json
-FRICTION_SEED_IDS=client-introuvable bun agent/main.ts
+FRICTION_SEED_IDS=client-introuvable FRICTION_COOLDOWN_S=20 bun agent/main.ts
 ```
+
+`FRICTION_COOLDOWN_S=20` : la même aide peut repartir après 20 s (10 min par défaut), pour refaire la recherche si le jury le demande ; **vider le champ de recherche avant de recoller l'adresse** (une recherche identique sans vider n'est pas un nouveau geste).
 
 Attendu dans le journal : `relais prêt`, `équipes : Support`, `agent actif (port 8787, 1 solutions)`.
 

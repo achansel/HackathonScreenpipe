@@ -51,7 +51,7 @@ export const CALL = process.env.FRICTION_CALL !== "0"; // FRICTION_CALL=0 : sans
 export const DEBOUNCE_MS = 2000; // texte d'une fenêtre stable depuis 2 s → épisode prêt
 export const LOOKBACK_MS = 3 * 60_000; // l'IA ne lit que les 3 dernières minutes
 export const BASELINE_MS = 30 * 60_000; // référence d'une fenêtre (empreintes de mots, pas de texte) gardée 30 min après sa dernière frame
-export const SOLUTION_COOLDOWN_MS = 10 * 60_000; // pas deux fois la même aide en 10 min
+export const SOLUTION_COOLDOWN_MS = Number(process.env.FRICTION_COOLDOWN_S ?? 600) * 1000; // pas deux fois la même aide (10 min ; FRICTION_COOLDOWN_S=20 en démo, pour refaire la recherche devant le jury)
 export const MIN_CONFIDENCE = Number(process.env.FRICTION_MIN_CONFIDENCE ?? 0.72); // éval 17/10, 172 épisodes : opus-5 à 0,72 = précision 0,71, rappel 0,46 (haiku à 0,8 : 0,46 / 0,50). Seuil propre au modèle : les gros modèles donnent des confiances plus basses
 // Filtre en direct : un épisode est écarté sans appel au modèle si le détecteur approuvé dit
 // « pas de friction » avec au moins cette confiance. Même seuil pour la validation hors ligne.

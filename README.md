@@ -80,7 +80,7 @@ cd integrations && bun install && bun test    # 122
 ## Commandes de l'agent
 
 `bun agent/main.ts` + `activer | pause | reprendre | statut | test-notif | carte-installer | carte | equipe-creer | equipe-rejoindre | equipe-liste | equipe-rotation | equipe-certifier | simuler | injecter | desactiver`.
-Variables : `FRICTION_MODEL` (`claude-opus-5`), `FRICTION_MIN_CONFIDENCE` (0,72), `FRICTION_SCOPE` (applis lues), `FRICTION_CRISP=0`, `FRICTION_CALL=0`, `FRICTION_REQUEST_JITTER` (délai d'anonymat, `10-60` s par défaut).
+Variables : `FRICTION_MODEL` (`claude-opus-5`), `FRICTION_MIN_CONFIDENCE` (0,72), `FRICTION_SCOPE` (applis lues), `FRICTION_CRISP=0`, `FRICTION_CALL=0`, `FRICTION_REQUEST_JITTER` (délai d'anonymat, `10-60` s par défaut), `FRICTION_COOLDOWN_S` (même aide pas deux fois avant, 600 s).
 
 Licence MIT ([LICENSE](LICENSE)).
 
