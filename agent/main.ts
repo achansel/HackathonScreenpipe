@@ -404,6 +404,10 @@ async function run() {
     process.exit(1);
   }
   startServer();
+  // Relais des clics : l'instance Screenpipe qui transmet un bouton « api » à ce poste (PUT idempotent).
+  // Sans elle, un clic ne va nulle part ; constaté sur un clone vierge le 18/10.
+  try { await setupRelay(PORT); log(`relais prêt (clic d'un bouton « api » → POST http://127.0.0.1:${PORT}/hook)`); }
+  catch (e) { log("relais non installé :", (e as Error).message, "(bun agent/main.ts relais pour réessayer)"); }
   await startTeam();
   listenToCalls();
   const builder = new EpisodeBuilder();

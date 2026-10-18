@@ -48,7 +48,7 @@ rm -f agent/.state/solutions.json
 FRICTION_SEED_IDS=client-introuvable bun agent/main.ts
 ```
 
-Attendu dans le journal : `équipes : Support`, `agent actif (port 8787, 1 solutions)`.
+Attendu dans le journal : `relais prêt`, `équipes : Support`, `agent actif (port 8787, 1 solutions)`.
 
 6. Écran : Chrome avec Crisp au premier plan (liste des conversations) et HubSpot sur la **liste des contacts**. Terminal et tout le reste hors de l'écran enregistré. **Aucune recherche HubSpot avant le message de Jean.**
 
