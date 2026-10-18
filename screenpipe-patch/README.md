@@ -1,4 +1,4 @@
-# Patch Screenpipe : boutons `api` traités en Rust (macOS)
+# Boutons `api` sur macOS : le constat, et un diff non appliqué
 
 **Problème** : sur Mac, un clic sur un bouton de notification de type `api` ne fait rien. Le panneau natif renvoie l'action au JavaScript de la fenêtre overlay, « usually not mounted » (`native_actions.rs:1131`). Mesuré : le clic n'arrive jamais. Seul `record-hd` est traité en Rust.
 
@@ -8,7 +8,7 @@
 - les actions avec `deeplinkUrl` restent sur le chemin JS ;
 - tests unitaires de `local_api_action_target` (cibles acceptées / refusées).
 
-Pas encore compilé ni testé en conditions réelles (voir [docs/etat.md](../docs/etat.md)) ; les tests unitaires de la cible sont dans le patch. Candidat à une PR upstream : corrige un bug réel sans changer la règle de sécurité.
+Ni compilé, ni testé, ni proposé à Screenpipe : il documente le constat et l'endroit. La démo tourne sur Windows, où les boutons `api` marchent.
 
 ## Appliquer et compiler (Mac)
 

@@ -63,7 +63,7 @@ bun ~/Workspace/Hackathon/crispbot/send-one.ts "Jean Dupont" "jd.resto75@resa-pa
 | 0:55 | Live View « Mon agent, en direct » | « Étape par étape : Crisp lu, le modèle juge, la fiche, l'aide, et ce qui part à l'équipe : lisible chez nous, illisible sur le serveur. » |
 | 1:15 | Notification « Règle trouvée cette nuit : … » → [Certifier] | « La nuit, le poste relit ce qui a suivi une friction sans réponse. L'IA propose une règle sans nom ; la responsable certifie. Exemple préparé. » |
 | 1:35 | Live View « Frictions de l'équipe » | « Où le process coince, jamais qui. » |
-| 1:50 | — | Chiffres : 172 épisodes, précision 0,71, rappel 0,46. Partage entre collègues : dans le film, pas joué faute de second poste patché. Trois PR proposées à Screenpipe. |
+| 1:50 | — | Chiffres : 172 épisodes, précision 0,71, rappel 0,46. Partage entre collègues : dans le film, pas joué faute de second poste patché. |
 
 ## Si ça coince
 

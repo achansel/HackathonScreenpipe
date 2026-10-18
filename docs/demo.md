@@ -35,7 +35,7 @@ Le partage entre collègues ([Partager] sur un second poste) n'est pas joué en 
 | 0:50 | Live View « Mon agent, en direct » | 💬 Crisp lu, 🧠 jugé (confiance, temps du modèle), 🪪 fiche, 💡 aide (délai), 🔒 envoi chiffré : le clair côté équipe, le chiffré côté serveur |
 | 1:10 | Notification « Règle trouvée cette nuit : … » → [Certifier] | Exemple préparé, à annoncer comme tel. La règle devient l'aide de l'équipe |
 | 1:30 | Live View « Frictions de l'équipe » | Détours par étape, états (attente, à documenter, partagée, certifiée) |
-| 1:50 | — | Chiffres ([etat.md](etat.md)), vie privée, PR proposées à Screenpipe |
+| 1:50 | — | Chiffres ([etat.md](etat.md)), vie privée |
 
 ## Si ça coince
 

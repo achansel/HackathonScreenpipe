@@ -23,6 +23,6 @@ Pas de fork : un programme Bun qui parle à l'API locale (`127.0.0.1:3030`, jeto
 - Live Views : lecture seule, ni bouton ni couleur (`/live-views/schema`). Largeurs 3/6/12. L'app n'est pas prévenue d'un changement de bloc (rien sur `/ws/events`), elle rafraîchit à son rythme. Recréer une vue remet la disposition à zéro.
 - `claude-haiku-4-5` absent de la liste de la passerelle : remplacé en silence.
 
-## Correctif Mac
+## Boutons `api` sur Mac
 
-Sur Mac, un bouton `api` ne fait rien : le panneau natif renvoie l'action au JS d'une fenêtre « usually not mounted ». [screenpipe-patch/](../screenpipe-patch/) traite les boutons `api` en Rust. Écart avec « pas de fork », pour la démo ; PR à proposer, avec une mémoire d'équipe chiffrée native et des actions dans les Live Views.
+Sur Mac, un bouton `api` ne fait rien : le panneau natif renvoie l'action au JS d'une fenêtre « usually not mounted » (`native_actions.rs`). Constaté, pas corrigé : la démo tourne sur Windows. [screenpipe-patch/](../screenpipe-patch/) garde le diff qui traiterait ces boutons en Rust, pour montrer où ça se passe ; il n'est ni compilé, ni testé, ni proposé.

@@ -32,7 +32,7 @@ Mesuré sur un poste Windows (Screenpipe côté Windows, code dans WSL) sauf men
 | Équipe | Certification en direct. Demande anonyme et [Partager] : montrés avec le dashboard ou le film, reproduits sur une machine avec `simuler` (pas de second poste : correctif Mac non compilé) | Délai aléatoire d'anonymat (10–60 s), à 0 en simulation |
 | Live Views | Lecture seule, actions par notification | Actions sur les items de liste (l'API existe, affichage non vérifié) |
 | Dashboard web | Ébauche (`teamstore/dashboard/`), sert à illustrer | Rien : le produit, c'est les Live Views |
-| Mac | Screenpipe patché | PR |
+| Mac | Pas de second poste : le bouton `api` n'arrive pas sur Mac (mesuré). Le patch dans `screenpipe-patch/` montre où ; il n'est ni compilé ni poussé | — |
 
 ## Chiffres
 
