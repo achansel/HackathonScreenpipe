@@ -67,7 +67,7 @@ async function worker() {
     const ms = performance.now() - t0;
     let v: any = {};
     try { v = JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] ?? "{}"); } catch {}
-    runs.push({ label: k.label, expect: k.expect, got: f.resolved, confidence: f.confidence, ms, rawLeak: IDENTIFYING.test(`${v.title ?? ""} ${v.body ?? ""}`), title: f.title ?? "", trap: k.trap });
+    runs.push({ label: k.label ?? "", expect: k.expect, got: f.resolved, confidence: f.confidence, ms, rawLeak: IDENTIFYING.test(`${v.title ?? ""} ${v.body ?? ""}`), title: f.title ?? "", trap: k.trap });
   }
 }
 const t0 = Date.now();
