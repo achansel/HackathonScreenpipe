@@ -4,3 +4,4 @@ node_modules/
 .env
 motion/img/raw/
 .DS_Store
+motion/audio/raw/

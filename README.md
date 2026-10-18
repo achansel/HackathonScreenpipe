@@ -65,7 +65,7 @@ Léa n'a pas la règle → demande anonyme → Karim reçoit « Un collègue blo
 | [integrations/](integrations/) | Lecture de Crisp et des appels via Screenpipe, fiche HubSpot, environnement fictif PipingTable (HubSpot, Slack, Notion, clients Crisp), simulateur de clients, studio de notifications. |
 | [screenpipe-patch/](screenpipe-patch/) | Constat : les boutons `api` ne répondent pas sur Mac ; diff non appliqué qui montre où. |
 | [docs/](docs/) | [demo-live.md](docs/demo-live.md) (environnement, commandes dans l'ordre, déroulé), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [mesures.md](docs/mesures.md) (chiffres, méthode, scripts à relancer), [crisp.md](docs/crisp.md). |
-| [pitch/](pitch/) | Film de 2 min (11 scènes animées sur de vraies captures). |
+| [pitch/](pitch/) | Film de 2 min : `film.html` (scènes animées sur de vraies captures) et le rendu MP4 dans `out/`. |
 
 ## Tests
 
