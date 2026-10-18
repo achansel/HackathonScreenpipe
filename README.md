@@ -64,7 +64,7 @@ Léa n'a pas la règle → demande anonyme → Karim reçoit « Un collègue blo
 | [teamstore/](teamstore/) | Mémoire d'équipe chiffrée : client, serveur local, schéma Supabase, boucle de nuit, tableau d'équipe. `dashboard/` : pages web (parcours guidé, équipe simulée, mon poste), **ébauche et démo**. |
 | [integrations/](integrations/) | Lecture de Crisp et des appels via Screenpipe, fiche HubSpot, environnement fictif PipingTable (HubSpot, Slack, Notion, clients Crisp), simulateur de clients, studio de notifications. |
 | [screenpipe-patch/](screenpipe-patch/) | Correctif Screenpipe : boutons `api` sur Mac. |
-| [docs/](docs/) | [demo.md](docs/demo.md), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [mesures.md](docs/mesures.md) (chiffres, méthode, scripts à relancer), [crisp.md](docs/crisp.md). |
+| [docs/](docs/) | [demo.md](docs/demo.md), [demo-live.md](docs/demo-live.md) (les commandes dans l'ordre), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [mesures.md](docs/mesures.md) (chiffres, méthode, scripts à relancer), [crisp.md](docs/crisp.md). |
 | [pitch/](pitch/) | Film de 2 min (11 scènes animées sur de vraies captures). |
 
 ## Tests
