@@ -1,4 +1,4 @@
-// Boucle de nuit : « la mémoire qui se nourrit seule » (idée de Minguk, minguk/build/retour-andrea.md §4).
+// Boucle de nuit : « la mémoire qui se nourrit seule » (idée de Minguk).
 // Pour chaque friction de la journée restée sans réponse, on relit ce que la personne a vu à l'écran dans les
 // 15 minutes QUI ONT SUIVI (Screenpipe), et l'IA dit si elle s'en est sortie, et comment.
 //   - résolue     → une PROPOSITION de règle (générale, sans nom ni donnée client), chiffrée, à valider par la

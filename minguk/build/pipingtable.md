@@ -1,7 +1,7 @@
 # PipingTable : l'environnement de démo
 
 > **Statut :** créé le 17 octobre 2026 dans HubSpot et Slack ; pages Notion prêtes à importer ; Crisp à compléter.
-> Reprend le profil de [ClientProfile.md](../../ClientProfile.md) (« TableNow », renommée **PipingTable**) et la journée de Léa de [UseCase.md](../../UseCase.md). Tout est fictif : e-mails en `@example.com`, domaines en `.example`, téléphones en `06 39 98 xx xx`, noms inventés.
+> Reprend le profil de `ClientProfile.md` (branche `main`) (« TableNow », renommée **PipingTable**) et la journée de Léa de `UseCase.md` (branche `main`). Tout est fictif : e-mails en `@example.com`, domaines en `.example`, téléphones en `06 39 98 xx xx`, noms inventés.
 
 ## En bref
 

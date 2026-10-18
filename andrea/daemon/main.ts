@@ -581,7 +581,7 @@ ${process.argv.includes("--afficher-cle") ? `Clé : ${readFileSync(TEAM_KEY_FILE
   case "equipe-rotation":
   case "equipe-certifier": {
     if (!teamstoreConfigured()) {
-      console.error("FRICTION_TEAMSTORE_URL absent (et FRICTION_TEAMSTORE_ANON_KEY) : voir teamstore/FICHE.md, puis source ~/.config/friction-assist/team.env");
+      console.error("FRICTION_TEAMSTORE_URL absent (et FRICTION_TEAMSTORE_ANON_KEY) : voir teamstore/README.md, puis source ~/.config/friction-assist/team.env");
       process.exit(1);
     }
     const opt = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };

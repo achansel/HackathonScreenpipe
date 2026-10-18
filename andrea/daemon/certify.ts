@@ -1,10 +1,9 @@
-// Certification et documentation, côté responsable d'équipe, dans les notifications Screenpipe.
-// Les Live Views sont en lecture seule : une action passe par une notification. La boucle de nuit de Haytham
+// Certification, côté responsable d'équipe, dans les notifications Screenpipe.
+// Les Live Views sont en lecture seule : une action passe par une notification. La boucle de nuit
 // (teamstore/nuit.ts) dépose des blocs « candidate » :
-//   - « proposition » : une règle trouvée après une friction → [Certifier] (signée, publiée pour l'équipe) ou [Rédiger] ;
-//   - « attente »     : personne n'a trouvé comment faire → [Rédiger].
-// [Rédiger] ouvre la page « Mon poste » de Haytham (écrire ou corriger une règle demande un champ de saisie).
-// La certification reprend son code tel quel (teamstore/demo/app.ts, validateNight).
+//   - « proposition » : une règle trouvée après une friction → [Certifier] (signée, publiée pour l'équipe) ;
+//   - « attente »     : personne n'a trouvé comment faire → la responsable est prévenue (à documenter).
+// Écrire ou corriger une règle demande un champ de saisie : hors Screenpipe, voir equipe-certifier.
 import { randomBytes } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { LABEL, PIPE_NAME, STATE_DIR } from "./config";
@@ -12,7 +11,6 @@ import { notify, relayUrl } from "./screenpipe";
 import type { RpcTeamStore } from "./teamstore";
 
 const SEEN = `${STATE_DIR}proposals-seen.json`;
-export const PAGE_URL = process.env.FRICTION_PAGE_URL ?? "http://127.0.0.1:4322/moi";
 const MAX_PER_POLL = 3; // pas de rafale de notifications si beaucoup de propositions attendent
 
 type Hooks = {
@@ -41,7 +39,6 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
         return true;
       };
       const d = r.data;
-      const edit = { id: "edit", label: "Rédiger", type: "link", url: PAGE_URL };
       if (d.type === "proposition") {
         const episode = `cert-${r.seq}`;
         const nonce = randomBytes(12).toString("hex");
@@ -60,7 +57,7 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
           pipe_name: PIPE_NAME,
           priority: "normal",
           timeout: 0,
-          actions: [{ id: "certify", label: "Certifier", type: "api", url: relayUrl, method: "POST", primary: true, body: { action: "certify", episode, nonce } }, edit],
+          actions: [{ id: "certify", label: "Certifier", type: "api", url: relayUrl, method: "POST", primary: true, body: { action: "certify", episode, nonce } }],
         });
         hooks.log(`proposition de la nuit à certifier : « ${d.title} » (${message})`);
         if (!done(message)) return;
@@ -68,11 +65,10 @@ export async function pollProposals(store: RpcTeamStore, hooks: Hooks) {
         const message = await notify({
           id: `fa-doc-${r.seq}-${Date.now().toString(36)}`,
           title: `${LABEL}Étape à documenter : ${d.step}`,
-          body: "Personne n'a trouvé comment faire. Écris la règle : elle aidera toute l'équipe.",
+          body: "Personne n'a trouvé comment faire. Une règle écrite puis certifiée (equipe-certifier) aidera toute l'équipe.",
           pipe_name: PIPE_NAME,
           priority: "normal",
           timeout: 0,
-          actions: [{ ...edit, primary: true }],
         });
         hooks.log(`étape à documenter : « ${d.step} » (${message})`);
         if (!done(message)) return;

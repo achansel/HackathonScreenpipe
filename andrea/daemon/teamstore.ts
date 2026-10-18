@@ -1,4 +1,4 @@
-// Stockage d'équipe TEMPORAIRE (cf. PROPOSITION.md §5) : une table de blocs chiffrés côté client.
+// Stockage d'équipe : une table de blocs chiffrés côté client.
 // Le stockage ne voit ni contenu ni identité : pas de colonne auteur, AES-256-GCM avec une clé
 // d'équipe qui ne quitte jamais les postes (même modèle que les Teams de Screenpipe).
 // Cible à terme : la mémoire d'équipe de Screenpipe, derrière la même interface.
@@ -89,7 +89,7 @@ export class PostgresTeamStore implements TeamStore {
   }
 }
 
-// ---- Stockage d'équipe par RPC (recommandé) : cf. teamstore/ à la racine et teamstore/FICHE.md.
+// ---- Stockage d'équipe par RPC (recommandé) : cf. teamstore/ à la racine (README.md).
 // Différences avec PostgresTeamStore : aucun identifiant de base sur les postes (seulement l'URL
 // Supabase et sa clé publique), une clé et un jeton PAR équipe, plusieurs équipes par personne,
 // pas d'horodatage précis, tailles arrondies, rotation de clé au départ d'un membre, solutions

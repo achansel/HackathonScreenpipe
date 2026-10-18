@@ -1,23 +1,18 @@
-# Projet — Assistance aux frictions (hackathon Screenpipe)
+# friction-assist (hackathon Screenpipe, branche `demo`)
 
-Contexte produit, architecture et règles de vie privée : voir [VISION.md](VISION.md). Ne pas rouvrir les décisions « verrouillées » ni la liste « écartées ».
+Cette branche est le **rendu au jury** : seulement ce qui est construit et utilisable. Lire [README.md](README.md), puis [docs/etat.md](docs/etat.md) (ce qui marche, mesures, limites) avant d'agir. Les documents de travail et le parcours guidé web restent sur `main`.
 
-## Démo du 18 octobre : lire RAPPORT-DEMO.md d'abord
-
-**Dès qu'une demande concerne la démo, ou dès qu'une demande est faite le 18 octobre 2026 (jour de la finale), lire d'abord [RAPPORT-DEMO.md](RAPPORT-DEMO.md)** avant d'agir : ce qui marche (avec preuve), ce qui reste, ce qui est dans la démo et ce qui est du futur (pitch seulement), l'app de Haytham et son intégration dans Screenpipe.
-
-- Ne pas rouvrir les choix techniques de la démo ([andrea/docs/demo.md](andrea/docs/demo.md), « Choix techniques ») ni faire passer un élément « futur » dans la démo sans accord de l'équipe.
-- Après tout changement ou toute répétition, **mettre à jour RAPPORT-DEMO.md** (heure, preuve) dans le même commit.
-- Une fois le tag `demo` posé : plus de changement de code, sauf correctif bloquant.
+- Ne rien ajouter ici qui ne soit pas construit et testé ; ne pas faire passer un élément « après » de [docs/etat.md](docs/etat.md) dans la démo sans accord de l'équipe.
+- Après tout changement ou toute répétition, mettre à jour [docs/etat.md](docs/etat.md) (heure, preuve) dans le même commit.
 
 ## Stack
 
-- TypeScript sous **Bun**, aucun code natif, aucun fork de Screenpipe : on n'utilise que son API locale.
-- L'équipe est répartie : un Windows (avec WSL pour coder), les autres sur **Mac**. Tout le code doit marcher sur les deux.
+- TypeScript sous **Bun**, aucun code natif, aucun fork de Screenpipe : on n'utilise que son API locale ([docs/screenpipe.md](docs/screenpipe.md)).
+- Un Windows (code dans WSL) et des Mac : tout le code doit marcher sur les deux.
 
 ## Démo : clients fictifs Crisp
 
-Pour créer ou générer le lien d'un client fictif (chat Crisp), suivre [docs/crisp.md](docs/crisp.md) : même Website ID, e-mails en `@example.com`, `locale=fr`, valeurs encodées.
+Pour créer ou générer le lien d'un client fictif (chat Crisp), suivre [docs/crisp.md](docs/crisp.md) : même Website ID, e-mails en `@example.com` (ou les exceptions `.test` documentées), `locale=fr`, valeurs encodées. Jamais de personne réelle.
 
 ## Environnement Screenpipe
 
@@ -37,15 +32,15 @@ Screenpipe tourne toujours **sur l'OS hôte**, jamais dans WSL. Le code parle à
 scripts/screenpipe-env.sh && source ~/.config/screenpipe/env
 ```
 
-Le script trouve le CLI (côté Windows depuis WSL, dans le PATH ou `~/.screenpipe/cli` sur Mac) et écrit `~/.config/screenpipe/env` (chmod 600, hors dépôt). Ajouter `[ -f ~/.config/screenpipe/env ] && . ~/.config/screenpipe/env` au `~/.zshrc` pour le charger automatiquement. À relancer si le jeton change (mise à jour de Screenpipe).
+Le script trouve le CLI (côté Windows depuis WSL, dans le PATH ou `~/.screenpipe/cli` sur Mac) et écrit `~/.config/screenpipe/env` (chmod 600, hors dépôt). À relancer si le jeton change.
 
 ### Windows + WSL
 
 - `~/.wslconfig` côté Windows doit contenir `networkingMode=mirrored` (sinon `127.0.0.1` de WSL n'atteint pas Screenpipe).
-- Depuis WSL, utiliser `curl` / `fetch` normalement ; la note de VISION.md sur `curl.exe` et l'échappement des guillemets ne concerne que PowerShell.
+- Depuis WSL, `curl` / `fetch` normalement.
 
 ### Règles
 
-- **Ne jamais** committer le jeton ni `~/.config/screenpipe/env`, ni l'afficher dans les logs ou les sorties.
+- **Ne jamais** committer un jeton ni `~/.config/screenpipe/env`, `~/.config/friction-assist/team.env`, `~/.config/friction/env`, ni les afficher dans les logs ou les sorties.
 - Lire la config via `process.env` / `Bun.env`, jamais de valeur en dur.
 - Vérification rapide : `curl -s -H "Authorization: Bearer $SCREENPIPE_API_KEY" "$SCREENPIPE_URL/search?limit=1"` doit répondre en 200.

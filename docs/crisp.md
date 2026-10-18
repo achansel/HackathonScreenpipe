@@ -20,7 +20,6 @@ Les paramètres sont reliés par `&`. **Chaque valeur est encodée** : espace �
 ## Règles pour un client fictif
 
 - **E-mail en `@example.com` uniquement** (domaine réservé, n'existe pas) : aucun e-mail ne peut partir vers une vraie personne.
-  - **Exception (17/10)** : Jean Dupont écrit avec `jd.resto75@resa-paris.test` (`.test` est aussi un domaine réservé). La recherche de l'interface HubSpot découpe l'adresse, et le morceau « example » ramène tous les contacts fictifs : avec une adresse en `@example.com`, le « 0 résultat » du cas d'ouverture est impossible (mesuré). Même règle pour les adresses de répétition de ce cas (`km.0412@zvk.test` pour Kenji Mori, `em.2207@qmx.test` pour Élodie Marchand, `lf.1903@wpx.test` pour Luc Fabre) : aucun morceau ne correspond à un nom, une entreprise ou une ville. Pas d'autre exception.
 - **Jamais le nom ou l'adresse d'une vraie personne.** Un nom plausible, français, sans « test » ni « azerty ».
 - **`locale=fr`** toujours.
 - **Un client par scénario**, pour que l'historique de la boîte de réception reste cohérent. Si un client doit revenir, réutiliser exactement le même lien.
@@ -48,7 +47,20 @@ https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e
 | Client | E-mail | Scénario |
 | --- | --- | --- |
 | Camille Martin | `camille.martin@example.com` | remboursement d'une commande arrivée abîmée |
+| Julien Moreau | `julien.moreau@example.com` | colis jamais reçu, demande de remboursement ou de renvoi |
+| Jean Dupont | `jd.resto75@resa-paris.test` | démo 9 h 05 et 11 h : « Ma page de réservation est en panne », puis demande de dédommagement (introuvable dans HubSpot sous cet e-mail) |
+| Lucas Peeters | `lucas.peeters@example.com` | démo 15 h 30 : prospect belge, « Combien pour 3 restaurants ? » |
 
 Ajouter ici chaque nouveau client avec son scénario.
 
 Documentation Crisp : [lien direct vers le chatbox](https://help.crisp.chat/en/article/how-to-create-and-customize-a-direct-link-to-your-crisp-chatbox-174pche/)
+
+### Liens des clients de démo
+
+```
+https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Jean%20Dupont&user_email=jd.resto75%40resa-paris.test&locale=fr
+```
+
+```
+https://go.crisp.chat/chat/embed/?website_id=7dc5c68e-4cc3-4480-879d-15eee53f96e9&user_nickname=Lucas%20Peeters&user_email=lucas.peeters%40example.com&locale=fr
+```
