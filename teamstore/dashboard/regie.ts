@@ -35,7 +35,7 @@ export async function checks(storeUrl: string, crispFlag: boolean) {
   return [
     { id: "screenpipe", label: "Screenpipe tourne (API)", ok: sp.ok, detail: sp.ok ? "" : "ouvrir l'app Screenpipe" },
     { id: "notify", label: "Notifications Screenpipe joignables", ok: notif.ok, detail: notif.ok ? "" : "port 11435 fermé : relancer l'app" },
-    { id: "daemon", label: `Démon d'Andrea lancé (port ${port})`, ok: daemon.ok, detail: daemon.ok ? "" : "bun agent/main.ts (voir docs/demo.md)" },
+    { id: "daemon", label: `Démon d'Andrea lancé (port ${port})`, ok: daemon.ok, detail: daemon.ok ? "" : "bun agent/main.ts (voir docs/demo-live.md)" },
     { id: "team", label: "Équipe sur le stockage chiffré (lisible par la régie)", ok: Boolean(storeUrl && teams.length), detail: storeUrl && teams.length ? `${teams.length} équipe(s)` : storeUrl ? "bun agent/main.ts equipe-rejoindre \"<lien>\"" : "FRICTION_TEAMSTORE_URL absent (ancien mode Postgres : la régie ne voit pas l'équipe)" },
     { id: "hubspot", label: "Clé HubSpot pour la fiche client (Léa)", ok: envHas(join(homedir(), ".config", "friction", "env"), "HUBSPOT_SEED_TOKEN"), detail: "~/.config/friction/env : HUBSPOT_SEED_TOKEN (sinon l'aide générique part)" },
     { id: "sim", label: "Simulateur Crisp de Minguk (facultatif)", ok: sim.ok, detail: sim.ok ? "http://127.0.0.1:4518" : "cd integrations && bun run simulate --sans-aide" },
