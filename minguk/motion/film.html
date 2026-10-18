@@ -87,6 +87,13 @@
 	.note { position: absolute; right: 18px; bottom: 10px; z-index: 46; display: flex; align-items: center; gap: 6px; font: 500 11px var(--mono); letter-spacing: 0.02em; color: var(--mute); opacity: 0.85; }
 	.note::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; }
 	.note:empty { display: none; }
+	/* ---- sous le capot */
+	.hood { position: absolute; top: 226px; width: 218px; height: 262px; border-radius: 18px; padding: 16px 16px; border: 1px solid rgba(60, 40, 140, 0.08); box-shadow: 0 14px 34px rgba(60, 40, 140, 0.1); }
+	.hood .n { font: 600 12px var(--mono); color: var(--violet); letter-spacing: 0.06em; }
+	.hood b { display: block; font: 800 22px var(--sans); letter-spacing: -0.02em; margin: 4px 0 10px; }
+	.hood div.l { font: 500 12.5px/1.45 var(--mono); color: var(--ink); padding: 5px 0; border-top: 1px dashed rgba(60, 40, 140, 0.14); }
+	.hood div.l em { font-style: normal; color: var(--mute); }
+	.harrow { position: absolute; top: 346px; width: 14px; height: 2px; background: var(--violet); transform-origin: 0 50%; }
 	/* ---- bandeau des actes */
 	.acts { position: absolute; right: 56px; top: 24px; display: flex; gap: 6px; z-index: 40; }
 	.acts span { font: 600 13px var(--sans); padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.7); border: 1px solid var(--line); color: var(--mute); }
@@ -303,6 +310,21 @@
 				</div>
 			</section>
 
+			<!-- 3b · Sous le capot -->
+			<section class="scene" id="s3b">
+				<div class="abs" style="left:56px;top:96px;width:1160px">
+					<div class="eyebrow kin">Under the hood</div>
+					<div class="h2 kin" style="margin-top:12px">Built entirely on Screenpipe's local API.</div>
+				</div>
+				<div class="hood" id="hd1" style="left:56px;background:var(--sky)"><span class="n">01</span><b>Capture</b><div class="l">/search<br><em>accessibility + OCR</em></div><div class="l">/frames/:id/elements</div><div class="l">/ws/meeting-overlay<br><em>live call transcript</em></div></div>
+				<div class="hood" id="hd2" style="left:288px;background:var(--lilac)"><span class="n">02</span><b>Detect</b><div class="l">episodes<br><em>window, new text, path</em></div><div class="l">empty search,<br>back-and-forth</div><div class="l">a question in Slack</div></div>
+				<div class="hood" id="hd3" style="left:520px;background:var(--peach)"><span class="n">03</span><b>Judge</b><div class="l">1 model call<br><em>per episode</em></div><div class="l">Screenpipe AI gateway</div><div class="l">2.6 s median<br><em>precision 0.71, 172 labeled</em></div></div>
+				<div class="hood" id="hd4" style="left:752px;background:var(--mint)"><span class="n">04</span><b>Share</b><div class="l">AES-GCM on device<br><em>keys via HKDF</em></div><div class="l">Ed25519 signature<br><em>by the manager</em></div><div class="l">fixed-size blocks<br><em>Supabase, RPC only</em></div></div>
+				<div class="hood" id="hd5" style="left:984px;background:var(--butter)"><span class="n">05</span><b>Deliver</b><div class="l">/notify<br><em>Screenpipe panel</em></div><div class="l">Live Views<br><em>the friction map</em></div><div class="l">click relay<br><em>feedback to the agent</em></div></div>
+				<div class="harrow" id="ha1" style="left:274px"></div><div class="harrow" id="ha2" style="left:506px"></div><div class="harrow" id="ha3" style="left:738px"></div><div class="harrow" id="ha4" style="left:970px"></div>
+				<div class="abs" id="hd-foot" style="left:56px;top:510px;display:flex;gap:10px"><span class="chip">Our code only calls the local API</span><span class="chip">Mac + Windows</span><span class="chip">Nothing readable leaves the computer</span></div>
+			</section>
+
 			<!-- 4 · La réponse -->
 			<section class="scene" id="s4">
 				<div class="abs" style="left:56px;top:110px;width:400px">
@@ -503,6 +525,7 @@ const SCENES = [
 	{ id: "s1", note: "Real screenshots · fictional data", title: "Who do I ask?", dur: 10, cap: "So Debora asks Hamza. Again and again. The questions pile up in Slack, and the customer waits." },
 	{ id: "s2", note: "Real screenshots · fictional data", title: "Screenpipe sees", act: 1, dur: 12, cap: "Act one: catch. Screenpipe records the screen, locally. Our agent spots a detour: a search that finds nothing, while a customer is waiting." },
 	{ id: "s3", note: "Illustration based on the real process", title: "The AI judges", act: 1, dur: 9, cap: "The AI reads only those few seconds, with identifiers masked. Verdict: it's a friction, and the team has a solution." },
+	{ id: "s3b", note: "Architecture as built · numbers measured on our rehearsal data", title: "Under the hood", dur: 11, cap: "Under the hood: everything runs on Screenpipe's local API. We read accessibility and OCR frames, group detours into episodes, judge each one with a single model call through Screenpipe's gateway, encrypt and sign on the device, and deliver through Screenpipe notifications." },
 	{ id: "s4", note: "Real screenshot · fictional data · notification recreated from the Screenpipe panel", title: "The answer", act: 2, dur: 10, cap: "Act two: unblock. The answer shows up in Screenpipe. One click, Jean is found. Nobody was interrupted." },
 	{ id: "s5", note: "Illustration based on the real process", title: "Nobody knows", act: 2, dur: 12, cap: "When nobody on this computer knows, the question goes to the team, encrypted and nameless. Hamza shares his rule in one click, without knowing who asked." },
 	{ id: "s6", note: "Illustration based on the real process", title: "At night", act: 3, dur: 11, cap: "Act three: fix it once. At night, the AI gathers what the team shared and proposes a rule. In the morning, Claire certifies it in one click." },
@@ -663,6 +686,19 @@ words("#s0", 0.2, 0.06);
 	rise("#s3-ver", t + 4.61);
 	tl.fromTo("#s3-ver .v", { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.5, ease }, t + 5.18);
 	pop("#s3-ms", t + 6.91);
+}
+
+// 3b · Sous le capot : les 5 briques s'allument une à une.
+{
+	const t = T("s3b");
+	words("#s3b", t + 0.3);
+	["#hd1", "#hd2", "#hd3", "#hd4", "#hd5"].forEach((h, i) => {
+		const at = t + 1.2 + i * 0.9;
+		tl.fromTo(h, { autoAlpha: 0, y: 40, rotate: i % 2 ? 2 : -2 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 0.7, ease: "back.out(1.5)" }, at);
+		tl.fromTo(`${h} .l`, { autoAlpha: 0, x: -8 }, { autoAlpha: 1, x: 0, duration: 0.3, stagger: 0.15, ease }, at + 0.35);
+		if (i > 0) tl.fromTo(`#ha${i}`, { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.out" }, at - 0.2);
+	});
+	tl.fromTo("#hd-foot .chip", { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.25, ease }, t + 6.4);
 }
 
 // 4 · La réponse
