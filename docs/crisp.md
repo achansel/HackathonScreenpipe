@@ -17,7 +17,8 @@ Valeurs encodées (`espace` → `%20`, `@` → `%40`, `+` → `%2B`), reliées p
 ## Règles
 
 - Jamais une vraie personne : nom plausible, inventé.
-- E-mail en `@example.com` (domaine réservé), sauf le cas « client introuvable » : la recherche de l'interface HubSpot découpe l'adresse, et le morceau `example` ramène tous les contacts de démo, donc « 0 résultat » est impossible avec `@example.com`. Pour ce cas, un domaine `.test` (réservé aussi) dont aucun morceau ne correspond à un nom, une entreprise ou une ville : `jd.resto75@resa-paris.test`.
+- E-mail en `@example.com` (domaine réservé). La chatbox ne garde un e-mail que si son domaine existe (mesuré : `.test`, `.invalid` et un `.com` inventé sont ignorés en silence).
+- Cas « client introuvable » : la recherche de l'interface HubSpot découpe l'adresse, et le morceau `example` ramène tous les contacts de démo, donc « 0 résultat » est impossible avec `@example.com`. Jean écrit donc son adresse **dans le message** (`jd.resto75@resa-paris.test`, domaine réservé, aucun morceau ne correspond à un nom, une entreprise ou une ville) et l'agent la copie depuis le chat.
 - `locale=fr`.
 - Un client par scénario ; s'il revient, exactement le même lien (même historique).
 - Plan gratuit : 2 agents, ~100 profils.

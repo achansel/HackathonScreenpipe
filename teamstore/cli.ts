@@ -1,7 +1,7 @@
 // Outils du stockage d'équipe (Mac, Windows, Linux/WSL). Voir teamstore/README.md.
 //
 //   bun teamstore/cli.ts verifier           vérifie le stockage configuré (Supabase, ou le serveur local)
-//   bun teamstore/cli.ts nuit [--exemple] [--depuis 14:30] [--lien "<lien>"] [--sans-publier]   boucle de nuit
+//   bun teamstore/cli.ts nuit [--exemple [--cas dédommagement]] [--depuis 14:30] [--lien "<lien>"] [--sans-publier]   boucle de nuit
 //   bun teamstore/cli.ts equipe-demo        prépare les postes simulés du démon (Léa, Karim) sur ce stockage
 //
 // Stockage, par ordre de priorité : --serveur <url>, puis FRICTION_TEAMSTORE_URL (environnement ou
@@ -15,7 +15,7 @@ import { AccessDenied, apiKeyHeaders, membershipFromInvite, SupabaseStore, Team,
 const argv = process.argv.slice(2);
 const flag = (name: string) => argv.includes(name);
 const opt = (name: string) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : undefined; };
-const VALUED = ["--serveur", "--lien", "--depuis"];
+const VALUED = ["--serveur", "--lien", "--depuis", "--cas"];
 const mode = argv.find((a, i) => !a.startsWith("--") && !VALUED.includes(argv[i - 1])) ?? "aide";
 const LOCAL_PORT = Number(Bun.env.TEAMSTORE_LOCAL_PORT ?? 3001);
 
@@ -82,7 +82,7 @@ if (mode === "nuit") {
   const { redact } = await import("../agent/qualify");
   const { SCOPE } = await import("../agent/config");
   let cases: import("./nuit").NightCase[];
-  if (flag("--exemple")) cases = nuit.EXEMPLE;
+  if (flag("--exemple")) cases = opt("--cas") ? nuit.EXEMPLE.filter((c) => c.label?.includes(opt("--cas")!)) : nuit.EXEMPLE;
   else {
     // Lire l'historique de l'écran exige le consentement donné au démon (agent/main.ts activer).
     if (!existsSync(join(import.meta.dir, "..", "agent", ".state", "consent.json"))) {

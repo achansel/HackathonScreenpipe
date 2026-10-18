@@ -56,21 +56,21 @@ Attendu dans le journal : `équipes : Support`, `agent actif (port 8787, 1 solut
 
 ```bash
 cd ~/Workspace/Hackathon/HackathonScreenpipe && source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env
-bun teamstore/cli.ts nuit --exemple
+bun teamstore/cli.ts nuit --exemple --cas dédommagement
 ```
 
-8. Le message de Jean, prêt à partir. Soit un coéquipier sur sa machine, lien Crisp de Jean dans une fenêtre privée ([crisp.md](crisp.md)), qui tape le message au signal. Soit l'envoi headless utilisé en répétition (hors dépôt, Chromium local) :
+8. Le message de Jean, prêt à partir. **Son e-mail est dans le texte du message** : la chatbox Crisp ne garde que les e-mails dont le domaine existe, et une adresse en `@example.com` ferait remonter tous les contacts de démo dans HubSpot. Léa copie l'adresse depuis le message. Soit un coéquipier sur sa machine, lien Crisp de Jean dans une fenêtre privée ([crisp.md](crisp.md)), qui tape le message au signal. Soit l'envoi headless utilisé en répétition (hors dépôt, Chromium local) :
 
 ```bash
-bun ~/Workspace/Hackathon/crispbot/send-one.ts "Jean Dupont" "jd.resto75@resa-paris.test" "Bonsoir, ma page de réservation est en panne, les clients ne peuvent plus réserver."
+bun ~/Workspace/Hackathon/crispbot/send-one.ts "Jean Dupont" "jd.resto75@resa-paris.test" "Bonsoir, notre page de réservation est en panne, plus aucun client ne peut réserver. Vous pouvez me répondre ici ou sur jd.resto75@resa-paris.test, merci."
 ```
 
 ## Sur scène
 
 | Temps | Geste | Dire |
 | --- | --- | --- |
-| 0:00 | Second terminal : `bun teamstore/cli.ts nuit --exemple` (la notification [Certifier] arrive ~30 s plus tard et attend dans le panneau) | « Léa, deux semaines de poste au support de PipingTable. Un client lui écrit. » |
-| 0:10 | Envoyer le message de Jean. Rester **2 s sur la liste Crisp**, ouvrir la conversation, copier l'e-mail, le coller dans la recherche HubSpot : 0 contact. Attendre. | « Zéro résultat. Il écrit avec une autre adresse que celle du contrat. Normalement : dix minutes, Slack, attente. » |
+| 0:00 | Second terminal : `bun teamstore/cli.ts nuit --exemple --cas dédommagement` (la notification [Certifier] arrive ~30 s plus tard et attend dans le panneau) | « Léa, deux semaines de poste au support de PipingTable. Un client lui écrit. » |
+| 0:10 | Envoyer le message de Jean. Rester **2 s sur la liste Crisp**, ouvrir la conversation, copier l'e-mail **dans le message**, le coller dans la recherche HubSpot : 0 contact. Attendre. | « Zéro résultat. Il écrit avec une autre adresse que celle du contrat. Normalement : dix minutes, Slack, attente. » |
 | ~0:40 | Notification « Client : Jean Dupont · Le Bistro · Premium ». Cliquer [Ça m'a aidé]. | « L'agent a lu Crisp, vu la recherche, retrouvé la fiche par le nom. Dix secondes. Rien n'a quitté le poste sauf l'appel au modèle choisi dans Screenpipe. » |
 | 0:55 | Live View « Mon agent, en direct » | « Étape par étape : Crisp lu, le modèle juge, la fiche, l'aide, et ce qui part à l'équipe : lisible chez nous, illisible sur le serveur. » |
 | 1:15 | Notification « Règle trouvée cette nuit : … » → [Certifier] | « La nuit, le poste relit ce qui a suivi une friction sans réponse. L'IA propose une règle sans nom ; la responsable certifie. Exemple préparé. » |
@@ -84,7 +84,7 @@ bun ~/Workspace/Hackathon/crispbot/send-one.ts "Jean Dupont" "jd.resto75@resa-pa
 | Pas de notification 20 s après la recherche | Journal : pas de ligne `Crisp : nouveau message client` → revenir 2 s sur la liste Crisp et refaire la recherche. L'aide générique « chercher par domaine » peut partir à la place de la fiche : la montrer quand même |
 | Notification « NON AFFICHÉE » dans le journal | Relancer l'app Screenpipe ; l'agent reprend seul |
 | Rien ne se déclenche | `bun agent/main.ts injecter lea "…"` ne marche qu'en `simuler`. Montrer la Live View déjà remplie par les répétitions, puis le film |
-| [Certifier] n'arrive pas | `bun teamstore/cli.ts nuit --exemple --sans-publier` pour montrer les verdicts dans le terminal |
+| [Certifier] n'arrive pas | `bun teamstore/cli.ts nuit --exemple --cas dédommagement --sans-publier` pour montrer les verdicts dans le terminal |
 
 ## Après
 
