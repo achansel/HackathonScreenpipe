@@ -29,7 +29,7 @@ Mesuré sur un poste Windows (Screenpipe côté Windows, code dans WSL) sauf men
 | Détection | Un appel `claude-opus-5` par épisode, seuil 0,72 | Détecteur en code généré la nuit (`agent/offline/`), validé sur les étiquettes, approuvé par un humain. Construit, testé ; le candidat du 17/10 ne filtrait que 0,7 % du travail normal. |
 | Apprentissage | Retours boutons ; boucle de nuit : l'IA propose, la responsable certifie | Apprentissage du détecteur sur les étiquettes |
 | Contexte | Dernier message Crisp (10 min), fiche HubSpot, appel en cours | Slack, Notion |
-| Équipe | Demande chiffrée, partage, certification, rotation de clé | Délai aléatoire d'anonymat (10–60 s), à 0 pour la démo |
+| Équipe | Certification en direct. Demande anonyme et [Partager] : montrés avec le dashboard ou le film, reproduits sur une machine avec `simuler` (pas de second poste : correctif Mac non compilé) | Délai aléatoire d'anonymat (10–60 s), à 0 en simulation |
 | Live Views | Lecture seule, actions par notification | Actions sur les items de liste (l'API existe, affichage non vérifié) |
 | Dashboard web | Ébauche (`teamstore/dashboard/`), sert à illustrer | Rien : le produit, c'est les Live Views |
 | Mac | Screenpipe patché | PR |
