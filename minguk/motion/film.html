@@ -83,6 +83,10 @@
 	.tool .txt { padding: 10px 12px; }
 	.tool b { display: block; font: 700 16px var(--sans); }
 	.tool span { color: var(--mute); font-size: 13px; }
+	/* ---- mention discrète : capture réelle ou illustration */
+	.note { position: absolute; right: 18px; bottom: 10px; z-index: 46; display: flex; align-items: center; gap: 6px; font: 500 11px var(--mono); letter-spacing: 0.02em; color: var(--mute); opacity: 0.85; }
+	.note::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+	.note:empty { display: none; }
 	/* ---- bandeau des actes */
 	.acts { position: absolute; right: 56px; top: 24px; display: flex; gap: 6px; z-index: 40; }
 	.acts span { font: 600 13px var(--sans); padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.7); border: 1px solid var(--line); color: var(--mute); }
@@ -467,6 +471,7 @@
 			</section>
 
 			<div class="cap" id="cap"></div>
+			<div class="note" id="note"></div>
 			<div class="wipe" id="wipe"></div>
 		</div>
 	</div>
@@ -493,16 +498,16 @@ const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 
 const SCENES = [
 	{ id: "s0", title: "The idea", dur: 7, cap: "Every friction is paid only once. We catch the hidden frictions in how a team works, unblock people in seconds, and fix them once." },
-	{ id: "s0b", title: "The setting", dur: 10, cap: "To test it, we built a real support desk: PipingTable, booking software for restaurants, on Crisp, HubSpot, Slack and Notion. Fictional customers, real tools. A friction is any detour: an empty search, a question nobody answers, a rule nobody wrote down." },
-	{ id: "s1a", title: "Meet the team", dur: 11, cap: "Debora joined support three weeks ago. Hamza has been here three years and knows every unwritten rule. Claire, the manager, decides the rules, but nobody writes them down." },
-	{ id: "s1", title: "Who do I ask?", dur: 12, cap: "So Debora asks Hamza. Again and again. The questions pile up in Slack, and the customer waits." },
-	{ id: "s2", title: "Screenpipe sees", act: 1, dur: 14, cap: "Act one: catch. Screenpipe records the screen, locally. Our agent spots a detour: a search that finds nothing, while a customer is waiting." },
-	{ id: "s3", title: "The AI judges", act: 1, dur: 9, cap: "The AI reads only those few seconds, with identifiers masked. Verdict: it's a friction, and the team has a solution." },
-	{ id: "s4", title: "The answer", act: 2, dur: 11, cap: "Act two: unblock. The answer shows up in Screenpipe. One click, Jean is found. Nobody was interrupted." },
-	{ id: "s5", title: "Nobody knows", act: 2, dur: 13, cap: "When nobody on this computer knows, the question goes to the team, encrypted and nameless. Hamza shares his rule in one click, without knowing who asked." },
-	{ id: "s6", title: "At night", act: 3, dur: 12, cap: "Act three: fix it once. At night, the AI gathers what the team shared and proposes a rule. In the morning, Claire certifies it in one click." },
-	{ id: "s7", title: "The next day", act: 3, dur: 9, cap: "The next day, Adam gets stuck at the same step. The answer is already there, certified. Hamza is no longer interrupted." },
-	{ id: "s8", title: "Someone leaves", act: 3, dur: 10, cap: "Hamza moves to another team. We change the key: he can't read anything anymore. His rules stay with the team." },
+	{ id: "s0b", note: "Real screenshots · fictional data", title: "The setting", dur: 10, cap: "To test it, we built a real support desk: PipingTable, booking software for restaurants, on Crisp, HubSpot, Slack and Notion. Fictional customers, real tools. A friction is any detour: an empty search, a question nobody answers, a rule nobody wrote down." },
+	{ id: "s1a", note: "Illustration based on the real process", title: "Meet the team", dur: 11, cap: "Debora joined support three weeks ago. Hamza has been here three years and knows every unwritten rule. Claire, the manager, decides the rules, but nobody writes them down." },
+	{ id: "s1", note: "Real screenshots · fictional data", title: "Who do I ask?", dur: 12, cap: "So Debora asks Hamza. Again and again. The questions pile up in Slack, and the customer waits." },
+	{ id: "s2", note: "Real screenshots · fictional data", title: "Screenpipe sees", act: 1, dur: 14, cap: "Act one: catch. Screenpipe records the screen, locally. Our agent spots a detour: a search that finds nothing, while a customer is waiting." },
+	{ id: "s3", note: "Illustration based on the real process", title: "The AI judges", act: 1, dur: 9, cap: "The AI reads only those few seconds, with identifiers masked. Verdict: it's a friction, and the team has a solution." },
+	{ id: "s4", note: "Real screenshot · fictional data · notification recreated from the Screenpipe panel", title: "The answer", act: 2, dur: 11, cap: "Act two: unblock. The answer shows up in Screenpipe. One click, Jean is found. Nobody was interrupted." },
+	{ id: "s5", note: "Illustration based on the real process", title: "Nobody knows", act: 2, dur: 13, cap: "When nobody on this computer knows, the question goes to the team, encrypted and nameless. Hamza shares his rule in one click, without knowing who asked." },
+	{ id: "s6", note: "Illustration based on the real process", title: "At night", act: 3, dur: 12, cap: "Act three: fix it once. At night, the AI gathers what the team shared and proposes a rule. In the morning, Claire certifies it in one click." },
+	{ id: "s7", note: "Real screenshot · fictional data · notification recreated from the Screenpipe panel", title: "The next day", act: 3, dur: 9, cap: "The next day, Adam gets stuck at the same step. The answer is already there, certified. Hamza is no longer interrupted." },
+	{ id: "s8", note: "Illustration based on the real process", title: "Someone leaves", act: 3, dur: 10, cap: "Hamza moves to another team. We change the key: he can't read anything anymore. His rules stay with the team." },
 	{ id: "s10", title: "Proof", dur: 10, cap: "Measured in rehearsal. It runs locally, it's encrypted before it leaves, and it measures the process, never the person. Every friction is paid only once." },
 ];
 let at = 0;
@@ -778,6 +783,7 @@ function sync() {
 	if (i !== lastScene) {
 		lastScene = i;
 		$("#cap").textContent = SCENES[i].cap;
+		$("#note").textContent = SCENES[i].note ?? "";
 		$("#tag-n").textContent = String(i).padStart(2, "0");
 		$("#tag-t").textContent = SCENES[i].title;
 		$$("#chapters button").forEach((b, j) => b.classList.toggle("on", j === i));
