@@ -38,7 +38,7 @@ export interface StudioLinks {
 	bugsChannel: string;
 	/** La page Notion qui documente la règle (à remplacer par la vraie URL une fois les pages importées). */
 	notionRule: string;
-	/** La page « Mon poste » de Haytham, ouverte par [Rédiger]. */
+	/** La page « Mon poste » de Haithem, ouverte par [Rédiger]. */
 	myPage: string;
 }
 

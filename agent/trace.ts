@@ -31,7 +31,7 @@ export function judged(friction: boolean) {
   if (friction) stats.frictions++;
   changed();
 }
-// Le parcours du dernier épisode, repris du parcours guidé de Haytham (teamstore/dashboard/parcours.ts : icône,
+// Le parcours du dernier épisode, repris du parcours guidé de Haithem (teamstore/dashboard/parcours.ts : icône,
 // étape, état). La Live View n'a pas de couleur (schéma vérifié) : l'état se lit à l'emoji.
 type State = "done" | "active" | "miss" | "skip";
 const STAGES = [

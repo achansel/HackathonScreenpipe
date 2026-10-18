@@ -355,7 +355,7 @@ async function nightlyFallback() {
 
 // Chaque envoi vers le stockage d'équipe apparaît dans la trace de l'agent (« Mon agent, en direct ») :
 // ce que lit l'équipe (déchiffré sur les postes) à côté de ce que voit le serveur (relu sur Supabase). Idée et
-// mise en scène reprises de la vue opérateur et du parcours guidé de Haytham (teamstore/).
+// mise en scène reprises de la vue opérateur et du parcours guidé de Haithem (teamstore/).
 const UPLOAD: Record<string, string> = { request: "Envoyé à l'équipe : demande anonyme", signature: "Envoyé à l'équipe : signature pour la carte", solution: "Envoyé à l'équipe : solution" };
 function traced(store: TeamStore): TeamStore {
   const put = store.put.bind(store);

@@ -1,6 +1,6 @@
 // Vue « Frictions de l'équipe » (live-view:friction-map:*), dans l'app Screenpipe : une seule vue, 5 blocs.
 // Fusion de la carte d'Andrea (détours sur 7 jours, en fourchettes) et du tableau « Frictions en direct » de
-// Haytham (en attente, résolues, règles certifiées, boucle de nuit), dont on réutilise le calcul tel quel
+// Haithem (en attente, résolues, règles certifiées, boucle de nuit), dont on réutilise le calcul tel quel
 // (teamstore/board.ts). Les Live Views sont en lecture seule : les actions passent par les notifications.
 // On compte des DÉTOURS par étape, jamais des personnes : rien dans les blocs n'a d'identité.
 import { Board } from "../teamstore/board";
@@ -28,7 +28,7 @@ export async function buildMap(store: TeamStore, now = Date.now()) {
   const canon = await canonicalSteps(labels);
   const step = (label: string) => canon.get(label) ?? label;
 
-  // Calcul de Haytham (board.ts) : en attente, résolues et délai, règles certifiées, boucle de nuit.
+  // Calcul de Haithem (board.ts) : en attente, résolues et délai, règles certifiées, boucle de nuit.
   const board = new Board();
   const byTeam = new Map<string, { seq: number; kind: Kind; data: any }[]>();
   for (const k of kinds) for (const r of rows[k]) {
@@ -42,7 +42,7 @@ export async function buildMap(store: TeamStore, now = Date.now()) {
   const st = board.state(now);
   const live = Board.liveView(st, now);
 
-  // Tableau des étapes sur 7 jours, avec l'état selon la règle de Haytham.
+  // Tableau des étapes sur 7 jours, avec l'état selon la règle de Haithem.
   const since = now - WEEK_MS;
   const signatures = rows.signature.filter((r) => r.payload?.step && Date.parse(r.at || r.payload.day) >= since).map((r) => step(r.payload.step));
   const solutions = rows.solution.map((r) => r.payload).filter(Boolean);
