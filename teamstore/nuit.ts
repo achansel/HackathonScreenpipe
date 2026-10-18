@@ -5,7 +5,7 @@
 //                   responsable : les démons ne s'en servent pas tant qu'elle n'est pas certifiée ;
 //   - non résolue → une FRICTION EN ATTENTE pour la responsable (l'étape, pas la personne).
 // Le texte de l'écran ne quitte jamais le poste, sauf vers le modèle choisi dans Screenpipe (comme le démon).
-// Réutilise sans les modifier : search, chat (andrea/daemon/screenpipe.ts), redact (andrea/daemon/qualify.ts).
+// Réutilise sans les modifier : search, chat (agent/screenpipe.ts), redact (agent/qualify.ts).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { routeTeams, type Team } from "./client";
@@ -46,7 +46,7 @@ export async function judge(c: NightCase, chat: (s: string, u: string, n?: numbe
 /** Les frictions du jour restées sans réponse sur CE poste : les demandes anonymes du démon d'Andrea (events.jsonl)
  *  qui n'ont reçu aucune solution de l'équipe. */
 export function dayCases(root: string, since: number): Omit<NightCase, "context">[] {
-  const base = join(root, "andrea", "daemon", ".state");
+  const base = join(root, "agent", ".state");
   if (!existsSync(base)) return [];
   const files = [join(base, "events.jsonl"), ...readdirSync(base, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => join(base, d.name, "events.jsonl"))];
   const asked: Omit<NightCase, "context">[] = [];
@@ -101,7 +101,7 @@ export async function publish(findings: Finding[], teams: Team[]) {
   return { proposals, pending };
 }
 
-// ---- l'exemple préparé (annoncé comme tel) : des fils du Slack de PipingTable (minguk/src/seed/slack-story.ts),
+// ---- l'exemple préparé (annoncé comme tel) : des fils du Slack de PipingTable (integrations/src/seed/slack-story.ts),
 // vus après quatre frictions de Léa. Le modèle juge pour de vrai ; seuls les textes d'écran sont préparés.
 export const EXEMPLE: NightCase[] = [
   { label: "dédommagement", step: "Crisp : un client demande un dédommagement", at: 0, context: [

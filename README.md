@@ -1,100 +1,81 @@
-# friction-assist : une friction ne se paie qu'une fois
+# friction-assist
 
-Agent local construit sur [Screenpipe](https://screenpipe.com) pendant le hackathon « Build Agents That Remember » (42 Entrepreneurs × Screenpipe, Paris, 16–18 octobre 2026). Équipe : Andrea, Minguk, Haytham.
+Agent local sur l'API de [Screenpipe](https://screenpipe.com). Il repère quand quelqu'un bloque sur une étape de process (recherche, aller-retour, demande d'aide), affiche la solution qu'un collègue a déjà trouvée dans une notification Screenpipe, demande à l'équipe de façon anonyme quand personne sur le poste n'a la réponse, et montre à la responsable *où* le process coince dans une Live View, jamais *qui*. Mémoire d'équipe chiffrée de bout en bout, sans identité. Bun + TypeScript, pas de fork de Screenpipe.
 
-> **English summary.** friction-assist is a local agent on top of Screenpipe's API. It notices when an employee is stuck on a process step (searching, going back and forth, asking for help), shows the solution a colleague already found as a Screenpipe notification, asks the team anonymously when nobody has it, and gives the manager a Live View of *where* the process hurts, never *who*. Everything the user sees lives in Screenpipe (notifications, Live Views, the model gateway); team memory is end-to-end encrypted, with no identity stored. Bun + TypeScript, no native code. Install: Screenpipe app + Bun, then `scripts/screenpipe-env.sh`, `bun andrea/daemon/main.ts activer`, `bun andrea/daemon/main.ts`. Reproduce the demo: [docs/demo.md](docs/demo.md). How Screenpipe is used: [docs/screenpipe.md](docs/screenpipe.md). What works, measures and limits: [docs/etat.md](docs/etat.md). Docs are in French.
+Hackathon « Build Agents That Remember », 42 Entrepreneurs × Screenpipe, Paris, 16–18 octobre 2026.
 
-## Le problème
+> **English.** Local agent on Screenpipe's API: detects process friction on screen, pushes the fix a colleague already found as a Screenpipe notification, asks the team anonymously otherwise, and shows the manager *where* the process hurts in a Live View (never *who*). End-to-end encrypted team memory with no identity. Bun + TypeScript, no fork. Install: Screenpipe app + Bun, `scripts/screenpipe-env.sh`, `bun agent/main.ts activer`, `bun agent/main.ts`. Reproduce the demo: [docs/demo.md](docs/demo.md). Screenpipe usage: [docs/screenpipe.md](docs/screenpipe.md). What works and what doesn't: [docs/etat.md](docs/etat.md). Docs are in French.
 
-Léa, arrivée il y a deux semaines au support de PipingTable, cherche un client dans HubSpot : 0 résultat. Elle cherche dix minutes, demande sur Slack, attend. Demain, Yasmine fera exactement pareil. La règle (« il écrit avec une autre adresse que celle du contrat : chercher par le nom ») vit dans la tête de Karim, trois ans de maison, et n'est écrite nulle part.
+## Comment ça marche
 
-## Ce que fait l'agent
+1. `/search` toutes les secondes (OCR, frappes, accessibilité) sur les applis de travail → épisodes : fenêtre, mots nouveaux, recherche dans l'URL, délai.
+2. Chaque épisode passe par la passerelle IA de Screenpipe (`claude-opus-5`) : friction ou non, type de détour, étape, confiance. Identifiants masqués avant l'envoi.
+3. Friction avec solution connue → notification avec [Ça m'a aidé] / [Pas ça]. Cas « client introuvable » : la fiche HubSpot retrouvée par le nom lu dans Crisp.
+4. Pas de solution → demande anonyme chiffrée à l'équipe (l'étape, rien d'autre). Celui qui sait reçoit « Un collègue bloque » → [Partager] → l'aide arrive chez le demandeur.
+5. La nuit, chaque poste relit les 15 min qui ont suivi une friction sans réponse ; l'IA propose une règle sans nom ; la responsable certifie d'un clic (signature Ed25519).
+6. Deux Live Views : « Frictions de l'équipe » (détours par étape, fourchettes) et « Mon agent, en direct » (la trace de l'agent du poste, avec ce que lit l'équipe à côté de ce que voit le serveur).
 
-1. **Il voit la friction.** Screenpipe enregistre l'écran ; l'agent découpe l'activité en épisodes et demande au modèle choisi dans Screenpipe si l'employé bloque sur une étape de process (recherche, aller-retour, demande d'aide…).
-2. **Il apporte la solution déjà trouvée**, dans une notification Screenpipe : la règle qu'un collègue a partagée, ou la fiche du client retrouvée par son nom dans HubSpot. Boutons [Ça m'a aidé] / [Pas ça].
-3. **Il demande à l'équipe, anonymement**, quand personne sur ce poste n'a la réponse : seulement l'étape, ni le nom de l'employé, ni celui du client. Le collègue qui sait reçoit « Un collègue bloque » et clique [Partager].
-4. **Il se souvient.** La nuit, chaque poste relit ce qui a suivi une friction restée sans réponse ; l'IA écrit une règle sans nom, la responsable la **certifie** d'un clic (signature que personne d'autre ne peut fabriquer).
-5. **Il montre où ça coince**, dans deux Live Views Screenpipe : « Frictions de l'équipe » (détours par étape, en fourchettes, jamais par personne) et « Mon agent, en direct » (ce que fait l'agent de ce poste, étape par étape, avec ce que lit l'équipe à côté de ce que voit le serveur).
-
-Tout ce que l'utilisateur voit vit dans Screenpipe : notifications, Live Views, modèle. Le dépôt n'est pas un fork : il utilise l'API locale de Screenpipe ([docs/screenpipe.md](docs/screenpipe.md)).
-
-## Vie privée
-
-- Rien ne lit l'écran sans un consentement explicite (`activer`) ; `pause` coupe tout.
-- Le texte d'un épisode ne quitte le poste que vers le modèle choisi dans Screenpipe, identifiants évidents masqués. Aucun texte d'écran sur disque.
-- L'équipe ne reçoit que des blocs chiffrés (AES-256-GCM, clé d'équipe qui ne quitte jamais les postes), sans auteur. Le serveur ne voit ni qui, ni quoi.
-- On compte des détours par étape de process, jamais par personne.
+Vie privée : rien ne lit l'écran sans `activer` ; `pause` coupe tout ; aucun texte d'écran sur disque ; le serveur d'équipe ne stocke que des blocs chiffrés sans auteur ; on compte des détours par étape, pas par personne.
 
 ## Installation
 
-Prérequis : l'app [Screenpipe](https://screenpipe.com) (Windows ou Mac, enregistrement actif) et [Bun](https://bun.sh). Sous Windows, le code tourne dans WSL (`networkingMode=mirrored` dans `~/.wslconfig`) ; Screenpipe reste côté Windows.
+Prérequis : l'app Screenpipe (Windows ou Mac, enregistrement actif) et [Bun](https://bun.sh). Sous Windows, le code tourne dans WSL avec `networkingMode=mirrored` dans `~/.wslconfig`.
 
 ```bash
-git clone <ce dépôt> && cd HackathonScreenpipe
-scripts/screenpipe-env.sh && source ~/.config/screenpipe/env   # jeton et URLs de Screenpipe, hors dépôt
-bun andrea/daemon/main.ts activer        # consentement, une fois
-bun andrea/daemon/main.ts test-notif     # une notification doit s'afficher
-bun andrea/daemon/main.ts carte-installer   # les deux Live Views
-bun andrea/daemon/main.ts                # l'agent
+scripts/screenpipe-env.sh && source ~/.config/screenpipe/env   # jeton + URLs Screenpipe (chmod 600, hors dépôt)
+bun agent/main.ts activer          # consentement, une fois
+bun agent/main.ts test-notif       # une notification doit s'afficher
+bun agent/main.ts carte-installer  # les deux Live Views
+bun agent/main.ts                  # l'agent (--debug : texte des épisodes dans le journal)
 ```
 
-L'agent tourne seul avec sa mémoire locale (`andrea/daemon/solutions.seed.json` : les règles de démo de PipingTable). Il part en veille si Screenpipe est fermé et reprend seul.
+Seul, l'agent utilise sa mémoire locale (`agent/solutions.seed.json`, les règles de la boîte fictive PipingTable).
 
-### Une équipe (facultatif)
+### Équipe
 
-La mémoire d'équipe est un stockage de blocs chiffrés ([teamstore/](teamstore/README.md)) : Supabase, ou un serveur local pour essayer.
+Stockage de blocs chiffrés : Supabase, ou un serveur local SQLite pour essayer ([teamstore/](teamstore/README.md)).
 
 ```bash
-bun teamstore/local-server.ts            # serveur local, port 3001 (à laisser tourner)
-mkdir -p ~/.config/friction-assist && cat > ~/.config/friction-assist/team.env <<'EOF'
-export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001
-export FRICTION_TEAMSTORE_ANON_KEY=
-EOF
+bun teamstore/local-server.ts                        # port 3001, à laisser tourner
+mkdir -p ~/.config/friction-assist && printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env
 chmod 600 ~/.config/friction-assist/team.env && source ~/.config/friction-assist/team.env
 bun teamstore/cli.ts verifier
-bun andrea/daemon/main.ts equipe-creer Support        # affiche un lien d'invitation : à transmettre en privé
-bun andrea/daemon/main.ts equipe-rejoindre "<lien>"   # sur le poste d'un collègue
+bun agent/main.ts equipe-creer Support      # lien d'invitation (contient la clé : à transmettre en privé)
+bun agent/main.ts equipe-rejoindre "<lien>" # poste d'un collègue
 ```
 
-Avec Supabase : coller `teamstore/schema.sql` puis `teamstore/migrations/*.sql` dans l'éditeur SQL, mettre l'URL du projet et la clé publique dans `team.env`.
+Supabase : coller `teamstore/schema.sql` puis `teamstore/migrations/*.sql` dans l'éditeur SQL ; URL du projet et clé publique dans `team.env`.
 
-### Sur une seule machine
-
-`bun teamstore/cli.ts equipe-demo` crée l'équipe « Support » avec deux postes simulés, puis :
+### Une seule machine
 
 ```bash
-FRICTION_REQUEST_JITTER=0 bun andrea/daemon/main.ts simuler
-bun andrea/daemon/main.ts injecter lea "Quelqu'un sait si on peut offrir un geste commercial à un client premium ?"
+bun teamstore/cli.ts equipe-demo            # équipe « Support », postes Léa et Karim
+FRICTION_REQUEST_JITTER=0 bun agent/main.ts simuler
+bun agent/main.ts injecter lea "Quelqu'un sait si on peut offrir un geste commercial à un client premium ?"
 ```
 
-Léa n'a pas la réponse : demande anonyme, Karim reçoit « Un collègue bloque », [Partager], l'aide arrive chez Léa.
+Léa n'a pas la règle → demande anonyme → Karim reçoit « Un collègue bloque » → [Partager] → aide chez Léa. Rien ne lit l'écran dans ce mode.
 
-## Reproduire la démo
-
-Le déroulé complet (Crisp → HubSpot → fiche client en 10 s, demande anonyme, partage, certification de nuit, Live Views), l'environnement fictif PipingTable et les replis : **[docs/demo.md](docs/demo.md)**.
-
-## Organisation du dépôt
+## Dépôt
 
 | Dossier | Contenu |
 | --- | --- |
-| [andrea/daemon/](andrea/daemon/) | **L'agent** : épisodes, qualification par le modèle, notifications et boutons, équipe (demande, partage, certification), Live Views |
-| [andrea/offline/](andrea/offline/) | Apprentissage hors ligne : étiquettes, génération d'un détecteur en code la nuit. **Évolution, pas dans la démo** |
-| [andrea/screenpipe-patch/](andrea/screenpipe-patch/) | Correctif Screenpipe pour que les boutons `api` marchent sur Mac (PR à proposer) |
-| [teamstore/](teamstore/) | Mémoire d'équipe chiffrée (client, serveur local, schéma Supabase), boucle de nuit, tableau d'équipe |
-| [minguk/](minguk/) | Les yeux et les oreilles : lecture de Crisp et des appels via Screenpipe, fiche HubSpot ; l'environnement de démo PipingTable (HubSpot, Slack, Notion, clients Crisp) ; studio de notifications et film |
-| [docs/](docs/) | Démo, usage de Screenpipe, état et mesures, clients Crisp |
-| [scripts/](scripts/) | `screenpipe-env.sh` |
-
-Les dossiers portent le nom de leur auteur principal ; la branche `main` garde les documents de travail et le parcours guidé web de Haytham.
+| [agent/](agent/) | L'agent : épisodes, qualification, notifications et relais des clics, équipe (demande, partage, certification), Live Views. `offline/` : étiquettes et détecteur généré en code la nuit (**pas dans la démo**). |
+| [teamstore/](teamstore/) | Mémoire d'équipe chiffrée : client, serveur local, schéma Supabase, boucle de nuit, tableau d'équipe. `dashboard/` : pages web (parcours guidé, équipe simulée, mon poste), **ébauche et démo**. |
+| [integrations/](integrations/) | Lecture de Crisp et des appels via Screenpipe, fiche HubSpot, environnement fictif PipingTable (HubSpot, Slack, Notion, clients Crisp), simulateur de clients, studio de notifications. |
+| [screenpipe-patch/](screenpipe-patch/) | Correctif Screenpipe : boutons `api` sur Mac. |
+| [docs/](docs/) | [demo.md](docs/demo.md), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [crisp.md](docs/crisp.md). |
+| [pitch/](pitch/) | Film de 2 min (11 scènes animées sur de vraies captures). |
 
 ## Tests
 
 ```bash
-bun test andrea/                          # agent et apprentissage
-cd minguk && bun install && bun test      # lecture de Crisp, HubSpot, notifications
-./teamstore/tests.sh                      # stockage chiffré (local), boucle de nuit, circuit du démon
+bun test agent/                               # 24
+cd integrations && bun install && bun test    # 122
+./teamstore/tests.sh                          # 35 unitaires + 41 bout en bout (serveur local) + 8 circuit de l'agent
 ```
 
 ## Commandes de l'agent
 
-`bun andrea/daemon/main.ts <commande>` : `activer`, `pause`, `reprendre`, `statut`, `test-notif`, `carte-installer`, `carte`, `equipe-creer`, `equipe-rejoindre`, `equipe-liste`, `equipe-rotation` (départ d'un membre : nouvelle clé), `equipe-certifier`, `simuler`, `injecter`, `desactiver`. Option `--debug` pour voir le texte des épisodes. Variables : `FRICTION_MODEL` (`claude-opus-5`), `FRICTION_MIN_CONFIDENCE` (0,72), `FRICTION_SCOPE` (applis lues), `FRICTION_CRISP=0`, `FRICTION_CALL=0`.
+`bun agent/main.ts` + `activer | pause | reprendre | statut | test-notif | carte-installer | carte | equipe-creer | equipe-rejoindre | equipe-liste | equipe-rotation | equipe-certifier | simuler | injecter | desactiver`.
+Variables : `FRICTION_MODEL` (`claude-opus-5`), `FRICTION_MIN_CONFIDENCE` (0,72), `FRICTION_SCOPE` (applis lues), `FRICTION_CRISP=0`, `FRICTION_CALL=0`, `FRICTION_REQUEST_JITTER` (délai d'anonymat, `10-60` s par défaut).

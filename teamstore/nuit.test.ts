@@ -61,7 +61,7 @@ describe("judge : verdict du modèle", () => {
 
 describe("dayCases : frictions du jour restées sans réponse (journal du démon)", () => {
   const root = mkdtempSync(join(tmpdir(), "fa-nuit-"));
-  const base = join(root, "andrea", "daemon", ".state");
+  const base = join(root, "agent", ".state");
   mkdirSync(join(base, "lea"), { recursive: true });
   const ev = (o: object) => JSON.stringify(o);
   writeFileSync(join(base, "events.jsonl"), [

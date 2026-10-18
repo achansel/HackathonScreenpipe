@@ -78,15 +78,15 @@ if (mode === "verifier") {
 if (mode === "nuit") {
   if (!process.env.SCREENPIPE_API_KEY) { console.error("Jeton Screenpipe absent : scripts/screenpipe-env.sh"); process.exit(1); }
   const nuit = await import("./nuit");
-  const { chat, search } = await import("../andrea/daemon/screenpipe");
-  const { redact } = await import("../andrea/daemon/qualify");
-  const { SCOPE } = await import("../andrea/daemon/config");
+  const { chat, search } = await import("../agent/screenpipe");
+  const { redact } = await import("../agent/qualify");
+  const { SCOPE } = await import("../agent/config");
   let cases: import("./nuit").NightCase[];
   if (flag("--exemple")) cases = nuit.EXEMPLE;
   else {
-    // Lire l'historique de l'écran exige le consentement donné au démon (andrea/daemon/main.ts activer).
-    if (!existsSync(join(import.meta.dir, "..", "andrea", "daemon", ".state", "consent.json"))) {
-      console.error("Pas de consentement sur ce poste (bun andrea/daemon/main.ts activer). Pour l'exemple préparé : --exemple");
+    // Lire l'historique de l'écran exige le consentement donné au démon (agent/main.ts activer).
+    if (!existsSync(join(import.meta.dir, "..", "agent", ".state", "consent.json"))) {
+      console.error("Pas de consentement sur ce poste (bun agent/main.ts activer). Pour l'exemple préparé : --exemple");
       process.exit(1);
     }
     const d = opt("--depuis");
@@ -138,7 +138,7 @@ ${t.invite()}
 
 Lancer la simulation :
   source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env
-  FRICTION_REQUEST_JITTER=0 bun andrea/daemon/main.ts simuler
-  bun andrea/daemon/main.ts injecter lea "Quelqu'un sait si on peut offrir un geste commercial à un client premium ?"`);
+  FRICTION_REQUEST_JITTER=0 bun agent/main.ts simuler
+  bun agent/main.ts injecter lea "Quelqu'un sait si on peut offrir un geste commercial à un client premium ?"`);
   process.exit(0);
 }

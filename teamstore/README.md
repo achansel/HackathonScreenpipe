@@ -1,43 +1,36 @@
-# teamstore : la mémoire d'équipe chiffrée
+# teamstore
 
-Ce que l'agent partage avec l'équipe (demandes anonymes, solutions, signatures pour la carte, certifications, propositions de la nuit) passe par un stockage de **blocs chiffrés côté poste**. Le serveur ne voit ni le contenu, ni l'auteur : une table `blobs` sans colonne d'identité, AES-256-GCM avec une clé d'équipe qui ne quitte jamais les postes, et des fonctions RPC qui vérifient une empreinte de jeton. Aucun accès direct aux tables.
+Stockage de blocs chiffrés côté poste pour ce que l'agent partage : demandes anonymes, solutions, signatures pour la carte, certifications, propositions de la nuit. Le serveur voit `seq, team, kind, epoch, ciphertext` et des empreintes de jetons. Pas de colonne auteur, pas d'accès direct aux tables : tout passe par des RPC qui vérifient le jeton. AES-256-GCM, clé d'équipe dans le lien d'invitation, jamais sur le serveur. Certification = signature Ed25519 de la responsable, vérifiée sur chaque poste.
 
 | Fichier | Rôle |
 | --- | --- |
-| `schema.sql`, `migrations/` | Le schéma Supabase (Postgres + RPC). À coller dans l'éditeur SQL. |
-| `local-server.ts` | Les 6 mêmes fonctions sur un fichier SQLite, sans compte : `bun teamstore/local-server.ts` (port 3001 ; `--heberger` pour l'équipe sur le même réseau). |
-| `crypto.ts`, `client.ts` | Clés d'équipe, invitation, chiffrement, signature de certification (clé de la responsable), rotation de clé ; une équipe vue d'un poste. Utilisés par l'agent (`andrea/daemon/teamstore.ts`). |
-| `nuit.ts` | La boucle de nuit : pour chaque friction restée sans réponse, relit dans Screenpipe les 15 minutes qui ont suivi, et l'IA propose une règle sans nom (bloc `candidate`), que la responsable certifie depuis une notification. |
-| `board.ts` | Le tableau d'équipe (en attente, résolues, certifiées, fil) qui alimente la Live View « Frictions de l'équipe ». |
-| `cli.ts` | `verifier` (le stockage est-il prêt), `nuit [--exemple]`, `equipe-demo` (deux postes simulés). |
+| `schema.sql`, `migrations/` | Supabase (Postgres + RPC). À coller dans l'éditeur SQL. |
+| `local-server.ts` | Mêmes 6 RPC sur SQLite, sans compte. `bun teamstore/local-server.ts` (3001 ; `--heberger` : écoute sur le réseau). |
+| `crypto.ts`, `client.ts` | Clés, invitation, chiffrement, signature, rotation. Utilisés par `agent/teamstore.ts`. |
+| `nuit.ts` | Boucle de nuit : relit dans Screenpipe les 15 min après chaque friction sans réponse, l'IA propose une règle sans nom (bloc `candidate`), certifiée depuis une notification. |
+| `board.ts` | Tableau d'équipe (attente, résolues, certifiées, fil) → Live View « Frictions de l'équipe ». |
+| `cli.ts` | `verifier`, `nuit [--exemple] [--depuis HH:MM] [--sans-publier]`, `equipe-demo`. |
+| `dashboard/` | Pages web : ébauche et démo, voir [dashboard/README.md](dashboard/README.md). |
+| `mesures/`, `perf.ts`, `nuit-eval.ts` | Mesures (latence, boucle de nuit avec le vrai modèle). |
 
-## Mettre en place
+## Mise en place
 
 ```bash
-bun teamstore/local-server.ts                     # ou Supabase : schema.sql + migrations/*.sql
-cat > ~/.config/friction-assist/team.env <<'EOF'   # chmod 600 ; jamais dans le dépôt
-export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001   # ou https://<projet>.supabase.co
-export FRICTION_TEAMSTORE_ANON_KEY=                   # clé publique Supabase, vide en local
-EOF
+bun teamstore/local-server.ts                      # ou Supabase : schema.sql + migrations/*.sql
+printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env   # chmod 600
 source ~/.config/friction-assist/team.env && bun teamstore/cli.ts verifier
+bun agent/main.ts equipe-creer Support             # lien à transmettre en privé
+bun agent/main.ts equipe-rejoindre "<lien>"        # chez un membre
+bun agent/main.ts equipe-rotation Support          # départ : nouvelle clé, nouveau lien, l'ancien membre ne lit plus rien
 ```
 
-Puis, côté agent : `bun andrea/daemon/main.ts equipe-creer Support` (la responsable) et `equipe-rejoindre "<lien>"` (les membres). Le lien d'invitation contient la clé de l'équipe : à transmettre en privé. `equipe-rotation Support` change la clé après un départ : l'ancien membre ne lit plus rien, les autres reçoivent un nouveau lien.
+TTL des blocs : demandes 1 jour, votes/signatures/candidats 30, solutions/certifications 180.
 
-## Ce que garantit le serveur
-
-- Il ne stocke que `seq, team, kind, epoch, ciphertext` et des empreintes de jetons.
-- Lecture et écriture exigent le jeton d'accès de l'équipe ; rotation et purge exigent le jeton de la responsable.
-- Une certification est une signature Ed25519 de la responsable, vérifiée sur chaque poste : personne d'autre ne peut la fabriquer.
-- Les blocs expirent (demandes : 1 jour, solutions : 180 jours).
-
-## Tests et mesures
+## Tests
 
 ```bash
-./teamstore/tests.sh              # unitaires (nuit, tableau), bout en bout sur le serveur local, circuit de l'agent
-./teamstore/tests.sh --supabase   # + les mêmes sur le Supabase de team.env
-bun teamstore/nuit-eval.ts        # boucle de nuit avec le vrai modèle (résultats : mesures/)
-bun teamstore/perf.ts --local     # performance du stockage
+./teamstore/tests.sh              # nuit + board (35), bout en bout sur le serveur local (41), circuit de l'agent (8)
+./teamstore/tests.sh --supabase   # idem sur le Supabase de team.env
+bun teamstore/nuit-eval.ts        # boucle de nuit, vrai modèle
+bun teamstore/perf.ts --local
 ```
-
-Résultats enregistrés dans [mesures/](mesures/) ; synthèse dans [docs/etat.md](../docs/etat.md).

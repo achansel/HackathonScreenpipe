@@ -7,9 +7,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { IDENTIFYING, judge, type NightCase } from "./nuit";
 
-const { chat } = await import("../andrea/daemon/screenpipe");
-const { redact } = await import("../andrea/daemon/qualify");
-const { MODEL } = await import("../andrea/daemon/config");
+const { chat } = await import("../agent/screenpipe");
+const { redact } = await import("../agent/qualify");
+const { MODEL } = await import("../agent/config");
 const DRAWS = Number(process.argv[process.argv.indexOf("--tirages") + 1] || 2);
 
 type Labeled = NightCase & { expect: boolean; trap?: string };
