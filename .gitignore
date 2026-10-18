@@ -6,3 +6,4 @@ node_modules/
 *.sqlite
 *.sqlite-*
 .DS_Store
+pitch/img/raw/
