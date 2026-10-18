@@ -1,4 +1,4 @@
-// Régie de répétition : on joue le déroulé d'Andrea (docs/demo.md) avec les VRAIS outils (Crisp, HubSpot,
+// Régie de répétition : on joue le déroulé d'Andrea (docs/demo-live.md) avec les VRAIS outils (Crisp, HubSpot,
 // Slack, le démon, Screenpipe), et la page coche chaque étape quand la vraie réaction arrive, chronomètre en main.
 // Elle ne décide rien et ne lit pas l'écran : elle observe (voir teamstore/regie.ts).
 import { Board, type BoardState } from "../board";

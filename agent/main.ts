@@ -156,7 +156,7 @@ let team: TeamSync | null = null;
 let teamStore: TeamStore | null = null;
 
 // Contexte du dossier : le dernier message client lu dans Crisp par le code de Minguk (ses « yeux »).
-// Contexte seulement, pas une friction (docs/demo.md, choix techniques) ; le nom reste local.
+// Contexte seulement, pas une friction (docs/etat.md, choix) ; le nom reste local.
 let dossier: { name: string; text: string; at: number } | null = null;
 const crisp = CRISP && !SIM
   ? new CrispWatcher({ screenpipeUrl: API, apiKey: KEY, onEvent: (e) => {

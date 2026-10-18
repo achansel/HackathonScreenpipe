@@ -4,7 +4,7 @@ Agent local sur l'API de [Screenpipe](https://screenpipe.com). Il repère quand 
 
 Hackathon « Build Agents That Remember », 42 Entrepreneurs × Screenpipe, Paris, 16–18 octobre 2026. Équipe : [Andrea CHANSELME](https://www.linkedin.com/in/achansel), [Minguk KANG](https://www.linkedin.com/in/minguk-kang-102571258), [Haithem BOUKHORS](https://www.linkedin.com/in/haithem-boukhors-aa0a201ab).
 
-> **English.** Local agent on Screenpipe's API: detects process friction on screen, pushes the fix a colleague already found as a Screenpipe notification, asks the team anonymously otherwise, and shows the manager *where* the process hurts in a Live View (never *who*). End-to-end encrypted team memory with no identity. Bun + TypeScript, no fork. Install: Screenpipe app + Bun, `scripts/screenpipe-env.sh`, `bun agent/main.ts activer`, `bun agent/main.ts`. Reproduce the demo: [docs/demo.md](docs/demo.md). Screenpipe usage: [docs/screenpipe.md](docs/screenpipe.md). What works and what doesn't: [docs/etat.md](docs/etat.md); numbers and how they were measured: [docs/mesures.md](docs/mesures.md). Docs are in French.
+> **English.** Local agent on Screenpipe's API: detects process friction on screen, pushes the fix a colleague already found as a Screenpipe notification, asks the team anonymously otherwise, and shows the manager *where* the process hurts in a Live View (never *who*). End-to-end encrypted team memory with no identity. Bun + TypeScript, no fork. Install: Screenpipe app + Bun, `scripts/screenpipe-env.sh`, `bun agent/main.ts activer`, `bun agent/main.ts`. Reproduce the demo: [docs/demo-live.md](docs/demo-live.md). Screenpipe usage: [docs/screenpipe.md](docs/screenpipe.md). What works and what doesn't: [docs/etat.md](docs/etat.md); numbers and how they were measured: [docs/mesures.md](docs/mesures.md). Docs are in French.
 
 ## Comment ça marche
 
@@ -64,7 +64,7 @@ Léa n'a pas la règle → demande anonyme → Karim reçoit « Un collègue blo
 | [teamstore/](teamstore/) | Mémoire d'équipe chiffrée : client, serveur local, schéma Supabase, boucle de nuit, tableau d'équipe. `dashboard/` : pages web (parcours guidé, équipe simulée, mon poste), **ébauche et démo**. |
 | [integrations/](integrations/) | Lecture de Crisp et des appels via Screenpipe, fiche HubSpot, environnement fictif PipingTable (HubSpot, Slack, Notion, clients Crisp), simulateur de clients, studio de notifications. |
 | [screenpipe-patch/](screenpipe-patch/) | Constat : les boutons `api` ne répondent pas sur Mac ; diff non appliqué qui montre où. |
-| [docs/](docs/) | [demo.md](docs/demo.md), [demo-live.md](docs/demo-live.md) (les commandes dans l'ordre), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [mesures.md](docs/mesures.md) (chiffres, méthode, scripts à relancer), [crisp.md](docs/crisp.md). |
+| [docs/](docs/) | [demo-live.md](docs/demo-live.md) (environnement, commandes dans l'ordre, déroulé), [screenpipe.md](docs/screenpipe.md), [etat.md](docs/etat.md), [mesures.md](docs/mesures.md) (chiffres, méthode, scripts à relancer), [crisp.md](docs/crisp.md). |
 | [pitch/](pitch/) | Film de 2 min (11 scènes animées sur de vraies captures). |
 
 ## Tests

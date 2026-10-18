@@ -1,4 +1,4 @@
-// Régie de répétition : relève les VRAIES réactions pendant qu'on joue le déroulé d'Andrea (docs/demo.md)
+// Régie de répétition : relève les VRAIES réactions pendant qu'on joue le déroulé d'Andrea (docs/demo-live.md)
 // avec les vrais outils. Lecture seule, rien n'est modifié chez Andrea ni chez Minguk, et aucune recherche
 // Screenpipe en plus (le démon a l'autorité, et chaque lecteur de plus surcharge /search).
 //   - notifications réellement affichées : historique de Screenpipe (127.0.0.1:11435/notifications)
@@ -22,7 +22,7 @@ async function ping(url: string, init?: RequestInit) {
 }
 const envHas = (file: string, name: string) => existsSync(file) && new RegExp(`^\\s*(export\\s+)?${name}\\s*=\\s*\\S`, "m").test(readFileSync(file, "utf8"));
 
-/** Ce qui doit être vrai avant de jouer (docs/demo.md, « Avant de monter sur scène »). */
+/** Ce qui doit être vrai avant de jouer (docs/demo-live.md, « 15 min avant »). */
 export async function checks(storeUrl: string, crispFlag: boolean) {
   const port = Number(process.env.FRICTION_PORT ?? 8787);
   const daemon = await ping(`http://127.0.0.1:${port}/health`);

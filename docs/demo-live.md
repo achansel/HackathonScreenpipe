@@ -1,6 +1,18 @@
-# Démo en direct : les commandes dans l'ordre
+# La démo : environnement, commandes dans l'ordre, déroulé
 
-Un poste Windows (Screenpipe côté Windows, terminal WSL), ~2 min. Tout dans le même terminal, depuis la racine du dépôt, sauf mention contraire.
+Léa, support, deux semaines de poste chez PipingTable (boîte fictive, logiciel de réservation pour restaurants). Un poste Windows (Screenpipe côté Windows, terminal WSL), ~2 min en direct. Tout depuis la racine du dépôt.
+
+## Environnement (une fois)
+
+Tout est fictif : e-mails en `@example.com` ou `.test`. Détail dans [../integrations/build/pipingtable.md](../integrations/build/pipingtable.md).
+
+| Outil | Préparation |
+| --- | --- |
+| Crisp | Un espace de travail, ouvert dans Chrome côté agent. Clients fictifs par lien direct : [crisp.md](crisp.md). Client de l'ouverture : Jean Dupont, `jd.resto75@resa-paris.test`, introuvable dans HubSpot sous cet e-mail, exprès. |
+| HubSpot | Portail gratuit, `cd integrations && bun run seed`. Clé dans `~/.config/friction/env` : `export HUBSPOT_SEED_TOKEN=…` (sert aussi à l'agent pour la fiche). |
+| Slack (facultatif) | `bun run seed:slack`. |
+| Équipe | `bun agent/main.ts equipe-creer Support` : le poste de la démo en est responsable, c'est lui qui reçoit [Certifier]. Stockage : [../teamstore/README.md](../teamstore/README.md). |
+| Screenpipe | Enregistrement actif. Chrome, pas Firefox. |
 
 ## 15 min avant
 
@@ -79,3 +91,23 @@ bun ~/Workspace/Hackathon/crispbot/send-one.ts "Jean Dupont" "jd.resto75@resa-pa
 ```bash
 bun agent/main.ts pause
 ```
+
+## Le partage entre collègues, sur une machine (hors scène)
+
+Pas de second poste pour la démo. Le circuit demande anonyme → [Partager] → aide se reproduit avec deux agents sur une machine ; l'écran est injecté, le reste (modèle, demande chiffrée, clic relayé, aide) est réel.
+
+```bash
+bun teamstore/cli.ts equipe-demo                      # équipe « Support », postes Léa et Karim
+FRICTION_REQUEST_JITTER=0 bun agent/main.ts simuler    # dans un terminal
+bun agent/main.ts injecter lea "Quelqu'un sait si on peut offrir un geste commercial à un client premium ?"   # dans un autre
+```
+
+Karim reçoit « [karim] Un collègue bloque » → [Partager] → « [lea] Geste commercial : 1 mois offert maximum ».
+
+## Questions probables
+
+- Surveillance ? Détours par étape, pas par personne. `teamstore/schema.sql` : pas de colonne auteur, tout chiffré. Consentement, pause, périmètre limité aux applis de travail.
+- Pourquoi pas l'IA de HubSpot ? Elle connaît le produit, pas vos règles (« 1 mois max, premium seulement » n'est écrit nulle part).
+- Le texte part dans le cloud ? Vers le modèle choisi dans Screenpipe, identifiants masqués. Un modèle local reste sur le poste.
+- L'IA invente une règle ? Elle propose seulement. Rien n'entre sans la responsable ; une règle avec nom, e-mail ou téléphone est refusée.
+- Ça marche vraiment ? Délais mesurés et limites écrites : [etat.md](etat.md), [mesures.md](mesures.md).
