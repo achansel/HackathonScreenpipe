@@ -36,15 +36,19 @@ Mesuré sur un poste Windows (Screenpipe côté Windows, code dans WSL) sauf men
 
 ## Chiffres
 
-- 172 épisodes réels étiquetés (26 frictions), `claude-opus-5` à 0,72 : précision 0,71, rappel 0,46. Haiku 4.5 : précision 0,46. Étiquettes posées par Claude, relues par un humain.
-- Modèle : médiane 2,6 s. Aide 10–13 s après le geste (capture + 6 s d'attente de fin de recherche + modèle).
-- Boucle de nuit : 28/28 sur des cas écrits par nous (`teamstore/mesures/`).
+Détail, méthode et fichiers sources : [mesures.md](mesures.md).
+
+- Détection : 172 épisodes réels, 26 frictions, étiquettes posées surtout par Claude puis relues. `claude-opus-5` au seuil 0,72 : précision 0,71, rappel 0,46 (12 justes, 5 fausses alertes, 14 manquées). Le seuil est choisi sur ce même jeu ; à 0,70 c'est 0,54 / 0,50, à 0,75 c'est 0,89 / 0,31.
+- Modèle : médiane 2,6 s. Aide 10 s après le geste le 17/10 à 23:43 ; budget typique 10–12 s.
+- Mots-clés : 4/5 justes sur les messages du script, 0/5 hors script.
+- Boucle de nuit : 28/28 sur des cas écrits par nous.
+- Stockage d'équipe : 58,5 ms entre deux postes sur Supabase.
 
 ## Choix
 
-- Un seul décideur : l'agent. `integrations/` lit Crisp, écoute les appels, retrouve la fiche ; il ne choisit plus l'aide (ses mots-clés : 4/4 sur le script, 3/4 faux hors script).
+- Un seul décideur : l'agent. `integrations/` lit Crisp, écoute les appels, retrouve la fiche ; il ne choisit plus l'aide (mots-clés : 4/5 justes sur le script, 0/5 hors script).
 - `claude-haiku-4-5` absent de la liste autorisée de la passerelle Screenpipe : remplacé en silence. D'où Opus.
-- Le message Crisp est du contexte, jamais une friction seul. Question Slack « geste commercial » : 2/5 → 5/5 avec le contexte.
+- Le message Crisp est du contexte, jamais une friction seul. Question Slack « geste commercial » : 2/5 → 5/5 avec le contexte ; Opus 5/5 contre Haiku 0/5 sur la même question.
 - Boutons `api` relayés pour les actions ; `link` pour [Y aller].
 
 ## Limites

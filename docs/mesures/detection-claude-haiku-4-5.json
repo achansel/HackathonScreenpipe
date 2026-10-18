@@ -1,0 +1,1556 @@
+{
+ "model": "claude-haiku-4-5",
+ "date": "2026-10-17",
+ "episodes": 172,
+ "labels": "docs/mesures.md",
+ "rows": [
+  {
+   "n": 1,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 4060
+  },
+  {
+   "n": 2,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2687
+  },
+  {
+   "n": 3,
+   "window": "Élodie Marchand - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2888
+  },
+  {
+   "n": 4,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 3117
+  },
+  {
+   "n": 5,
+   "window": "Le Bistro · Offre Premium - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 3217
+  },
+  {
+   "n": 6,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2625
+  },
+  {
+   "n": 7,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2867
+  },
+  {
+   "n": 8,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.62,
+   "ms": 2879
+  },
+  {
+   "n": 9,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "signaler-bug",
+   "confidence": 0.98,
+   "ms": 4463
+  },
+  {
+   "n": 10,
+   "window": "Le Bistro - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2234
+  },
+  {
+   "n": 11,
+   "window": "Le Bistro - Google Chrome",
+   "truth": "tatonnement",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.88,
+   "ms": 3062
+  },
+  {
+   "n": 12,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2363
+  },
+  {
+   "n": 13,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1956
+  },
+  {
+   "n": 14,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2207
+  },
+  {
+   "n": 15,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 4007
+  },
+  {
+   "n": 16,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2498
+  },
+  {
+   "n": 17,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2176
+  },
+  {
+   "n": 18,
+   "window": "Sophie Arnaud | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1755
+  },
+  {
+   "n": 19,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1962
+  },
+  {
+   "n": 20,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2351
+  },
+  {
+   "n": 21,
+   "window": "Sophie Arnaud | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2493
+  },
+  {
+   "n": 22,
+   "window": "Sophie Arnaud | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2057
+  },
+  {
+   "n": 23,
+   "window": "Groupe Saveurs du Sud - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1609
+  },
+  {
+   "n": 24,
+   "window": "Groupe Saveurs du Sud · Offre Groupe - Google Chrome",
+   "truth": "parcours",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1985
+  },
+  {
+   "n": 25,
+   "window": "Groupe Saveurs du Sud · Offre Groupe - Google Chrome",
+   "truth": "parcours",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.78,
+   "ms": 2096
+  },
+  {
+   "n": 26,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 3058
+  },
+  {
+   "n": 27,
+   "window": "Sophie Arnaud | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2192
+  },
+  {
+   "n": 28,
+   "window": "Sophie Arnaud | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2006
+  },
+  {
+   "n": 29,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "demande_aide",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2332
+  },
+  {
+   "n": 30,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2125
+  },
+  {
+   "n": 31,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 1741
+  },
+  {
+   "n": 32,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.9,
+   "ms": 2166
+  },
+  {
+   "n": 33,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2260
+  },
+  {
+   "n": 34,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 1996
+  },
+  {
+   "n": 35,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2688
+  },
+  {
+   "n": 36,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.78,
+   "ms": 2406
+  },
+  {
+   "n": 37,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.83,
+   "ms": 2460
+  },
+  {
+   "n": 38,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1936
+  },
+  {
+   "n": 39,
+   "window": "Messages | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2578
+  },
+  {
+   "n": 40,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2107
+  },
+  {
+   "n": 41,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "recherche",
+   "solution": "promesse-commercial",
+   "confidence": 0.96,
+   "ms": 3217
+  },
+  {
+   "n": 42,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1940
+  },
+  {
+   "n": 43,
+   "window": "Groupe Saveurs du Sud · Offre Groupe - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1781
+  },
+  {
+   "n": 44,
+   "window": "HubSpot - Google Chrome",
+   "truth": "aucun",
+   "pred": "parcours",
+   "solution": "promesse-commercial",
+   "confidence": 0.72,
+   "ms": 4817
+  },
+  {
+   "n": 45,
+   "window": "deal-desk (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2599
+  },
+  {
+   "n": 46,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1479
+  },
+  {
+   "n": 47,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.78,
+   "ms": 5519
+  },
+  {
+   "n": 48,
+   "window": "Élodie Marchand | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1764
+  },
+  {
+   "n": 49,
+   "window": "Maison Pivoine · Offre Premium - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2282
+  },
+  {
+   "n": 50,
+   "window": "Maison Pivoine · Offre Premium - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2772
+  },
+  {
+   "n": 51,
+   "window": "Maison Pivoine · Offre Premium - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2478
+  },
+  {
+   "n": 52,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": "promesse-commercial",
+   "confidence": 0.98,
+   "ms": 3061
+  },
+  {
+   "n": 53,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": "prospect-chat",
+   "confidence": 0.86,
+   "ms": 2434
+  },
+  {
+   "n": 54,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "remise-15",
+   "confidence": 0.78,
+   "ms": 4052
+  },
+  {
+   "n": 55,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2401
+  },
+  {
+   "n": 56,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2120
+  },
+  {
+   "n": 57,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "promesse-commercial",
+   "confidence": 0.78,
+   "ms": 3294
+  },
+  {
+   "n": 58,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 1865
+  },
+  {
+   "n": 59,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2583
+  },
+  {
+   "n": 60,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2241
+  },
+  {
+   "n": 61,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2090
+  },
+  {
+   "n": 62,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2383
+  },
+  {
+   "n": 63,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 3074
+  },
+  {
+   "n": 64,
+   "window": "Marco Bellini | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 1681
+  },
+  {
+   "n": 65,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2357
+  },
+  {
+   "n": 66,
+   "window": "deal-desk (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1822
+  },
+  {
+   "n": 67,
+   "window": "deal-desk (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": "remise-15",
+   "confidence": 0.97,
+   "ms": 2195
+  },
+  {
+   "n": 68,
+   "window": "deal-desk (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "remise-15",
+   "confidence": 0.84,
+   "ms": 3717
+  },
+  {
+   "n": 69,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 1883
+  },
+  {
+   "n": 70,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2267
+  },
+  {
+   "n": 71,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2009
+  },
+  {
+   "n": 72,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1390
+  },
+  {
+   "n": 73,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2509
+  },
+  {
+   "n": 74,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.9,
+   "ms": 2856
+  },
+  {
+   "n": 75,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.84,
+   "ms": 2188
+  },
+  {
+   "n": 76,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1716
+  },
+  {
+   "n": 77,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2880
+  },
+  {
+   "n": 78,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 1641
+  },
+  {
+   "n": 79,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2349
+  },
+  {
+   "n": 80,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1756
+  },
+  {
+   "n": 81,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2020
+  },
+  {
+   "n": 82,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "attente_relance",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 3036
+  },
+  {
+   "n": 83,
+   "window": "Camille Robert | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2337
+  },
+  {
+   "n": 84,
+   "window": "deal-desk (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 2085
+  },
+  {
+   "n": 85,
+   "window": "social (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 1884
+  },
+  {
+   "n": 86,
+   "window": "social (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 1274
+  },
+  {
+   "n": 87,
+   "window": "Osteria Nonna - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1549
+  },
+  {
+   "n": 88,
+   "window": "Osteria Nonna - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 1966
+  },
+  {
+   "n": 89,
+   "window": "Osteria Nonna - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1593
+  },
+  {
+   "n": 90,
+   "window": "Osteria Nonna - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1904
+  },
+  {
+   "n": 91,
+   "window": "HubSpot - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 3092
+  },
+  {
+   "n": 92,
+   "window": "social (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 1798
+  },
+  {
+   "n": 93,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "offre-du-client",
+   "confidence": 0.98,
+   "ms": 3122
+  },
+  {
+   "n": 94,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 3274
+  },
+  {
+   "n": 95,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": "client-introuvable",
+   "confidence": 0.96,
+   "ms": 3231
+  },
+  {
+   "n": 96,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.67,
+   "ms": 2946
+  },
+  {
+   "n": 97,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.78,
+   "ms": 2503
+  },
+  {
+   "n": 98,
+   "window": "~/.bun/bin/bun",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2434
+  },
+  {
+   "n": 99,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 4035
+  },
+  {
+   "n": 100,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.72,
+   "ms": 3394
+  },
+  {
+   "n": 101,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "demande_aide",
+   "pred": "demande_aide",
+   "solution": "pipeline-support",
+   "confidence": 0.99,
+   "ms": 3361
+  },
+  {
+   "n": 102,
+   "window": "support (Channel) - Piping Company - Slack",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.72,
+   "ms": 3328
+  },
+  {
+   "n": 103,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.95,
+   "ms": 2078
+  },
+  {
+   "n": 104,
+   "window": "Anne Le Gall | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2006
+  },
+  {
+   "n": 105,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2806
+  },
+  {
+   "n": 106,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2194
+  },
+  {
+   "n": 107,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1951
+  },
+  {
+   "n": 108,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2250
+  },
+  {
+   "n": 109,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2253
+  },
+  {
+   "n": 110,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.84,
+   "ms": 3851
+  },
+  {
+   "n": 111,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 1976
+  },
+  {
+   "n": 112,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2181
+  },
+  {
+   "n": 113,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2774
+  },
+  {
+   "n": 114,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2857
+  },
+  {
+   "n": 115,
+   "window": "Pieter Janssens | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2343
+  },
+  {
+   "n": 116,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2915
+  },
+  {
+   "n": 117,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.89,
+   "ms": 3047
+  },
+  {
+   "n": 118,
+   "window": "Data Integration - Google Chrome",
+   "truth": "parcours",
+   "pred": "parcours",
+   "solution": "client-introuvable",
+   "confidence": 0.84,
+   "ms": 5652
+  },
+  {
+   "n": 119,
+   "window": "hubspot get api key at DuckDuckGo - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2327
+  },
+  {
+   "n": 120,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1962
+  },
+  {
+   "n": 121,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "recherche",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 3321
+  },
+  {
+   "n": 122,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "demande_aide",
+   "solution": null,
+   "confidence": 0.82,
+   "ms": 4765
+  },
+  {
+   "n": 123,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2541
+  },
+  {
+   "n": 124,
+   "window": "Transactions | Account & Billing - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2832
+  },
+  {
+   "n": 125,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2496
+  },
+  {
+   "n": 126,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.91,
+   "ms": 3401
+  },
+  {
+   "n": 127,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2098
+  },
+  {
+   "n": 128,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1710
+  },
+  {
+   "n": 129,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1612
+  },
+  {
+   "n": 130,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 2060
+  },
+  {
+   "n": 131,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.95,
+   "ms": 2443
+  },
+  {
+   "n": 132,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.9,
+   "ms": 1969
+  },
+  {
+   "n": 133,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2008
+  },
+  {
+   "n": 134,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2830
+  },
+  {
+   "n": 135,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.84,
+   "ms": 3304
+  },
+  {
+   "n": 136,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.72,
+   "ms": 2337
+  },
+  {
+   "n": 137,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2583
+  },
+  {
+   "n": 138,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2215
+  },
+  {
+   "n": 139,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 1910
+  },
+  {
+   "n": 140,
+   "window": "Jean Dupont - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2596
+  },
+  {
+   "n": 141,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2061
+  },
+  {
+   "n": 142,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2189
+  },
+  {
+   "n": 143,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.94,
+   "ms": 2909
+  },
+  {
+   "n": 144,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1643
+  },
+  {
+   "n": 145,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2639
+  },
+  {
+   "n": 146,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.82,
+   "ms": 3021
+  },
+  {
+   "n": 147,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.99,
+   "ms": 1662
+  },
+  {
+   "n": 148,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.98,
+   "ms": 2523
+  },
+  {
+   "n": 149,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.86,
+   "ms": 2543
+  },
+  {
+   "n": 150,
+   "window": "Kenji Mori | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.86,
+   "ms": 2887
+  },
+  {
+   "n": 151,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.98,
+   "ms": 2943
+  },
+  {
+   "n": 152,
+   "window": "Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1900
+  },
+  {
+   "n": 153,
+   "window": "Luc Fabre | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.91,
+   "ms": 2218
+  },
+  {
+   "n": 154,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 3105
+  },
+  {
+   "n": 155,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2516
+  },
+  {
+   "n": 156,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.96,
+   "ms": 1973
+  },
+  {
+   "n": 157,
+   "window": "Luc Fabre | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2644
+  },
+  {
+   "n": 158,
+   "window": "Luc Fabre | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2094
+  },
+  {
+   "n": 159,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 1644
+  },
+  {
+   "n": 160,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.94,
+   "ms": 4231
+  },
+  {
+   "n": 161,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2334
+  },
+  {
+   "n": 162,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.98,
+   "ms": 1965
+  },
+  {
+   "n": 163,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.97,
+   "ms": 3086
+  },
+  {
+   "n": 164,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2175
+  },
+  {
+   "n": 165,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1894
+  },
+  {
+   "n": 166,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.97,
+   "ms": 2449
+  },
+  {
+   "n": 167,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 1684
+  },
+  {
+   "n": 168,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.93,
+   "ms": 2692
+  },
+  {
+   "n": 169,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 1581
+  },
+  {
+   "n": 170,
+   "window": "Jean Dupont | Crisp - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.83,
+   "ms": 3727
+  },
+  {
+   "n": 171,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "aucun",
+   "pred": "aucun",
+   "solution": null,
+   "confidence": 0.98,
+   "ms": 2944
+  },
+  {
+   "n": 172,
+   "window": "Contacts | All contacts - Google Chrome",
+   "truth": "recherche",
+   "pred": "recherche",
+   "solution": "client-introuvable",
+   "confidence": 0.98,
+   "ms": 2928
+  }
+ ]
+}

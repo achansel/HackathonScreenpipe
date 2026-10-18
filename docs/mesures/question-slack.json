@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-18",
+  "what": "L'épisode Slack de la démo (Léa écrit dans #support « On peut offrir qqchose a un client premium ou quoi ? »), avec le dernier message Crisp de Jean comme contexte, et une seule solution locale (client-introuvable). Attendu : friction, détour demande_aide, aucune solution locale → demande anonyme. Cinq tirages par modèle, passerelle Screenpipe.",
+  "runs": {
+    "claude-opus-5": ["demande_aide/null/0.75", "demande_aide/null/0.75", "demande_aide/null/0.75", "demande_aide/null/0.75", "demande_aide/null/0.8"],
+    "claude-haiku-4-5": ["-/null/0.93", "recherche/client-introuvable/0.86", "recherche/client-introuvable/0.93", "-/null/0.93", "recherche/client-introuvable/0.95"]
+  },
+  "format": "détour / solution choisie / confiance ; « - » = pas de friction",
+  "context_effect_2026-10-17": {
+    "what": "Même épisode rejoué 5 fois sans puis avec le contexte Crisp, claude-opus-5 (session du 17/10 15:38).",
+    "sans_contexte": "geste-commercial, -, -, -, geste-commercial",
+    "avec_contexte": "geste-commercial ×5",
+    "note": "À ce moment-là Léa avait la solution geste-commercial en local ; le contexte fait passer la détection de 2/5 à 5/5. Sur 9 autres épisodes rejoués de la même façon, le contexte ne change pas le verdict."
+  }
+}
