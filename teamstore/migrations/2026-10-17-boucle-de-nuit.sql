@@ -1,4 +1,4 @@
--- friction-assist : boucle de nuit. Nouveau type de bloc « candidate » (propositions de règle et frictions en
+-- Piping Company : boucle de nuit. Nouveau type de bloc « candidate » (propositions de règle et frictions en
 -- attente, à valider par la responsable), gardé 30 jours. À coller une fois dans l'éditeur SQL de Supabase.
 alter table public.blobs drop constraint if exists blobs_kind_check;
 alter table public.blobs add constraint blobs_kind_check

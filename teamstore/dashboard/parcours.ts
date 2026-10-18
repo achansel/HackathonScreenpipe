@@ -373,7 +373,7 @@ async function chapter7() {
 
 // ---------- affichage ----------
 function notifHtml(n: Notif) {
-  return `<div class="sp-notif ${n.tone ?? ""}"><div class="sp-app">screenpipe · friction-assist</div><div class="sp-title">${esc(n.title)}</div><div class="sp-body">${md(n.body)}</div>
+  return `<div class="sp-notif ${n.tone ?? ""}"><div class="sp-app">screenpipe · Piping Company</div><div class="sp-title">${esc(n.title)}</div><div class="sp-body">${md(n.body)}</div>
     ${n.buttons?.length ? `<div class="sp-actions">${n.buttons.map((b) => `<button ${b.act ? `data-act="${b.act}"` : ""} class="${b.primary ? "primary" : ""}">${esc(b.label)}</button>`).join("")}</div>` : ""}</div>`;
 }
 function screenHtml() {

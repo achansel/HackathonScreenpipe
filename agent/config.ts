@@ -1,4 +1,4 @@
-// Configuration du daemon friction-assist, lue dans l'environnement
+// Configuration de l'agent, lue dans l'environnement
 // (source ~/.config/screenpipe/env). Le jeton n'est jamais journalisé.
 import { mkdirSync } from "node:fs";
 import { homedir } from "node:os";

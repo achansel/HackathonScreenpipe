@@ -1,4 +1,4 @@
-// Chiffrement côté client du stockage d'équipe friction-assist (WebCrypto, sans dépendance).
+// Chiffrement côté client du stockage d'équipe (WebCrypto, sans dépendance).
 // Tourne à l'identique dans Bun (daemon) et dans un navigateur (démo).
 // Même base que Screenpipe Teams (AES-256-GCM, clé dans le lien d'invitation), avec en plus :
 // des sous-clés dérivées (HKDF), des données associées (équipe, type, époque), un rembourrage

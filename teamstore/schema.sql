@@ -1,4 +1,4 @@
--- friction-assist : stockage d'équipe chiffré sur Supabase (temporaire).
+-- Piping Company : stockage d'équipe chiffré sur Supabase.
 -- Le serveur ne voit que des blobs chiffrés côté client. Il ne connaît ni la clé, ni l'auteur d'un blob.
 -- Aucun accès direct aux tables : tout passe par des fonctions RPC qui vérifient le jeton d'équipe.
 -- À coller dans l'éditeur SQL de Supabase (ou `supabase db push`).

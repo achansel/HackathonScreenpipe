@@ -182,7 +182,7 @@ try {
     regie: (since, publish) => snapshot({ since, storeUrl: envUrl, anonKey, crisp: flag("--crisp"), live: process.env.SCREENPIPE_API_KEY ? publishLive : undefined, publish }),
   });
 } catch {
-  console.error(`Le port ${PAGE_PORT} est déjà pris : friction-assist est sans doute déjà lancé. Ouvrir http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"} ou fermer l'autre fenêtre.`);
+  console.error(`Le port ${PAGE_PORT} est déjà pris : le dashboard est sans doute déjà lancé. Ouvrir http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"} ou fermer l'autre fenêtre.`);
   process.exit(1);
 }
 
@@ -200,7 +200,7 @@ if (flag("--crisp")) {
 }
 
 const pageUrl = `http://127.0.0.1:${PAGE_PORT}${mode === "moi" ? "/moi" : "/"}`;
-console.log(`\nfriction-assist : ${mode === "moi" ? "mon poste" : "accueil (parcours guidé, équipe simulée, mon poste)"}`);
+console.log(`\nPiping Company : ${mode === "moi" ? "mon poste" : "accueil (parcours guidé, équipe simulée, mon poste)"}`);
 console.log(`  page     : ${pageUrl}`);
 console.log(`  stockage : ${store.label}`);
 if (flag("--heberger")) {

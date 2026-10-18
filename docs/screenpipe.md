@@ -1,4 +1,4 @@
-# Screenpipe dans friction-assist
+# Comment Screenpipe est utilisé
 
 Pas de fork : un programme Bun qui parle à l'API locale (`127.0.0.1:3030`, jeton obligatoire) et au serveur de notifications (`127.0.0.1:11435`).
 

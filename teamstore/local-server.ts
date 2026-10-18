@@ -115,7 +115,7 @@ export class LocalTeamServer {
           }
         }
         if (/^\/(blobs|teams)\b/.test(path)) return json({ code: "42501", details: null, hint: null, message: `permission denied for table ${path.slice(1).split(/[/?]/)[0]}` }, 401);
-        if (path === "/") return json({ service: "friction-assist teamstore (local)", functions: fns });
+        if (path === "/") return json({ service: "Piping Company teamstore (local)", functions: fns });
         return json({ message: "not found" }, 404);
       },
     });

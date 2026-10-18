@@ -1,4 +1,4 @@
-// friction-assist : aide en direct quand on bloque sur une étape de process.
+// Piping Company : aide en direct quand on bloque sur une étape de process.
 //
 // Commandes (depuis la racine du dépôt, après `source ~/.config/screenpipe/env`
 // et `source ~/.config/friction-assist/team.env`) :
@@ -404,7 +404,7 @@ async function run() {
   const MAX_IN_FLIGHT = 3;
   let cursor = Date.now() - 5000;
   let tick = 0;
-  log(`friction-assist ${SIM ? "en SIMULATION (aucun écran lu)" : "actif"} (port ${PORT}, ${solutions.length} solutions). « pause » pour couper.`);
+  log(`agent ${SIM ? "en SIMULATION (aucun écran lu)" : "actif"} (port ${PORT}, ${solutions.length} solutions). « pause » pour couper.`);
 
   for (;;) {
     await Bun.sleep(POLL_MS);
@@ -464,7 +464,7 @@ Ctrl+C pour tout arrêter.`);
 switch (cmd) {
   case "activer":
     writeFileSync(CONSENT, JSON.stringify({ activatedAt: new Date().toISOString() }));
-    console.log(`Activé. Ce que fait friction-assist sur CETTE machine :
+    console.log(`Activé. Ce que fait l'agent sur CETTE machine :
 - lit les frames et les changements de fenêtre de Screenpipe des 3 dernières minutes, dans le périmètre de travail ;
 - envoie le texte nouveau d'une fenêtre (identifiants évidents masqués) au modèle choisi dans Screenpipe ;
 - affiche une aide quand une solution correspond ; sinon publie une demande anonyme (étape + type, sans texte) ;

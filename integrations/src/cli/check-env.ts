@@ -65,7 +65,7 @@ function checks(config: Config, withNotify: boolean): Check[] {
 				const outcome = await sendNotification(
 					{
 						id: `check-env-${Date.now()}`,
-						title: "Friction assist : test",
+						title: "Piping Company : test",
 						body: `Vérification de l'environnement · ${new Date().toLocaleTimeString("fr-FR")}`,
 						pipe_name: PIPE_NAME,
 						priority: "low",

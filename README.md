@@ -1,4 +1,4 @@
-# friction-assist
+# Piping Company
 
 Agent local sur l'API de [Screenpipe](https://screenpipe.com). Il repère quand quelqu'un bloque sur une étape de process (recherche, aller-retour, demande d'aide), affiche la solution qu'un collègue a déjà trouvée dans une notification Screenpipe, demande à l'équipe de façon anonyme quand personne sur le poste n'a la réponse, et montre à la responsable *où* le process coince dans une Live View, jamais *qui*. Mémoire d'équipe chiffrée de bout en bout, sans identité. Bun + TypeScript, pas de fork de Screenpipe.
 

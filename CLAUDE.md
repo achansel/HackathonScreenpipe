@@ -1,4 +1,4 @@
-# friction-assist (branche `demo` : rendu au jury)
+# Piping Company (branche `demo` : rendu au jury)
 
 Lire [README.md](README.md) puis [docs/etat.md](docs/etat.md) avant d'agir. Seulement ce qui est construit et testé ; les docs de travail sont sur `main`. Après un changement ou une répétition, mettre à jour `docs/etat.md` dans le même commit.
 

@@ -1,8 +1,8 @@
 ---
 schedule: manual
 enabled: true
-title: friction-assist, apprentissage
-description: Régénère et valide le détecteur de friction-assist après la collecte (approbation humaine requise)
+title: Piping Company, apprentissage
+description: Régénère et valide le détecteur de l'agent après la collecte (approbation humaine requise)
 agent: pi
 model: claude-sonnet-5
 timeout: 1800

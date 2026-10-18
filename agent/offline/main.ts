@@ -1,4 +1,4 @@
-// Traitement hors ligne de friction-assist.
+// Traitement hors ligne de l'agent.
 //
 //   bun agent/offline/main.ts collecter [--depuis 2026-10-17T08:00]
 //   bun agent/offline/main.ts apprendre        étiquette, génère, valide → candidat + rapport

@@ -1,8 +1,8 @@
 ---
 schedule: every 24h
 enabled: true
-title: friction-assist, collecte
-description: Collecte locale des épisodes du jour pour l'apprentissage de nuit de friction-assist
+title: Piping Company, collecte
+description: Collecte locale des épisodes du jour pour l'apprentissage de nuit de l'agent
 agent: pi
 model: claude-sonnet-5
 timeout: 600
