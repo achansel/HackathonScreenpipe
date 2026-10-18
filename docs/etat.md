@@ -1,4 +1,4 @@
-# État au 18/10/2026
+# État au 18/10/2026, 14:15
 
 Mesuré sur un poste Windows (Screenpipe côté Windows, code dans WSL) sauf mention contraire.
 
@@ -6,11 +6,11 @@ Mesuré sur un poste Windows (Screenpipe côté Windows, code dans WSL) sauf men
 
 | Quoi | Preuve |
 | --- | --- |
-| Crisp lu → modèle → fiche HubSpot → notification | 17/10 23:43. Message client 23:43:12, lu 23:43:24. Jugé en 3 s, confiance 0,85, contexte Crisp. Fiche « Le Bistro · Premium » par le nom. Notification 10 s après la recherche HubSpot. |
+| Crisp lu → modèle → fiche HubSpot → notification | 18/10 14:14, sur le code final, en suivant `demo-live.md` : message client 14:14:00, lu 14:14:18, recherche HubSpot jugée en 3 s (confiance 0,86, contexte Crisp), fiche « Le Bistro · Premium » par le nom, notification **10 s après le geste** (14:14:44). Même résultat le 17/10 à 23:43. |
 | Lecture Crisp sur capture partielle | 17/10 23:31 : message visible seulement dans une capture Alt+Tab. Corrigé, validé en rejouant l'historique Screenpipe. 122/122 tests `integrations/`. |
 | [Ça m'a aidé] / [Pas ça], relais des clics avec nonce | Faux clic refusé (403). Une aide à score ≤ -2 ne part plus qu'à 0,95 de confiance. |
 | Demande anonyme → [Partager] → aide | Deux agents sur une machine (`simuler`) : « Un collègue bloque » en 7 s, aide 4 s après le partage. 59 ms entre deux postes sur Supabase. |
-| Boucle de nuit → [Certifier] | 17/10 23:22:16 : règle écrite par l'IA, certifiée d'un clic, devenue l'aide de l'équipe. |
+| Boucle de nuit → [Certifier] | 18/10 14:14 : `nuit --exemple --cas dédommagement` lancé 14:13:56, notification 14:14:06, certifiée 14:14:10 (un clic), devenue l'aide de l'équipe. Idem le 17/10 à 23:22. |
 | Live View « Mon agent, en direct » | 17/10 23:43 : 5 étapes ✅ (Crisp, modèle, fiche, aide, envoi chiffré avec le clair côté équipe et le chiffré côté serveur). Publiée < 150 ms après chaque changement. |
 | Live View « Frictions de l'équipe » | Republiée toutes les 30 s. |
 | Mémoire d'équipe chiffrée | 35 + 41 + 8 tests. Lecture directe des tables refusée, faux jeton refusé, rotation : un membre retiré ne lit plus rien. |
