@@ -4,7 +4,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { contextAfter, dayCases, EXEMPLE, judge, publish, type Finding } from "./nuit";
+import { contextAfter, dayCases, EXEMPLE, judge, publish, type Finding } from "../nuit";
 
 const answer = (o: object) => async () => `Voici : ${JSON.stringify(o)}`;
 const noRedact = (s: string) => s;

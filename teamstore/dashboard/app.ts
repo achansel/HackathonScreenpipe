@@ -4,7 +4,7 @@
 // (localStorage séparé) et ne communique avec les autres QUE par le stockage (blobs chiffrés), sauf
 // les liens d'invitation, transmis « en privé » (ici : une boîte de réception qui simule un DM Slack).
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team, type Membership, type Received } from "../client";
-import { b64u, deriveTeamKeys, open, randomId } from "../crypto";
+import { b64u, deriveTeamKeys, open, randomId } from "../client/crypto";
 import { escalationPayload } from "./escalade";
 import { Board } from "../board";
 // Détection Crisp de Minguk : les messages des clients de la démo et la lecture du besoin (importés tels quels).

@@ -1,7 +1,7 @@
 // Vue « Frictions de l'équipe » (live-view:friction-map:*), dans l'app Screenpipe : une seule vue, 5 blocs.
 // Fusion de la carte d'Andrea (détours sur 7 jours, en fourchettes) et du tableau « Frictions en direct » de
 // Haithem (en attente, résolues, règles certifiées, boucle de nuit), dont on réutilise le calcul tel quel
-// (teamstore/board.ts). Les Live Views sont en lecture seule : les actions passent par les notifications.
+// (teamstore/board/). Les Live Views sont en lecture seule : les actions passent par les notifications.
 // On compte des DÉTOURS par étape, jamais des personnes : rien dans les blocs n'a d'identité.
 import { Board } from "../teamstore/board";
 import { API, KEY } from "./config";

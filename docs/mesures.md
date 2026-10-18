@@ -61,7 +61,7 @@ Les 6,5 s et 3,7 s sont dominés par l'intervalle de relecture de l'agent (5 s),
 
 ## 5. Boucle de nuit
 
-`teamstore/nuit.ts`, claude-opus-5, 17/10. Jeu de réglage : 20 cas (10 résolus, 10 non résolus, avec des pièges : nom de client dans le contexte, doc périmée, réponse vague, bruit OCR). Jeu réservé, écrit après le réglage : 8 cas (4/4). Résultat : 28/28, aucune fuite de nom, e-mail ou téléphone dans les règles produites, p50 3,1 s. Fichiers : `teamstore/mesures/nuit-eval.json`, `nuit-eval-reserve.json` ; relancer avec `bun teamstore/nuit-eval.ts [--reserve]`.
+`teamstore/nuit/`, claude-opus-5, 17/10. Jeu de réglage : 20 cas (10 résolus, 10 non résolus, avec des pièges : nom de client dans le contexte, doc périmée, réponse vague, bruit OCR). Jeu réservé, écrit après le réglage : 8 cas (4/4). Résultat : 28/28, aucune fuite de nom, e-mail ou téléphone dans les règles produites, p50 3,1 s. Fichiers : `teamstore/mesures/nuit-eval.json`, `nuit-eval-reserve.json` ; relancer avec `bun teamstore/nuit/eval.ts [--reserve]`.
 
 Les 28 cas ont été écrits par nous, à partir des fils Slack de PipingTable. Ça valide la consigne et le masquage, pas la boucle sur de vraies journées.
 
@@ -75,6 +75,6 @@ Les 28 cas ont été écrits par nous, à partir des fils Slack de PipingTable. 
 | --- | --- |
 | `bun test agent/` | 24 |
 | `cd integrations && bun test` | 122 |
-| `./teamstore/tests.sh` | 35 unitaires + 41 bout en bout (serveur local) + 8 circuit de l'agent |
+| `./teamstore/tests/tests.sh` | 35 unitaires + 41 bout en bout (serveur local) + 8 circuit de l'agent |
 
 Tous verts au 18/10.

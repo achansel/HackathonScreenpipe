@@ -1,7 +1,7 @@
 // Tableau « Frictions en direct » : ce que vit l'équipe, calculé sur le poste à partir des blocs déchiffrés
 // (demandes, solutions, signatures). Affiché dans la page, et publié dans une Live View Screenpipe.
 // Rien de personnel : des étapes, des compteurs, des délais. Jamais qui a bloqué.
-import type { Received } from "./client";
+import type { Received } from "../client";
 
 type Ev = { key: string; team: string; kind: string; data: any; seenAt: number };
 export interface BoardState {

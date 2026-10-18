@@ -15,7 +15,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { homedir, networkInterfaces, platform } from "node:os";
 import { join } from "node:path";
 import { startPage } from "./server";
-import { LocalTeamServer } from "../local-server";
+import { LocalTeamServer } from "../server/local-server";
 import { snapshot } from "./regie";
 import { AccessDenied, apiKeyHeaders, membershipFromInvite, SupabaseStore, Team, type Membership } from "../client";
 

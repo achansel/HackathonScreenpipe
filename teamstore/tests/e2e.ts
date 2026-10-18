@@ -1,8 +1,8 @@
 // Tests de bout en bout du stockage d'équipe chiffré, contre un vrai Postgres + PostgREST (Docker),
 // avec le même schéma que Supabase. Usage : ./local-db.sh up && bun test.ts
 // Variables : TEAMSTORE_URL (défaut http://127.0.0.1:3001), TEAMSTORE_ANON_KEY, TEAMSTORE_REST_PATH ("" en local).
-import { b64u, deriveTeamKeys, open, parseInvite, seal } from "./crypto";
-import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team } from "./client";
+import { b64u, deriveTeamKeys, open, parseInvite, seal } from "../client/crypto";
+import { AccessDenied, apiKeyHeaders, membershipFromInvite, routeTeams, SupabaseStore, Team } from "../client";
 
 const URL_ = Bun.env.TEAMSTORE_URL ?? "http://127.0.0.1:3001";
 const ANON = Bun.env.TEAMSTORE_ANON_KEY ?? "";

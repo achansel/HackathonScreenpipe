@@ -6,7 +6,7 @@ Pas de fork : un programme Bun qui parle à l'API locale (`127.0.0.1:3030`, jeto
 | --- | --- | --- |
 | `GET /search` (ocr, input, accessibility ; `app_name`, `browser_url`, `start_time`) | Chaque seconde, texte et frappes des applis de `FRICTION_SCOPE` → épisodes. Boîte Crisp par le titre de fenêtre et le compteur « 💬N ». | `agent/screenpipe.ts`, `agent/episodes.ts`, `integrations/src/detect/crisp-watcher.ts` |
 | `GET /frames/:id/elements` | Arbre d'accessibilité d'une capture : liste des conversations Crisp (nom, ancienneté, aperçu). | `integrations/src/detect/crisp-inbox.ts` |
-| `POST /v1/chat/completions` | Qualification d'un épisode (`claude-opus-5`) : friction, détour, étape, confiance, solution. Identifiants masqués avant. Même passerelle pour la boucle de nuit. | `agent/qualify.ts`, `teamstore/nuit.ts` |
+| `POST /v1/chat/completions` | Qualification d'un épisode (`claude-opus-5`) : friction, détour, étape, confiance, solution. Identifiants masqués avant. Même passerelle pour la boucle de nuit. | `agent/qualify.ts`, `teamstore/nuit/` |
 | `POST /notify` + `actions` | Aide, fiche client, « Un collègue bloque », règle à certifier. `api` ([Ça m'a aidé], [Pas ça], [Partager], [Certifier]), `link` ([Y aller]), `copy`. | `agent/main.ts`, `agent/certify.ts` |
 | `/connections/n8n/instances/…`, `/connections/n8n/proxy?instance=friction-assist` | Relais des clics : le bouton `api` appelle le proxy Screenpipe, qui POST sur l'agent (`:8787/hook`). Nonce par notification, faux clic → 403. Rien d'exposé. | `agent/screenpipe.ts` (`setupRelay`, `relayUrl`) |
 | `GET /feedback` | 👍/👎 du panneau, relus toutes les 10 s. | `agent/screenpipe.ts` |

@@ -8,8 +8,8 @@
 // Réutilise sans les modifier : search, chat (agent/screenpipe.ts), redact (agent/qualify.ts).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { routeTeams, type Team } from "./client";
-import { sha256hex } from "./crypto";
+import { routeTeams, type Team } from "../client";
+import { sha256hex } from "../client/crypto";
 
 export interface NightCase { step: string; at: number; requestId?: string; context: string; label?: string }
 export interface Finding { step: string; resolved: boolean; title?: string; body?: string; how?: string; confidence: number; requestId?: string; label?: string }

@@ -36,7 +36,7 @@ Seul, l'agent utilise sa mémoire locale (`agent/solutions.seed.json`, les règl
 Stockage de blocs chiffrés : Supabase, ou un serveur local SQLite pour essayer ([teamstore/](teamstore/README.md)).
 
 ```bash
-bun teamstore/local-server.ts                        # port 3001, à laisser tourner
+bun teamstore/server/local-server.ts                        # port 3001, à laisser tourner
 mkdir -p ~/.config/friction-assist && printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env
 chmod 600 ~/.config/friction-assist/team.env && source ~/.config/friction-assist/team.env
 bun teamstore/cli.ts verifier
@@ -44,7 +44,7 @@ bun agent/main.ts equipe-creer Support      # lien d'invitation (contient la cl�
 bun agent/main.ts equipe-rejoindre "<lien>" # poste d'un collègue
 ```
 
-Supabase : coller `teamstore/schema.sql` puis `teamstore/migrations/*.sql` dans l'éditeur SQL ; URL du projet et clé publique dans `team.env`.
+Supabase : coller `teamstore/server/schema.sql` puis `teamstore/server/migrations/*.sql` dans l'éditeur SQL ; URL du projet et clé publique dans `team.env`.
 
 ### Une seule machine
 
@@ -72,7 +72,7 @@ Léa n'a pas la règle → demande anonyme → Karim reçoit « Un collègue blo
 ```bash
 bun test agent/                               # 24
 cd integrations && bun install && bun test    # 122
-./teamstore/tests.sh                          # 35 unitaires + 41 bout en bout (serveur local) + 8 circuit de l'agent
+./teamstore/tests/tests.sh                          # 35 unitaires + 41 bout en bout (serveur local) + 8 circuit de l'agent
 ```
 
 ## Commandes de l'agent

@@ -1,13 +1,13 @@
 // Banc de performance du stockage d'équipe chiffré : chiffrement local, appels RPC, délai de bout en bout entre
 // deux membres, changement de clé. Les équipes créées sont supprimées à la fin.
-//   bun teamstore/perf.ts                      → stockage configuré (team.env : Supabase), sinon local
-//   bun teamstore/perf.ts --local              → stockage local (bun teamstore/local-server.ts doit tourner)
+//   bun teamstore/mesures/perf.ts                      → stockage configuré (team.env : Supabase), sinon local
+//   bun teamstore/mesures/perf.ts --local              → stockage local (bun teamstore/server/local-server.ts doit tourner)
 // Résultat : mesures/perf-<cible>.json (+ tableau affiché).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { membershipFromInvite, SupabaseStore, Team } from "./client";
-import { deriveTeamKeys, open, randomKey, seal } from "./crypto";
+import { membershipFromInvite, SupabaseStore, Team } from "../client";
+import { deriveTeamKeys, open, randomKey, seal } from "../client/crypto";
 
 const env: Record<string, string> = {};
 const f = join(homedir(), ".config", "friction-assist", "team.env");
@@ -64,8 +64,8 @@ out.rotation = { ms: +rotMs.toFixed(0), republishedSolutions: rot.republished };
 // ménage
 for (const t of created) await t.destroy().catch(() => false);
 
-mkdirSync(join(import.meta.dir, "mesures"), { recursive: true });
-writeFileSync(join(import.meta.dir, "mesures", `perf-${target}.json`), JSON.stringify(out, null, 2));
+mkdirSync(join(import.meta.dir), { recursive: true });
+writeFileSync(join(import.meta.dir, `perf-${target}.json`), JSON.stringify(out, null, 2));
 const c = out.crypto as any, r = out.rpc as any;
 console.log(`Stockage ${target} (${out.host})`);
 console.log(`chiffrer ${c.sealUs.p50} µs · déchiffrer ${c.openUs.p50} µs (p50, n=500) · dériver les clés ${c.deriveKeysMs} ms · bloc ${c.blobChars} car.`);

@@ -3,22 +3,22 @@
 // Usage : ./local-db.sh up && ./daemon-test.sh
 import { afterAll, expect, mock, test } from "bun:test";
 import { rmSync } from "node:fs";
-import { membershipFromInvite, SupabaseStore, Team } from "./client";
+import { membershipFromInvite, SupabaseStore, Team } from "../client";
 
 const notified: any[] = [];
-mock.module("../agent/qualify", () => ({
+mock.module("../../agent/qualify", () => ({
   matchStep: async (step: string, list: { id: string; step: string }[]) => list.find((s) => s.step === step)?.id ?? null,
 }));
-mock.module("../agent/screenpipe", () => ({
+mock.module("../../agent/screenpipe", () => ({
   notify: async (p: any) => { notified.push(p); return "sent successfully"; },
   relayUrl: "http://127.0.0.1:3030/connections/n8n/proxy?instance=test",
 }));
-mock.module("../agent/steps", () => ({ canonicalSteps: async (labels: string[]) => new Map(labels.map((l) => [l, l])) }));
-const { TeamSync } = await import("../agent/team");
-const { buildMap } = await import("../agent/map");
-const { RpcTeamStore, saveMemberships } = await import("../agent/teamstore");
-const { TEAMS_FILE, STATE_DIR } = await import("../agent/config");
-const seed = (await import("../agent/solutions.seed.json")).default as any[];
+mock.module("../../agent/steps", () => ({ canonicalSteps: async (labels: string[]) => new Map(labels.map((l) => [l, l])) }));
+const { TeamSync } = await import("../../agent/team");
+const { buildMap } = await import("../../agent/map");
+const { RpcTeamStore, saveMemberships } = await import("../../agent/teamstore");
+const { TEAMS_FILE, STATE_DIR } = await import("../../agent/config");
+const seed = (await import("../../agent/solutions.seed.json")).default as any[];
 
 const store = new SupabaseStore(process.env.FRICTION_TEAMSTORE_URL!, process.env.FRICTION_TEAMSTORE_ANON_KEY ?? "", process.env.FRICTION_TEAMSTORE_REST_PATH);
 const manon = await Team.create(store, "Support", "crisp|rembours|dédommag");

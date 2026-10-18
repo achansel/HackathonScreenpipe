@@ -1,6 +1,6 @@
 // Certification, côté responsable d'équipe, dans les notifications Screenpipe.
 // Les Live Views sont en lecture seule : une action passe par une notification. La boucle de nuit
-// (teamstore/nuit.ts) dépose des blocs « candidate » :
+// (teamstore/nuit/) dépose des blocs « candidate » :
 //   - « proposition » : une règle trouvée après une friction → [Certifier] (signée, publiée pour l'équipe) ;
 //   - « attente »     : personne n'a trouvé comment faire → la responsable est prévenue (à documenter).
 // Écrire ou corriger une règle demande un champ de saisie : hors Screenpipe, voir equipe-certifier.

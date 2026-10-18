@@ -106,7 +106,7 @@ Karim reçoit « [karim] Un collègue bloque » → [Partager] → « [lea] Gest
 
 ## Questions probables
 
-- Surveillance ? Détours par étape, pas par personne. `teamstore/schema.sql` : pas de colonne auteur, tout chiffré. Consentement, pause, périmètre limité aux applis de travail.
+- Surveillance ? Détours par étape, pas par personne. `teamstore/server/schema.sql` : pas de colonne auteur, tout chiffré. Consentement, pause, périmètre limité aux applis de travail.
 - Pourquoi pas l'IA de HubSpot ? Elle connaît le produit, pas vos règles (« 1 mois max, premium seulement » n'est écrit nulle part).
 - Le texte part dans le cloud ? Vers le modèle choisi dans Screenpipe, identifiants masqués. Un modèle local reste sur le poste.
 - L'IA invente une règle ? Elle propose seulement. Rien n'entre sans la responsable ; une règle avec nom, e-mail ou téléphone est refusée.

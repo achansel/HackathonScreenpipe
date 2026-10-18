@@ -6,7 +6,7 @@
 //
 // Stockage, par ordre de priorité : --serveur <url>, puis FRICTION_TEAMSTORE_URL (environnement ou
 // ~/.config/friction-assist/team.env, le même fichier que le démon), sinon le serveur local
-// (bun teamstore/local-server.ts, port 3001).
+// (bun teamstore/server/local-server.ts, port 3001).
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -67,13 +67,13 @@ if (mode === "verifier") {
     console.log("Le stockage est prêt pour l'équipe.");
   } catch (e) {
     ok(false, (e as Error).message);
-    console.log("Supabase : le schéma est-il installé (teamstore/schema.sql dans l'éditeur SQL) ? L'URL et la clé anon sont-elles bonnes ? Serveur local : est-il lancé (bun teamstore/local-server.ts) ?");
+    console.log("Supabase : le schéma est-il installé (teamstore/server/schema.sql dans l'éditeur SQL) ? L'URL et la clé anon sont-elles bonnes ? Serveur local : est-il lancé (bun teamstore/server/local-server.ts) ?");
     process.exit(1);
   }
   process.exit(0);
 }
 
-// ---- boucle de nuit (teamstore/nuit.ts) : relire ce qui a suivi chaque friction restée sans réponse, et proposer
+// ---- boucle de nuit (teamstore/nuit/) : relire ce qui a suivi chaque friction restée sans réponse, et proposer
 // des règles à la responsable. --exemple : l'exemple préparé (fils du Slack de PipingTable), jugé par la vraie IA.
 if (mode === "nuit") {
   if (!process.env.SCREENPIPE_API_KEY) { console.error("Jeton Screenpipe absent : scripts/screenpipe-env.sh"); process.exit(1); }
@@ -113,7 +113,7 @@ if (mode === "nuit") {
     console.log(`Publié dans ${teams.map((t) => t.name).join(", ")} : ${r.proposals} proposition(s) à valider, ${r.pending} friction(s) en attente. Le démon de la responsable les lui notifie ([Certifier]).`);
   } catch (e) {
     console.error(`Publication impossible : ${(e as Error).message}`);
-    if (/check constraint|blobs_kind_check/.test((e as Error).message)) console.error("Le stockage ne connaît pas encore les propositions : coller teamstore/migrations/2026-10-17-boucle-de-nuit.sql dans l'éditeur SQL de Supabase.");
+    if (/check constraint|blobs_kind_check/.test((e as Error).message)) console.error("Le stockage ne connaît pas encore les propositions : coller teamstore/server/migrations/2026-10-17-boucle-de-nuit.sql dans l'éditeur SQL de Supabase.");
     process.exit(1);
   }
   process.exit(0);
@@ -122,7 +122,7 @@ if (mode === "nuit") {
 // ---- postes simulés du démon (« simuler » : Léa et Karim) branchés sur ce stockage :
 // on écrit les fichiers d'équipe que le démon lit (teams-lea.json, teams-karim.json).
 if (mode === "equipe-demo") {
-  if (!remote) console.log("Pas de Supabase configuré : l'équipe est créée sur le serveur local (bun teamstore/local-server.ts doit tourner).");
+  if (!remote) console.log("Pas de Supabase configuré : l'équipe est créée sur le serveur local (bun teamstore/server/local-server.ts doit tourner).");
   const t = await Team.create(new SupabaseStore(url, anonKey, restPath), "Support");
   const member = membershipFromInvite(t.invite());
   mkdirSync(TEAMS_DIR, { recursive: true });

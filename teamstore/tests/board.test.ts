@@ -1,7 +1,7 @@
 // Tests unitaires du tableau « Frictions en direct » (board.ts) : calculs purs, sans réseau.
 // bun test teamstore/board.test.ts
 import { describe, expect, test } from "bun:test";
-import { Board } from "./board";
+import { Board } from "../board";
 
 const T = "team-1";
 const at = (m: number) => new Date(Date.now() - m * 60_000).toISOString();

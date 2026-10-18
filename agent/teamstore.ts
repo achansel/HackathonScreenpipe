@@ -8,7 +8,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync
 import { AccessDenied, routeTeams, SupabaseStore, Team, type Membership } from "../teamstore/client";
 import { DATABASE_URL, TEAM_DIR, TEAM_KEY_FILE, TEAMS_FILE, TEAMSTORE_ANON_KEY, TEAMSTORE_REST_PATH, TEAMSTORE_URL } from "./config";
 
-export type Kind = "request" | "solution" | "signature" | "candidate"; // candidate : boucle de nuit (teamstore/nuit.ts)
+export type Kind = "request" | "solution" | "signature" | "candidate"; // candidate : boucle de nuit (teamstore/nuit/)
 export type Row = { id: number; at: string; payload: any };
 
 export interface TeamStore {
@@ -122,7 +122,7 @@ export class RpcTeamStore implements TeamStore {
     this.log(`équipes : ${this.teams.map((t) => `${t.name} (époque ${t.epoch}${t.m.scope ? `, périmètre ${t.m.scope}` : ""})`).join(", ") || "aucune"}`);
   }
 
-  async init() { await this.reload(); } // le schéma se crée une fois, dans l'éditeur SQL de Supabase (teamstore/schema.sql)
+  async init() { await this.reload(); } // le schéma se crée une fois, dans l'éditeur SQL de Supabase (teamstore/server/schema.sql)
 
   /** Demande et signature : vers les équipes dont le périmètre correspond à l'étape.
    *  Solution en réponse à une demande : vers l'équipe de la demande, jamais ailleurs. */

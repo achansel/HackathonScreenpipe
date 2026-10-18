@@ -1,15 +1,15 @@
 // Évaluation de la boucle de nuit avec le VRAI modèle (celui de Screenpipe, choisi par le démon d'Andrea).
 // 20 cas étiquetés « résolue / non résolue » (10 / 10), avec des pièges et des noms, e-mails, téléphones dans les
 // contextes. Étiquettes écrites par Claude d'après les scénarios PipingTable : PAS une vérité humaine.
-//   source ~/.config/screenpipe/env && bun teamstore/nuit-eval.ts [--tirages 2]
+//   source ~/.config/screenpipe/env && bun teamstore/nuit/eval.ts [--tirages 2]
 // Résultat : mesures/nuit-eval.json (+ tableau affiché).
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { IDENTIFYING, judge, type NightCase } from "./nuit";
+import { IDENTIFYING, judge, type NightCase } from "./index";
 
-const { chat } = await import("../agent/screenpipe");
-const { redact } = await import("../agent/qualify");
-const { MODEL } = await import("../agent/config");
+const { chat } = await import("../../agent/screenpipe");
+const { redact } = await import("../../agent/qualify");
+const { MODEL } = await import("../../agent/config");
 const DRAWS = Number(process.argv[process.argv.indexOf("--tirages") + 1] || 2);
 
 type Labeled = NightCase & { expect: boolean; trap?: string };
@@ -89,8 +89,8 @@ const result = {
   errors: SET.filter((k) => runs.some((r) => r.label === k.label && r.got !== k.expect)).map((k) => ({ label: k.label, expect: k.expect, got: runs.filter((r) => r.label === k.label).map((r) => r.got), trap: k.trap })),
   runs,
 };
-mkdirSync(join(import.meta.dir, "mesures"), { recursive: true });
-writeFileSync(join(import.meta.dir, "mesures", process.argv.includes("--reserve") ? "nuit-eval-reserve.json" : "nuit-eval.json"), JSON.stringify(result, null, 2));
+mkdirSync(join(import.meta.dir, "..", "mesures"), { recursive: true });
+writeFileSync(join(import.meta.dir, "..", "mesures", process.argv.includes("--reserve") ? "nuit-eval-reserve.json" : "nuit-eval.json"), JSON.stringify(result, null, 2));
 console.log(`Jeu ${result.set} · modèle ${result.model} · ${result.cases} cas × ${DRAWS} tirages = ${result.judgments} jugements · ${result.wallSeconds} s`);
 console.log(`précision ${result.precision} · rappel ${result.recall} · exactitude ${result.accuracy} · confusion ${JSON.stringify(result.confusion)} · cas stables ${stable}/${SET.length}`);
 console.log(`fuites dans la sortie brute du modèle : ${result.rawLeaks} · publiées après filtre : ${result.publishedLeaks} · titres > 60 car. : ${result.titlesOver60}`);
