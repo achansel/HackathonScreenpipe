@@ -273,7 +273,7 @@ Dans `teamstore/.data/`, ignoré par git.
 
 ## Pour aller plus loin
 
-- [PITCH.md](PITCH.md) : le pitch de 3 minutes, calé sur le parcours guidé, avec les réponses aux questions du jury.
+- [PITCH.md](PITCH.md) : le pitch de 3 minutes, porté par le film de Minguk (repli : le parcours guidé), en français et en anglais, avec les réponses aux questions du jury.
 - [PARCOURS.md](PARCOURS.md) : le parcours guidé, chapitre par chapitre, et comment le présenter ; [PARCOURS-REPRODUIRE.md](PARCOURS-REPRODUIRE.md) : comment il est construit, pour le refaire ou l'adapter.
 - [RAPPORT.md](RAPPORT.md) : le rapport d'ensemble (ce qui a été construit, choix, mesures, limites, suite).
 
