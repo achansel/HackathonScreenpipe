@@ -1,7 +1,6 @@
 # PipingTable : l'environnement de démo
 
-> **Statut :** créé le 17 octobre 2026 dans HubSpot et Slack ; pages Notion prêtes à importer ; Crisp à compléter.
-> Reprend le profil de `ClientProfile.md` (branche `main`) (« TableNow », renommée **PipingTable**) et la journée de Léa de `UseCase.md` (branche `main`). Tout est fictif : e-mails en `@example.com`, domaines en `.example`, téléphones en `06 39 98 xx xx`, noms inventés.
+Tout est fictif : e-mails en `@example.com`, domaines en `.example`, téléphones en `06 39 98 xx xx`, noms inventés.
 
 ## En bref
 
@@ -101,11 +100,11 @@ C'est le cœur de l'histoire : **la documentation existe, elle est fausse, et la
 
 ## Les clients au cœur des frictions
 
-| Client | Ce qui est préparé | Friction (UseCase.md) |
+| Client | Ce qui est préparé | Friction du scénario |
 | --- | --- | --- |
 | **Le Bistro**, Paris · Jean Dupont | Premium + SMS + acompte, signé en mars. HubSpot : `jean.dupont@example.com` ; dans Crisp il écrit avec **`jd.resto75@resa-paris.test`** | 9 h 05 introuvable · 9 h 20 offre à 4 clics · 9 h 40 bug · 11 h geste commercial |
 | **Le Bistro** (doublon) | même nom, sans contact ni transaction | 9 h 05 : plusieurs « Bistro » |
-| **Maison Pivoine**, Nantes · Élodie Marchand | signée il y a 3 jours par Thomas, **conditions particulières vides** | 14 h : « Thomas m'a promis l'installation gratuite » |
+| **Maison Pivoine**, Nantes · Élodie Marchand | signée par Thomas trois jours avant la journée jouée, **conditions particulières vides** | 14 h : « Thomas m'a promis l'installation gratuite » |
 | **Le Petit Zinc**, Bordeaux · Luc Fabre | contrat envoyé, **pas de SIREN** | Thomas ne peut pas clôturer |
 | **Osteria Nonna**, Lille · Giulia Rinaldi | contrat envoyé, **20 % de remise** ; demande dans #deal-desk **sans réponse** | la validation qui traîne |
 | **Groupe Saveurs du Sud**, Marseille · Sophie Arnaud | Offre Groupe, 5 restaurants | « quel contrat couvre ce site ? » |
@@ -165,16 +164,9 @@ export DEMO_SLACK_CHANNEL_URL="https://app.slack.com/client/T0CAR1HU95W/C0CAVM9D
 export DEMO_SLACK_SUPPORT_URL="https://app.slack.com/client/T0CAR1HU95W/C0C9ZBHECDU"                       # #support
 ```
 
-## Reste à faire à la main
+## Réglages que le script ne fait pas
 
-- [ ] HubSpot : rendre le SIREN obligatoire à l'étape « Closed Won » (Paramètres → Objets → Transactions → Pipelines).
-- [ ] HubSpot : désactiver la création automatique des entreprises (sinon une entreprise « example.com » réapparaît) ; supprimer l'entreprise d'exemple « HubSpot ».
-- [ ] Notion : importer les 4 pages.
-- [ ] Crisp : ajouter Jean Dupont, Élodie Marchand et Pieter Janssens à [docs/crisp.md](../../docs/crisp.md) ; écrire 5 ou 6 anciennes conversations à la main.
-- [ ] Crisp : garder l'intégration Crisp → HubSpot **désactivée** (friction de 17 h).
-
-## Questions ouvertes
-
-1. Pipeline des ventes : renommer les étapes en français (Démo, Contrat envoyé, Signé, Perdu) ?
-2. Tickets « Support » / « Support OLD » (friction de 9 h 40) : les créer aussi ? Il faut le droit `tickets`.
-3. Des notes d'historique dans HubSpot (« geste commercial accordé en mars ») ?
+- HubSpot : SIREN obligatoire à l'étape « Closed Won » (Paramètres → Objets → Transactions → Pipelines) ; création automatique des entreprises désactivée (sinon une entreprise « example.com » apparaît) ; entreprise d'exemple « HubSpot » supprimée.
+- Notion : importer les 4 pages.
+- Crisp : intégration Crisp → HubSpot désactivée (c'est la friction « client introuvable »).
+- Les tickets « Support » / « Support OLD » et le pipeline en français ne sont pas créés (droit `tickets` nécessaire).

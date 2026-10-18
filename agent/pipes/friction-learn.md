@@ -4,7 +4,7 @@ enabled: true
 title: friction-assist, apprentissage
 description: Régénère et valide le détecteur de friction-assist après la collecte (approbation humaine requise)
 agent: pi
-model: claude-haiku-4-5
+model: claude-sonnet-5
 timeout: 1800
 history: false
 trigger:

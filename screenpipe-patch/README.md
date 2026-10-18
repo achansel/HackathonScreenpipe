@@ -1,6 +1,6 @@
 # Patch Screenpipe : boutons `api` traités en Rust (macOS)
 
-**Problème** : sur Mac, un clic sur un bouton de notification de type `api` ne fait rien. Le panneau natif renvoie l'action au JavaScript de la fenêtre overlay, « usually not mounted » (`native_actions.rs:1131`). Mesuré le 17/10 : le clic n'arrive jamais. Seul `record-hd` est traité en Rust.
+**Problème** : sur Mac, un clic sur un bouton de notification de type `api` ne fait rien. Le panneau natif renvoie l'action au JavaScript de la fenêtre overlay, « usually not mounted » (`native_actions.rs:1131`). Mesuré : le clic n'arrive jamais. Seul `record-hd` est traité en Rust.
 
 **Correctif** (`native-api-action.patch`, 93 lignes, contre `screenpipe/screenpipe@30b50bb`) : dans `apps/screenpipe-app-tauri/src-tauri/src/commands/native_actions.rs`, un bouton `api` sans deeplink est exécuté en Rust, comme `record-hd` :
 - **même règle de cible** que `isLocalApiUrl` (`lib/api.ts`) : chemin relatif, ou `http://localhost|127.0.0.1:<port de l'API>` ; tout le reste est refusé (la requête porte la clé) ;
@@ -8,7 +8,7 @@
 - les actions avec `deeplinkUrl` restent sur le chemin JS ;
 - tests unitaires de `local_api_action_target` (cibles acceptées / refusées).
 
-**Statut** : non compilé (pas de toolchain Rust ici). À compiler et tester sur Mac. Bon candidat pour une PR upstream (corrige un bug réel, ne change pas la règle de sécurité).
+Pas encore compilé ni testé en conditions réelles (voir [docs/etat.md](../docs/etat.md)) ; les tests unitaires de la cible sont dans le patch. Candidat à une PR upstream : corrige un bug réel sans changer la règle de sécurité.
 
 ## Appliquer et compiler (Mac)
 

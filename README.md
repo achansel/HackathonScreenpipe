@@ -2,7 +2,7 @@
 
 Agent local sur l'API de [Screenpipe](https://screenpipe.com). Il repère quand quelqu'un bloque sur une étape de process (recherche, aller-retour, demande d'aide), affiche la solution qu'un collègue a déjà trouvée dans une notification Screenpipe, demande à l'équipe de façon anonyme quand personne sur le poste n'a la réponse, et montre à la responsable *où* le process coince dans une Live View, jamais *qui*. Mémoire d'équipe chiffrée de bout en bout, sans identité. Bun + TypeScript, pas de fork de Screenpipe.
 
-Hackathon « Build Agents That Remember », 42 Entrepreneurs × Screenpipe, Paris, 16–18 octobre 2026.
+Hackathon « Build Agents That Remember », 42 Entrepreneurs × Screenpipe, Paris, 16–18 octobre 2026. Équipe : Andrea, Minguk, Haytham.
 
 > **English.** Local agent on Screenpipe's API: detects process friction on screen, pushes the fix a colleague already found as a Screenpipe notification, asks the team anonymously otherwise, and shows the manager *where* the process hurts in a Live View (never *who*). End-to-end encrypted team memory with no identity. Bun + TypeScript, no fork. Install: Screenpipe app + Bun, `scripts/screenpipe-env.sh`, `bun agent/main.ts activer`, `bun agent/main.ts`. Reproduce the demo: [docs/demo.md](docs/demo.md). Screenpipe usage: [docs/screenpipe.md](docs/screenpipe.md). What works and what doesn't: [docs/etat.md](docs/etat.md); numbers and how they were measured: [docs/mesures.md](docs/mesures.md). Docs are in French.
 

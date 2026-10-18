@@ -4,7 +4,7 @@ enabled: true
 title: friction-assist, collecte
 description: Collecte locale des épisodes du jour pour l'apprentissage de nuit de friction-assist
 agent: pi
-model: claude-haiku-4-5
+model: claude-sonnet-5
 timeout: 600
 history: false
 permissions:
