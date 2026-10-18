@@ -558,7 +558,7 @@ for (const el of $$(".kin")) {
 	walk(el);
 }
 
-const tl = gsap.timeline({ paused: true, onUpdate: sync, onComplete: () => setPlaying(false) });
+const tl = gsap.timeline({ paused: true, onUpdate: () => { slideStop(); sync(); }, onComplete: () => setPlaying(false) });
 const ease = "power3.out";
 const words = (scope, t, stagger = 0.045) => tl.fromTo($$(`${scope} .kin .w > span`), { yPercent: 115, rotate: 4 }, { yPercent: 0, rotate: 0, duration: 0.75, stagger, ease }, t);
 const pop = (el, t, extra = {}) => tl.fromTo(el, { autoAlpha: 0, scale: 0.6, y: 10 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(2.2)", ...extra }, t);
@@ -830,10 +830,22 @@ function sync() {
 	if (!scrubbing) $("#scrub").value = String(Math.round((time / TOTAL) * 1000));
 }
 function setPlaying(on) {
-	if (on) { if (tl.progress() >= 1) tl.seek(0, false); tl.play(); } else tl.pause();
+	if (on) { if (tl.progress() >= 1) tl.seek(0, false); if (slides && stopAt === null) { const i = sceneAt(tl.time()); if (tl.time() < slideEnd(i) - 0.01) stopAt = slideEnd(i); } tl.play(); } else tl.pause();
 	$("#play").textContent = on ? "Pause" : tl.progress() >= 1 ? "Replay" : "Play";
 }
-const go = (i) => { i = Math.max(0, Math.min(SCENES.length - 1, i)); tl.seek(SCENES[i].start + 0.001, false); sync(); };
+const go = (i) => { i = Math.max(0, Math.min(SCENES.length - 1, i)); tl.seek(SCENES[i].start + 0.001, false); sync(); if (slides) playSlide(i); };
+// Mode diapos (?slides ou touche P) : chaque scène joue son animation puis s'arrête juste avant le fondu ; → lance la suivante.
+let slides = new URLSearchParams(location.search).has("slides");
+let stopAt = null;
+const slideEnd = (i) => (i === SCENES.length - 1 ? TOTAL : SCENES[i].start + SCENES[i].dur - 0.55);
+function playSlide(i) { stopAt = slideEnd(i); tl.play(); $("#play").textContent = "Pause"; }
+function slideStop() { if (slides && stopAt !== null && tl.time() >= stopAt) { tl.pause(); tl.seek(stopAt, false); stopAt = null; $("#play").textContent = "Play"; } }
+function slideNext() {
+	const i = sceneAt(tl.time());
+	if (stopAt !== null) { tl.seek(stopAt, false); slideStop(); return; }
+	if (i < SCENES.length - 1 && tl.time() >= slideEnd(i) - 0.01) { stopAt = slideEnd(i + 1); tl.play(); $("#play").textContent = "Pause"; }
+	else if (i < SCENES.length - 1) go(i + 1);
+}
 $("#play").addEventListener("click", () => setPlaying(tl.paused() || tl.progress() >= 1));
 $("#prev").addEventListener("click", () => go(sceneAt(tl.time()) - 1));
 $("#next").addEventListener("click", () => go(sceneAt(tl.time()) + 1));
@@ -846,8 +858,9 @@ $("#full").addEventListener("click", fullscreen);
 document.addEventListener("keydown", (e) => {
 	if (e.target.closest("input, textarea")) return;
 	if (e.key === " ") { e.preventDefault(); setPlaying(tl.paused() || tl.progress() >= 1); }
-	else if (e.key === "ArrowRight") go(sceneAt(tl.time()) + 1);
-	else if (e.key === "ArrowLeft") go(sceneAt(tl.time()) - 1);
+	else if (e.key === "ArrowRight" || e.key === "PageDown") slides ? slideNext() : go(sceneAt(tl.time()) + 1);
+	else if (e.key === "ArrowLeft" || e.key === "PageUp") go(sceneAt(tl.time()) - 1);
+	else if (e.key === "p" || e.key === "P") { slides = !slides; stopAt = null; if (slides) go(sceneAt(tl.time())); }
 	else if (e.key === "s" || e.key === "S") toggleSubs();
 	else if (e.key === "h" || e.key === "H") document.body.classList.toggle("record");
 	else if (e.key === "f" || e.key === "F") fullscreen();
@@ -863,6 +876,7 @@ const hash = location.hash.match(/^#(s|t)(\d+)$/);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 if (hash) { hash[1] === "s" ? go(Number(hash[2])) : tl.seek(Math.min(TOTAL, Number(hash[2])), false); setPlaying(false); }
 else if (reduced) { tl.seek(2.5, false); setPlaying(false); }
+else if (slides) go(0);
 else setPlaying(true);
 sync();
 </script>
