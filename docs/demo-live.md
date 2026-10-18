@@ -17,19 +17,20 @@ Tout est fictif : e-mails en `@example.com` ou `.test`. Détail dans [../integra
 ## 15 min avant
 
 ```bash
-cd ~/Workspace/Hackathon/HackathonScreenpipe && git switch demo && git pull -q
+cd <clone du dépôt> && git pull -q
+export PATH="$HOME/.bun/bin:$PATH"
 source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env && source ~/.config/friction/env
 ```
 
 1. Relancer l'app Screenpipe (quitter, rouvrir), enregistrement actif.
-2. Vérifier que l'API répond et que l'équipe est là :
+2. Vérifier que l'API répond et que ce poste est dans l'équipe (les clés d'équipe sont dans `~/.config/friction-assist/teams.json`, écrit par `equipe-creer` ou `equipe-rejoindre`) :
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" -H "Authorization: Bearer $SCREENPIPE_API_KEY" "$SCREENPIPE_URL/search?limit=1"
-bun agent/main.ts equipe-liste
+bun agent/main.ts equipe-liste          # attendu : « Support … responsable » ; sinon : bun agent/main.ts equipe-creer Support
 ```
 
-3. Une notification de test, la **voir à l'œil**, puis Ctrl+C :
+3. Une notification de test, la **voir à l'œil**, puis Ctrl+C (sinon la commande rend la main après 5 min ; Screenpipe ignore une deuxième notification identique dans la minute) :
 
 ```bash
 bun agent/main.ts test-notif
@@ -41,7 +42,7 @@ bun agent/main.ts test-notif
 bun agent/main.ts carte-installer
 ```
 
-5. Léa ne connaît qu'une règle. Le cache local l'emporterait sur `FRICTION_SEED_IDS` : le supprimer, puis lancer l'agent et le laisser tourner :
+5. Léa ne connaît qu'une règle. Un agent déjà lancé (README) doit être arrêté d'abord (un seul sur le port 8787). Le cache local, s'il existe, l'emporterait sur `FRICTION_SEED_IDS` : le supprimer, puis lancer l'agent et le laisser tourner :
 
 ```bash
 rm -f agent/.state/solutions.json
@@ -55,7 +56,7 @@ Attendu dans le journal : `relais prêt`, `équipes : Support`, `agent actif (po
 7. Dans un **second terminal** (hors écran), prêt à lancer, sans le lancer :
 
 ```bash
-cd ~/Workspace/Hackathon/HackathonScreenpipe && source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env
+cd <clone du dépôt> && source ~/.config/screenpipe/env && source ~/.config/friction-assist/team.env
 bun teamstore/cli.ts nuit --exemple --cas dédommagement
 ```
 

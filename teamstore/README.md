@@ -17,7 +17,7 @@ Stockage de blocs chiffrés côté poste pour ce que l'agent partage : demandes 
 
 ```bash
 bun teamstore/server/local-server.ts               # ou Supabase : server/schema.sql + server/migrations/*.sql
-printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env   # chmod 600
+[ -f ~/.config/friction-assist/team.env ] || printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env   # chmod 600
 source ~/.config/friction-assist/team.env && bun teamstore/cli.ts verifier
 bun agent/main.ts equipe-creer Support             # lien à transmettre en privé
 bun agent/main.ts equipe-rejoindre "<lien>"        # chez un membre

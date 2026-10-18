@@ -19,14 +19,14 @@ Vie privée : rien ne lit l'écran sans `activer` ; `pause` coupe tout ; aucun t
 
 ## Installation
 
-Prérequis : l'app Screenpipe (Windows ou Mac, enregistrement actif) et [Bun](https://bun.sh). Sous Windows, le code tourne dans WSL avec `networkingMode=mirrored` dans `~/.wslconfig`.
+Prérequis : l'app Screenpipe (Windows ou Mac, enregistrement actif) et [Bun](https://bun.sh) (`~/.bun/bin` dans le PATH). Sous Windows, le code tourne dans WSL avec `networkingMode=mirrored` dans `~/.wslconfig`. Toutes les commandes se lancent depuis la racine du dépôt.
 
 ```bash
 scripts/screenpipe-env.sh && source ~/.config/screenpipe/env   # jeton + URLs Screenpipe (chmod 600, hors dépôt)
 bun agent/main.ts activer          # consentement, une fois
-bun agent/main.ts test-notif       # une notification doit s'afficher
+bun agent/main.ts test-notif       # une notification doit s'afficher ; Ctrl+C ensuite
 bun agent/main.ts carte-installer  # les deux Live Views
-bun agent/main.ts                  # l'agent (--debug : texte des épisodes dans le journal)
+bun agent/main.ts                  # l'agent (--debug : texte des épisodes dans le journal) ; sans équipe : « aide locale seulement »
 ```
 
 Seul, l'agent utilise sa mémoire locale (`agent/solutions.seed.json`, les règles de la boîte fictive PipingTable).
@@ -37,12 +37,14 @@ Stockage de blocs chiffrés : Supabase, ou un serveur local SQLite pour essayer 
 
 ```bash
 bun teamstore/server/local-server.ts                        # port 3001, à laisser tourner
-mkdir -p ~/.config/friction-assist && printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env
+mkdir -p ~/.config/friction-assist && [ -f ~/.config/friction-assist/team.env ] || printf 'export FRICTION_TEAMSTORE_URL=http://127.0.0.1:3001\nexport FRICTION_TEAMSTORE_ANON_KEY=\n' > ~/.config/friction-assist/team.env
 chmod 600 ~/.config/friction-assist/team.env && source ~/.config/friction-assist/team.env
 bun teamstore/cli.ts verifier
 bun agent/main.ts equipe-creer Support      # lien d'invitation (contient la clé : à transmettre en privé)
 bun agent/main.ts equipe-rejoindre "<lien>" # poste d'un collègue
 ```
+
+Relancer l'agent après `equipe-creer` / `equipe-rejoindre` : l'équipe est lue au démarrage (`équipes : Support` dans le journal).
 
 Supabase : coller `teamstore/server/schema.sql` puis `teamstore/server/migrations/*.sql` dans l'éditeur SQL ; URL du projet et clé publique dans `team.env`.
 
